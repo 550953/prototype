@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Ozon Analytics Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    nav {
+      width: 220px;
+      background: #343a40;
+      height: 100vh;
+      padding-top: 20px;
+      position: fixed;
+      color: white;
+    }
+    nav h2 {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    nav a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    nav a:hover {
+      background: #495057;
+    }
+    main {
+      margin-left: 220px;
+      padding: 30px;
+      flex: 1;
+      background: #f4f6f9;
+      height: 100vh;
+      overflow: auto;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: calc(100vh - 60px);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h2>Ozon Dashboard</h2>
+    <a href="pnl_monthly.html" target="reportFrame">PNL по месяцам</a>
+    <a href="abc_analysis.html" target="reportFrame">ABC-анализ</a>
+    <a href="dds.html" target="reportFrame">ДДС</a>
+    <a href="weekly_pnl.html" target="reportFrame">PNL по неделям</a>
+  </nav>
+  <main>
+    <iframe name="reportFrame" src="pnl_monthly.html"></iframe>
+  </main>
+</body>
+</html>

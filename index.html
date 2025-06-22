@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Прототипы сервисов</title>
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
   <style>
     body {
       font-family: sans-serif;
@@ -15,28 +19,12 @@
       text-align: center;
       margin-bottom: 1em;
     }
-    table {
-      width: 100%;
-      max-width: 700px;
+    .container {
+      max-width: 900px;
       margin: auto;
       background: white;
-      border-collapse: collapse;
+      padding: 1em;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #eee;
-    }
-    a {
-      color: #007acc;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
     }
     caption {
       caption-side: bottom;
@@ -45,42 +33,58 @@
       font-size: 0.9em;
       color: #777;
     }
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>Прототипы сервисов</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Проект</th>
-        <th>Описание</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a href="/efrsb-avito-analyzer/">efrsb-avito-analyzer</a></td>
-        <td>Анализ лотов ЕФРСБ и цен Avito</td>
-      </tr>
-      <tr>
-        <td><a href="/videoparse/">Пасер соцсетей</a></td>
-        <td>Бот по парсингу данных из соц сетей (insta, tik tok, youtube)</td>
-      </tr>
-      <tr>
-        <td><a href="/OzonDashboard/">OZON отчеты</a></td>
-        <td>Отчеты вида: PNL, ДДС, PNL</td>
-      </tr>
-      <tr>
-        <td><a href="/WBUploader/">Вилберис - загрузка по артикулу</a></td>
-        <td>Автоматическая загрузка товаров на Вилберис</td>
-      </tr>      
-      
-      <!-- Добавляй следующие строчки по мере необходимости -->
-      <!-- <tr>
-        <td><a href="/название-папки/">название-папки</a></td>
-        <td>Краткое описание</td>
-      </tr> -->
-    </tbody>
-    <caption>Все прототипы доступны по подкаталогам.</caption>
-  </table>
+  <div class="container">
+    <h1>Прототипы сервисов</h1>
+    <table id="projects-table" class="display">
+      <thead>
+        <tr>
+          <th>Проект</th>
+          <th>Описание</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="/efrsb-avito-analyzer/">efrsb-avito-analyzer</a></td>
+          <td>Анализ лотов ЕФРСБ и цен Avito</td>
+        </tr>
+        <tr>
+          <td><a href="/videoparse/">Пасер соцсетей</a></td>
+          <td>Бот по парсингу данных из соц сетей (insta, tik tok, youtube)</td>
+        </tr>
+        <tr>
+          <td><a href="/OzonDashboard/">OZON отчеты</a></td>
+          <td>Отчеты вида: PNL, ДДС, PNL</td>
+        </tr>
+        <tr>
+          <td><a href="/WBUploader/">Вилберис - загрузка по артикулу</a></td>
+          <td>Автоматическая загрузка товаров на Вилберис</td>
+        </tr>
+      </tbody>
+      <caption>Все прототипы доступны по подкаталогам.</caption>
+    </table>
+  </div>
+
+  <!-- jQuery + DataTables -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#projects-table').DataTable({
+        language: {
+          url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/ru.json"
+        }
+      });
+    });
+  </script>
 </body>
 </html>

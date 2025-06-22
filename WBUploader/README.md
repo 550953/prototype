@@ -1,1 +1,2 @@
 Для заказа https://freelance.ru/projects/razrabotat-programmu-ili-bota-dlya-valberes-1637154.html#message30775305
+затем для этого https://freelance.ru/projects/razrabotka-telegram-bota-dlya-otslezhivaniya-bronirovaniya-postavok-1636680.html#message30775644

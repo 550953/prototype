@@ -1,17 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>WB Загрузка товаров</title>
-  <!-- AdminLTE & Bootstrap 4 -->
+  <title>История броней</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-  <!-- Навигационная панель -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="index.html" class="brand-link">
       <span class="brand-text font-weight-light">WB Uploader</span>
@@ -19,8 +16,8 @@
     <div class="sidebar">
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-<li class="nav-item">
-  <a href="index.html" class="nav-link active">
+          <li class="nav-item">
+  <a href="index.html" class="nav-link">
     <i class="nav-icon fas fa-upload"></i>
     <p>Загрузка CSV</p>
   </a>
@@ -50,7 +47,7 @@
   </a>
 </li>
 <li class="nav-item">
-  <a href="booking_history.html" class="nav-link">
+  <a href="booking_history.html" class="nav-link active">
     <i class="nav-icon fas fa-history"></i>
     <p>История броней</p>
   </a>
@@ -61,26 +58,29 @@
     <p>Настройки</p>
   </a>
 </li>
-</ul>      </nav>
+        </ul>
+      </nav>
     </div>
   </aside>
 
-  <!-- Контент -->
   <div class="content-wrapper">
     <div class="content pt-4">
       <div class="container-fluid">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Загрузка товаров на Wildberries</h3>
+            <h3 class="card-title">История броней</h3>
           </div>
           <div class="card-body">
-            <form>
-              <div class="form-group">
-                <label for="fileInput">Загрузите прайс-лист (.xlsx или .csv):</label>
-                <input type="file" class="form-control-file" id="fileInput" name="file">
-              </div>
-              <button type="submit" class="btn btn-primary">Начать загрузку</button>
-            </form>
+            
+<p>Журнал всех операций бронирования:</p>
+<table class="table table-striped table-bordered">
+  <thead><tr><th>Дата</th><th>Склад</th><th>Окно</th><th>Результат</th><th>Источник</th></tr></thead>
+  <tbody>
+    <tr><td>2025-06-21 08:30</td><td>Коледино</td><td>10:00</td><td><span class="badge badge-success">Успешно</span></td><td>Авто</td></tr>
+    <tr><td>2025-06-20 09:00</td><td>Электросталь</td><td>11:30</td><td><span class="badge badge-danger">Ошибка</span></td><td>Ручное</td></tr>
+  </tbody>
+</table>
+
           </div>
         </div>
       </div>
@@ -88,7 +88,6 @@
   </div>
 </div>
 
-<!-- Скрипты -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>mob_VantUI_eureka_MAX_CTO</title>
+    
+    <meta name="theme-color" content="#f0821d">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/vant@4/lib/index.css"/>
+    
+    <style>
+        :root { 
+            --van-background-2: #121212; 
+            --van-nav-bar-background: #1a1a1a; 
+            --van-nav-bar-title-text-color: #ffffff; 
+            --main-orange: #f0821d; 
+        }
+        body { 
+            background-color: #000; 
+            margin: 0; 
+            color: #fff; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            -webkit-user-select: none; 
+            user-select: none;
+        }
+        .btn-ui { height: 52px !important; border-radius: 14px !important; font-weight: 700 !important; margin-bottom: 12px; border: none !important; }
+        .btn-ui-orange { background: var(--main-orange) !important; color: #fff !important; box-shadow: 0 4px 15px rgba(240, 130, 29, 0.3); }
+        .btn-ui-dark { background: #1a1a1a !important; color: #ccc !important; border: 1px solid #333 !important; }
+        
+        /* Стилизация компонентов Vant под Dark Theme */
+        .van-cell, .van-field { background: #1a1a1a !important; color: #fff !important; border-radius: 8px; margin-bottom: 8px; }
+        .van-cell__title, .van-field__label { color: #fff !important; }
+        .van-field__control { color: #fff !important; }
+        .van-nav-bar__arrow { color: var(--main-orange) !important; }
+        
+        .screen-content { padding: 20px; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .splash-screen { 
+            height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            text-align: center; padding: 40px; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+        }
+        .logo-badge { background: var(--main-orange); padding: 15px; border-radius: 25px; margin-bottom: 20px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div v-if="screen === 'splash'" class="splash-screen">
+            <div class="logo-badge">
+                <van-icon name="setting" size="50" color="#fff" />
+            </div>
+            <h2 style="margin-top: 0;">Эврика: Автосервис</h2>
+            <p style="color: #aaa; font-size: 14px; line-height: 1.6;">
+                Чат-бот поможет вам записаться на ремонт, узнать о готовности автомобиля, покажет график работы всех СТО. 
+                Для начала общения нажмите "СТАРТ".
+            </p>
+            <van-button block class="btn-ui btn-ui-orange" @click="screen = 'main'" style="margin-top: 20px;">СТАРТ</van-button>
+        </div>
+
+        <div v-if="screen === 'main'">
+            <van-nav-bar title="На связи чат-бот"></van-nav-bar>
+            <div class="screen-content">
+                <div style="margin-bottom: 25px;">
+                    <p style="font-size: 16px;"><b>Чем могу вам помочь?</b></p>
+                </div>
+                <van-button block class="btn-ui btn-ui-orange" icon="edit" @click="startFlow('repair', 'Записаться на ремонт')">Записаться на ремонт</van-button>
+                <van-button block class="btn-ui btn-ui-dark" icon="logistics" @click="startFlow('status', 'Узнать о готовности авто')">Узнать о готовности авто</van-button>
+                <van-button block class="btn-ui btn-ui-dark" icon="clock-o" @click="showSchedule = true">Посмотреть график работы</van-button>
+                <van-button block class="btn-ui btn-ui-dark" icon="phone-o" @click="startFlow('call', 'Заказать обратный звонок')">Заказать обратный звонок</van-button>
+            </div>
+        </div>
+
+        <div v-if="screen === 'select_sto'">
+            <van-nav-bar title="Адрес СТО" left-arrow @click-left="screen = 'main'"></van-nav-bar>
+            <div class="screen-content">
+                <p style="margin-bottom: 15px; color: #888;">Выберите ближайший филиал:</p>
+                <van-cell-group inset>
+                    <van-cell v-for="sto in stos" :key="sto" :title="sto" is-link @click="confirmSTO(sto)"></van-cell>
+                </van-cell-group>
+            </div>
+        </div>
+
+        <div v-if="screen === 'form'">
+            <van-nav-bar :title="flowTitle" left-arrow @click-left="screen = 'select_sto'"></van-nav-bar>
+            <div class="screen-content">
+                <p style="font-size: 14px; color: var(--main-orange); margin-bottom: 15px; font-weight: 600;">
+                    {{ getPrompt() }}
+                </p>
+                
+                <van-field 
+                    v-model="formData" 
+                    rows="4" autosize 
+                    type="textarea" 
+                    placeholder="Введите информацию..." 
+                    style="border: 1px solid #333;"
+                ></van-field>
+
+                <van-button block class="btn-ui btn-ui-orange" style="margin-top: 20px;" @click="finishFlow">Отправить заявку</van-button>
+            </div>
+        </div>
+
+        <van-popup v-model:show="showSchedule" round position="bottom" style="height: 45%; background: #1a1a1a; padding: 25px; color: white;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <van-icon name="clock" size="40" color="#f0821d" />
+                <h3 style="margin: 10px 0;">График работы СТО</h3>
+            </div>
+            <div style="line-height: 2;">
+                <van-row><van-col span="14">Понедельник — Пятница:</van-col><van-col span="10"><b>09:00 — 21:00</b></van-col></van-row>
+                <van-row><van-col span="14">Суббота — Воскресенье:</van-col><van-col span="10"><b>10:00 — 19:00</b></van-col></van-row>
+            </div>
+            <van-button block class="btn-ui btn-ui-dark" style="margin-top: 25px;" @click="showSchedule = false">Вернуться в меню</van-button>
+        </van-popup>
+    </div>
+
+    <script src="https://fastly.jsdelivr.net/npm/vue@3"></script>
+    <script src="https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js"></script>
+    <script>
+        const { createApp, ref } = Vue;
+        const { showConfirmDialog, showNotify } = vant;
+
+        createApp({
+            setup() {
+                const screen = ref('splash');
+                const flowType = ref('');
+                const flowTitle = ref('');
+                const selectedSto = ref('');
+                const formData = ref('');
+                const showSchedule = ref(false);
+                const stos = ['ул. Маяковского, 12', 'пр-т Победы, 45', 'шоссе Энтузиастов, 7', 'ул. Ленина, 102'];
+
+                const startFlow = (type, title) => {
+                    flowType.value = type;
+                    flowTitle.value = title;
+                    screen.value = 'select_sto';
+                };
+
+                const confirmSTO = (sto) => {
+                    selectedSto.value = sto;
+                    screen.value = 'form';
+                };
+
+                const getPrompt = () => {
+                    if (flowType.value === 'repair') return 'Укажите марку, модель, VIN-номер автомобиля и опишите проблему:';
+                    if (flowType.value === 'status') return 'Укажите номер заказа-наряда:';
+                    if (flowType.value === 'call') return 'Укажите свой номер телефона для связи:';
+                    return '';
+                };
+
+                const finishFlow = () => {
+                    // Валидация (Пункт 3c/e ТЗ)
+                    if (!formData.value || formData.value.trim().length < 5) {
+                        let warnMsg = "Ник в Макс, не получил от вас никакой информации";
+                        if (flowType.value === 'call') warnMsg = "Ник в Макс, напоминаем, что вы не указали номер телефона для связи";
+                        showNotify({ type: 'warning', message: warnMsg });
+                        return;
+                    }
+
+                    // Сообщения об успехе (Пункт 3a/d ТЗ)
+                    let successMsg = "";
+                    if (flowType.value === 'repair') successMsg = `Ник в Макс, новая заявка на ${selectedSto.value} принята. Наш сотрудник свяжется с вами.`;
+                    if (flowType.value === 'status') successMsg = `Ник в Макс, запрос о готовности на ${selectedSto.value} принят, ожидайте ответа.`;
+                    if (flowType.value === 'call') successMsg = `Ник в Макс, спасибо за обращение. Ваш запрос принят.`;
+
+                    showConfirmDialog({
+                        title: 'Успешно',
+                        message: successMsg,
+                        confirmButtonText: 'В главное меню',
+                        showCancelButton: false
+                    }).then(() => {
+                        screen.value = 'main';
+                        formData.value = '';
+                    });
+                };
+
+                return { screen, flowType, flowTitle, selectedSto, formData, showSchedule, stos, startFlow, confirmSTO, getPrompt, finishFlow };
+            }
+        }).use(vant).mount('#app');
+    </script>
+</body>
+</html>

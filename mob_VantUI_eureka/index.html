@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Эврика PRO: Final</title>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/vant@4/lib/index.css"/>
+    <script src="https://fastly.jsdelivr.net/npm/vue@3"></script>
+    <script src="https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js"></script>
+    <style>
+        :root {
+            --van-background-2: #121212;
+            --van-nav-bar-background: #1a1a1a;
+            --van-nav-bar-title-text-color: #ffffff;
+            --van-search-background: #000;
+            --van-search-content-background: #2a2a2a;
+        }
+        body { background-color: #000; margin: 0; color: #fff; font-family: sans-serif; }
 
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
+        .pro-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 1 / 0.9;
+            background: #1a1a1a;
+        }
+        .pro-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .pro-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0; top: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 65%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 12px;
+        }
+        .pro-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; text-shadow: 1px 1px 2px #000; }
+        .pro-price { font-size: 11px; color: #f0821d; font-weight: 600; }
+
+        .category-chip { background: #222; padding: 8px 16px; border-radius: 20px; font-size: 14px; margin: 0 16px 10px; display: inline-flex; align-items: center; }
+        .chip-num { background: #f0821d; width: 18px; height: 18px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; margin-left: 8px; font-weight: bold; }
+
+        .btn-area { padding: 20px 16px 100px; }
+        .btn-custom { border-radius: 12px !important; font-weight: 700 !important; height: 52px !important; margin-bottom: 12px; }
+        .btn-orange { background: #f0821d !important; border: none !important; color: #fff !important; }
+        .btn-dark { background: #2a2a2a !important; border: none !important; color: #bbb !important; }
+
+        .van-tabbar { background: #1a1a1a !important; border-top: 1px solid #222; }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <van-nav-bar title="Dashboard: моб. интерфейс" border="false">
+        <template #left><van-icon name="arrow-left" size="20" color="#39f"/></template>
+        <template #right><van-icon name="wap-nav" size="24" color="#39f"/></template>
+    </van-nav-bar>
+
+    <van-search v-model="search" placeholder="Vant UI PRO" shape="round"></van-search>
+
+    <div class="category-chip">Специалисты <div class="chip-num">4</div></div>
+
+    <div class="service-grid">
+        <div v-for="s in services" :key="s.id" class="pro-card">
+            <img :src="s.img" @error="handleError">
+            <div class="pro-overlay">
+                <div class="pro-title">{{s.name}}</div>
+                <div class="pro-price">от {{s.price}} руб/час</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-area">
+        <van-button block class="btn-custom btn-dark">Я ЗАКАЗЧИК</van-button>
+        <van-button block class="btn-custom btn-orange">Я ИСПОЛНИТЕЛЬ</van-button>
+    </div>
+
+    <van-tabbar v-model="active" active-color="#f0821d" inactive-color="#666">
+        <van-tabbar-item icon="home-o">Главная</van-tabbar-item>
+        <van-tabbar-item icon="star-o">Избранное</van-tabbar-item>
+        <van-tabbar-item icon="apps-o">Заявки</van-tabbar-item>
+        <van-tabbar-item icon="user-o">Профиль</van-tabbar-item>
+        <van-tabbar-item icon="bell">Инфо</van-tabbar-item>
+    </van-tabbar>
+</div>
+
+<script>
+    const { createApp, ref } = Vue;
+    createApp({
+        setup() {
+            const search = ref('');
+            const active = ref(0);
+            const services = ref([
+                { id: 1, name: 'Ремонтные работы', price: '1000', img: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&q=80' },
+                { id: 2, name: 'Пиломатериалы', price: '500', img: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80' },
+                { id: 3, name: 'Перевозки', price: '1200', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTetFxUDVWW4erhAXNgw1P6lmwAXouXz9ypaA&s' },
+                { id: 4, name: 'Клининг', price: '800', img: 'https://images.unsplash.com/photo-1740657254989-42fe9c3b8cce?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2xlYW5pbmclMjBzZXJ2aWNlc3xlbnwwfHwwfHx8MA%3D%3D' }
+            ]);
+            return { search, active, services };
+        }
+    }).use(vant).mount('#app');
+</script>
+</body>
+</html>

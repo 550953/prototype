@@ -1,8 +1,8 @@
 const CACHE_NAME = 'wb-monitoring-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  '/mob_VantUI_eureka/PWA_Grafana_Wirenboard/',
+  '/mob_VantUI_eureka/PWA_Grafana_Wirenboard/index.html',
+  '/mob_VantUI_eureka/PWA_Grafana_Wirenboard/manifest.json',
   'https://fastly.jsdelivr.net/npm/vant@4/lib/index.css',
   'https://fastly.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js',
   'https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js',

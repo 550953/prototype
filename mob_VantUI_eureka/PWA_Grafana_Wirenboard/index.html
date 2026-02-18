@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <title>WB Monitoring PRO</title>
 
-    <!-- Vant UI + Vue 3 + ECharts -->
+    <!-- Vant UI + Vue 3 + ECharts (CDN) -->
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/vant@4/lib/index.css"/>
     <script src="https://fastly.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js"></script>
@@ -116,7 +116,6 @@
         title="WB Monitoring PRO"
         left-text="Назад"
         left-arrow
-        @click-left="$router?.back?.()"
     />
 
     <div class="status-header">
@@ -186,11 +185,12 @@
 </div>
 
 <script>
-// Глобальная регистрация Service Worker
+// Регистрация Service Worker с абсолютным путём от корня сайта
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service Worker зарегистрирован:', reg))
+        const swPath = '/mob_VantUI_eureka/PWA_Grafana_Wirenboard/sw.js'; // ← твой путь
+        navigator.serviceWorker.register(swPath)
+            .then(reg => console.log('Service Worker зарегистрирован:', reg.scope))
             .catch(err => console.error('Ошибка регистрации SW:', err));
     });
 }
@@ -213,7 +213,6 @@ createApp({
         ]);
 
         onMounted(() => {
-            // Инициализация графика напряжения (gauge)
             const chart = echarts.init(document.getElementById('voltage-gauge'), 'dark');
 
             const option = {
@@ -230,9 +229,9 @@ createApp({
                         lineStyle: {
                             width: 18,
                             color: [
-                                [0.23, '#ff4d4f'],  // <210 В — красный
-                                [0.75, '#f0821d'],  // 210–245 — оранжевый
-                                [1, '#ff4d4f']      // >245 — красный
+                                [0.23, '#ff4d4f'],
+                                [0.75, '#f0821d'],
+                                [1, '#ff4d4f']
                             ]
                         }
                     },
@@ -253,7 +252,6 @@ createApp({
 
             chart.setOption(option);
 
-            // Имитация живых данных (в реальности — через WebSocket/MQTT)
             setInterval(() => {
                 const voltages = [228 + Math.random()*8, 230 + Math.random()*6, 232 + Math.random()*7];
                 const avgV = voltages.reduce((a,b)=>a+b,0)/3;
@@ -272,15 +270,7 @@ createApp({
             window.addEventListener('resize', () => chart.resize());
         });
 
-        return {
-            activeTab,
-            isAdaptive,
-            freq,
-            totalAmp,
-            totalPower,
-            sdUsed,
-            events
-        };
+        return { activeTab, isAdaptive, freq, totalAmp, totalPower, sdUsed, events };
     }
 }).use(vant).mount('#app');
 </script>

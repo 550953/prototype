@@ -2,8 +2,9 @@ const CACHE_NAME = 'wb-monitoring-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/manifest.json',
   'https://fastly.jsdelivr.net/npm/vant@4/lib/index.css',
-  'https://fastly.jsdelivr.net/npm/vue@3',
+  'https://fastly.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js',
   'https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js',
   'https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js'
 ];

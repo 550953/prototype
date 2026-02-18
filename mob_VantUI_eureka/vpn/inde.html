@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>v2RayTun Brand</title>
+    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/vant@4/lib/index.css" />
+    <style>
+        :root { 
+            --van-background-2: #0a0a0a; 
+            --van-nav-bar-background: #111; 
+            --van-nav-bar-title-text-color: #fff; 
+            --main-orange: #f0821d; 
+            --dark-card: #161616;
+        }
+        body { 
+            background-color: #000; 
+            margin: 0; 
+            color: #fff; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Главная кнопка в стиле v2RayTun */
+        .power-circle {
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            border: 2px solid #333;
+            display: flex; align-items: center; justify-content: center;
+            margin: 40px auto;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .power-circle.active {
+            border-color: var(--main-orange);
+            box-shadow: 0 0 40px rgba(240, 130, 29, 0.4);
+        }
+
+        /* Таймер и статус */
+        .status-info { text-align: center; margin-bottom: 30px; }
+        .timer { font-size: 32px; font-weight: 300; letter-spacing: 2px; color: #fff; }
+        .status-text { font-size: 14px; color: #666; text-transform: uppercase; margin-top: 5px; }
+
+        /* Карточка активного сервера */
+        .server-card {
+            background: var(--dark-card);
+            margin: 0 16px 20px;
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #222;
+        }
+        .flag-placeholder { width: 40px; height: 30px; background: #333; border-radius: 4px; margin-right: 12px; }
+        .server-name { flex: 1; font-weight: 600; font-size: 15px; }
+        .ping-badge { color: #44db5e; font-size: 12px; font-family: monospace; }
+
+        /* Стилизация Vant UI */
+        .van-nav-bar { border-bottom: 1px solid #222; }
+        .van-tabbar { background-color: #111 !important; border-top: 1px solid #222 !important; }
+        .van-tabbar-item--active { background-color: #111 !important; color: var(--main-orange) !important; }
+        
+        /* Кнопка внизу */
+        .action-area { padding: 0 16px; }
+        .btn-ui-orange { 
+            background: var(--main-orange) !important; 
+            border: none !important; 
+            height: 54px !important; 
+            border-radius: 16px !important;
+            font-weight: 700 !important;
+            font-size: 16px !important;
+        }
+
+        .stats-row { display: flex; justify-content: space-around; padding: 20px; color: #888; font-size: 13px; }
+        .stats-item b { color: #fff; display: block; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <van-nav-bar title="BRAND TUN V2" fixed placeholder></van-nav-bar>
+
+    <div class="stats-row">
+        <div class="stats-item"><span>DOWNLOAD</span><b>12.5 Mb/s</b></div>
+        <div class="stats-item"><span>UPLOAD</span><b>1.2 Mb/s</b></div>
+    </div>
+
+    <div :class="['power-circle', { active: isConnected }]" @click="toggleConnect">
+        <van-icon name="stop-circle-o" size="80" :color="isConnected ? '#f0821d' : '#333'"></van-icon>
+    </div>
+
+    <div class="status-info">
+        <div class="timer">{{ timerText }}</div>
+        <div class="status-text">{{ isConnected ? 'Connected' : 'Disconnected' }}</div>
+    </div>
+
+    <div class="server-card">
+        <div class="flag-placeholder" style="background: linear-gradient(45deg, #2196F3, #f44336);"></div>
+        <div class="server-name">Netherlands #4 (VLESS)</div>
+        <div class="ping-badge">42 ms</div>
+        <van-icon name="arrow" color="#444" style="margin-left: 10px;"></van-icon>
+    </div>
+
+    <div class="action-area">
+        <van-button type="primary" block class="btn-ui-orange" @click="toggleConnect">
+            {{ isConnected ? 'DISCONNECT' : 'TAP TO CONNECT' }}
+        </van-button>
+    </div>
+
+    <van-tabbar v-model="activeTab" active-color="#f0821d" inactive-color="#666">
+        <van-tabbar-item icon="shield-entity">Home</van-tabbar-item>
+        <van-tabbar-item icon="cluster-o">Servers</van-tabbar-item>
+        <van-tabbar-item icon="setting-o">Settings</van-tabbar-item>
+    </van-tabbar>
+</div>
+
+<script src="https://fastly.jsdelivr.net/npm/vue@3"></script>
+<script src="https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js"></script>
+
+<script>
+    const { createApp, ref, onUnmounted } = Vue;
+    const app = createApp({
+        setup() {
+            const isConnected = ref(false);
+            const activeTab = ref(0);
+            const timerText = ref('00:00:00');
+            let interval = null;
+
+            const startTimer = () => {
+                let seconds = 0;
+                interval = setInterval(() => {
+                    seconds++;
+                    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+                    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+                    const s = (seconds % 60).toString().padStart(2, '0');
+                    timerText.value = `${h}:${m}:${s}`;
+                }, 1000);
+            };
+
+            const toggleConnect = () => {
+                isConnected.value = !isConnected.value;
+                if (isConnected.value) {
+                    startTimer();
+                    vant.showToast('Connecting...');
+                } else {
+                    clearInterval(interval);
+                    timerText.value = '00:00:00';
+                }
+            };
+
+            return { isConnected, activeTab, toggleConnect, timerText };
+        }
+    });
+    app.use(vant);
+    app.mount('#app');
+</script>
+</body>
+</html>

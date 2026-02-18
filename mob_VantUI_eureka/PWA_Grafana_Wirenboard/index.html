@@ -6,10 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/mob_VantUI_eureka/PWA_Grafana_Wirenboard/manifest.json">
     <title>WB Monitoring PRO</title>
 
-    <!-- Vant UI + Vue 3 + ECharts (CDN) -->
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/vant@4/lib/index.css"/>
     <script src="https://fastly.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://fastly.jsdelivr.net/npm/vant@4/lib/vant.min.js"></script>
@@ -112,14 +111,10 @@
 </head>
 <body>
 <div id="app">
-    <van-nav-bar
-        title="WB Monitoring PRO"
-        left-text="Назад"
-        left-arrow
-    />
+    <van-nav-bar title="WB Monitoring PRO" border="false"></van-nav-bar>
 
     <div class="status-header">
-        <div class="adaptive-label" :class="{ pulse: isAdaptive }">
+        <div class="adaptive-label" :class="{pulse: isAdaptive}">
             {{ isAdaptive ? '● АДАПТИВНЫЙ РЕЖИМ (4 Гц)' : '● ШТАТНЫЙ РЕЖИМ' }}
         </div>
         <van-tag type="primary" round size="large">
@@ -128,12 +123,10 @@
     </div>
 
     <div style="padding: 0 16px 100px;">
-        <!-- Gauge напряжения -->
         <div class="chart-card">
             <div id="voltage-gauge" class="gauge-box"></div>
         </div>
 
-        <!-- Ключевые показатели -->
         <van-row gutter="12">
             <van-col span="8">
                 <div class="key-stat">
@@ -159,7 +152,6 @@
             </van-col>
         </van-row>
 
-        <!-- Журнал событий -->
         <div class="log-container">
             <div class="log-header">Последние события</div>
             <div v-for="event in events.slice(0, 5)" :key="event.id" class="log-item" :class="{ crit: event.critical }">
@@ -175,7 +167,6 @@
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
     <van-tabbar v-model="activeTab" active-color="#f0821d" inactive-color="#666">
         <van-tabbar-item icon="chart-trending-o">Обзор</van-tabbar-item>
         <van-tabbar-item icon="description">Журнал</van-tabbar-item>
@@ -185,16 +176,6 @@
 </div>
 
 <script>
-// Регистрация Service Worker с абсолютным путём от корня сайта
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        const swPath = '/mob_VantUI_eureka/PWA_Grafana_Wirenboard/sw.js'; // ← твой путь
-        navigator.serviceWorker.register(swPath)
-            .then(reg => console.log('Service Worker зарегистрирован:', reg.scope))
-            .catch(err => console.error('Ошибка регистрации SW:', err));
-    });
-}
-
 const { createApp, ref, onMounted } = Vue;
 
 createApp({
@@ -273,6 +254,15 @@ createApp({
         return { activeTab, isAdaptive, freq, totalAmp, totalPower, sdUsed, events };
     }
 }).use(vant).mount('#app');
+
+// Регистрация Service Worker с абсолютным путём
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/mob_VantUI_eureka/PWA_Grafana_Wirenboard/sw.js')
+            .then(reg => console.log('Service Worker зарегистрирован:', reg.scope))
+            .catch(err => console.error('SW ошибка:', err));
+    });
+}
 </script>
 </body>
 </html>

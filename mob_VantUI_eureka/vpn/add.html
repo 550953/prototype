@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: transparent; color: white; font-family: 'Nunito', sans-serif; padding: 20px; text-align: center; }
+        .os-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 30px; }
+        .os-card { 
+            background: #18222c; border: 1px solid rgba(255,255,255,0.05); 
+            padding: 25px 15px; border-radius: 20px; cursor: pointer; transition: 0.2s;
+        }
+        .os-card:active { border-color: #f0821d; transform: scale(0.95); }
+        .os-icon { font-size: 32px; margin-bottom: 10px; }
+        .os-name { font-weight: 700; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div style="font-size: 50px; margin-top: 20px;">✨</div>
+    <h2>Выберите платформу</h2>
+    <p style="color:#707579;">Чтобы получить настройки, выберите ваше устройство:</p>
+
+    <div class="os-grid">
+        <div class="os-card" onclick="location.href='config.html'">
+            <div class="os-icon">🍎</div><div class="os-name">iOS (iPhone)</div>
+        </div>
+        <div class="os-card" onclick="location.href='config.html'">
+            <div class="os-icon">🤖</div><div class="os-name">Android</div>
+        </div>
+        <div class="os-card" onclick="location.href='config.html'">
+            <div class="os-icon">💻</div><div class="os-name">Windows</div>
+        </div>
+        <div class="os-card" onclick="location.href='config.html'">
+            <div class="os-icon">🖥️</div><div class="os-name">macOS</div>
+        </div>
+    </div>
+</body>
+</html>

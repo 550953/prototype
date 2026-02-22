@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: transparent; color: white; font-family: 'Nunito', sans-serif; padding: 16px; text-align: center; }
+        .os-badge { width: 64px; height: 64px; background: #000; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 20px auto; border: 1px solid rgba(255,255,255,0.1); }
+        .status { color: #00ff9f; font-weight: 700; font-size: 14px; margin-bottom: 30px; }
+        .key-card { background: #18222c; border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); text-align: left; }
+        .key-box { background: #000; padding: 15px; border-radius: 12px; border: 1px dashed #f0821d; color: #00ff9f; font-family: monospace; font-size: 13px; word-break: break-all; margin: 15px 0; }
+        .btn-copy { display: block; width: 100%; background: #f0821d; color: #000; padding: 16px; border-radius: 16px; text-align: center; font-weight: 800; border: none; cursor: pointer; }
+        .instr-label { text-align: left; font-size: 12px; color: #707579; font-weight: 800; margin: 30px 0 10px 5px; }
+        details { background: #18222c; border-radius: 16px; text-align: left; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
+        summary { padding: 16px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; }
+        .btn-back { display: block; margin-top: 20px; color: #707579; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="os-badge">🤖</div>
+    <h2 style="margin-bottom:5px;">71220763 (Android)</h2>
+    <div class="status">● Подключено</div>
+
+    <div class="key-card">
+        <div style="font-size: 12px; color: #707579; font-weight: 800;">ВАША ССЫЛКА</div>
+        <div class="key-box" id="key">vless://71220763-unique-access-key-brandtun</div>
+        <button class="btn-copy" onclick="copy()">Скопировать ссылку</button>
+    </div>
+
+    <div class="instr-label">ПОШАГОВАЯ ИНСТРУКЦИЯ</div>
+    <details open>
+        <summary>Инструкция для Android</summary>
+        <div style="padding: 16px; color: #ccc; font-size: 14px; line-height: 1.5;">
+            1. Скопируйте ссылку выше.<br>
+            2. Откройте приложение BRAND TUN.<br>
+            3. Нажмите кнопку добавления и выберите импорт.<br>
+            4. Нажмите кнопку подключения.
+        </div>
+    </details>
+
+    <a href="main.html" class="btn-back">← Назад</a>
+
+    <script>
+        function copy() {
+            navigator.clipboard.writeText(document.getElementById('key').innerText);
+            window.parent.postMessage({action: 'showToast'}, '*');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: transparent; color: white; font-family: 'Nunito', sans-serif; padding: 20px; display: flex; align-items: center; height: 80vh; }
+        .card { background: #18222c; border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.05); text-align: center; width: 100%; }
+        .btn { display: block; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 15px; }
+        .btn-danger { background: #ff4d4d; color: white; }
+        .btn-ghost { background: transparent; color: #707579; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div style="font-size: 50px; margin-bottom: 15px;">🔄</div>
+        <h2>Заменить настройки?</h2>
+        <p style="color:#707579; margin: 15px 0; line-height: 1.5;">
+            Текущее подключение перестанет работать. Мы создадим для вас новый ключ доступа.
+        </p>
+        <button class="btn btn-danger" onclick="location.href='config.html'">Да, заменить</button>
+        <button class="btn btn-ghost" onclick="history.back()">Отмена</button>
+    </div>
+</body>
+</html>

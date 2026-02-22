@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: transparent; color: white; font-family: 'Nunito', sans-serif; padding: 20px; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .h-card { background: #18222c; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .date { padding: 12px 20px; background: rgba(0,0,0,0.2); color: #707579; font-size: 11px; font-weight: 800; }
+        .row { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .info { flex-grow: 1; margin-left: 15px; }
+        .sum-plus { color: #00ff9f; font-weight: 800; }
+    </style>
+</head>
+<body>
+    <script>window.parent.postMessage({action: 'setNav', target: 'история'}, '*');</script>
+    <h2 style="margin-bottom:20px;">История</h2>
+    <div class="h-card">
+        <div class="date">СЕГОДНЯ</div>
+        <div class="row">
+            <span>💰</span>
+            <div class="info"><div>Пополнение</div><div style="font-size:12px; color:#707579;">14:20</div></div>
+            <div class="sum-plus">+100 ₽</div>
+        </div>
+    </div>
+</body>
+</html>

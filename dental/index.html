@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DentalJob — О приложении</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f1e;
+    --surface: #0f1629;
+    --surface2: #151d35;
+    --border: rgba(255,255,255,0.07);
+    --accent: #4f8ef7;
+    --accent2: #7c6aff;
+    --accent3: #00d4aa;
+    --text: #f0f4ff;
+    --muted: rgba(240,244,255,0.45);
+    --muted2: rgba(240,244,255,0.2);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 100px;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Noise grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,15,30,0.8);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .back-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .back-btn:active { transform: scale(0.93); background: var(--surface2); }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    flex: 1;
+    text-align: center;
+  }
+
+  /* ─── MAIN ─── */
+  main { max-width: 430px; margin: 0 auto; padding: 0 16px; }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 40px 0 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo-wrap {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .logo-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle, rgba(79,142,247,0.35) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+  }
+
+  .logo-ring {
+    width: 100px; height: 100px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--surface2) 0%, #1a2444 100%);
+    border: 1px solid rgba(79,142,247,0.3);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 8px rgba(79,142,247,0.06), 0 20px 40px rgba(0,0,0,0.4);
+    animation: float-logo 4s ease-in-out infinite;
+  }
+
+  @keyframes float-logo {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
+  }
+
+  .logo-svg {
+    width: 52px; height: 52px;
+  }
+
+  .pro-chip {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: linear-gradient(135deg, #4f8ef7, #7c6aff);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(79,142,247,0.5);
+  }
+
+  .app-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    background: linear-gradient(120deg, #fff 30%, rgba(79,142,247,0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .app-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .platform-pills {
+    display: flex; gap: 8px;
+  }
+
+  .pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .pill svg { width: 14px; height: 14px; }
+
+  /* ─── VERSION CARD ─── */
+  .version-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s 0.1s ease both;
+    overflow: hidden;
+  }
+
+  .version-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(79,142,247,0.6), transparent);
+  }
+
+  .version-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .version-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, rgba(79,142,247,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .version-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .update-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.25s;
+    box-shadow: 0 8px 24px rgba(79,142,247,0.3);
+    margin-bottom: 16px;
+  }
+  .update-btn:active { transform: scale(0.97); }
+  .update-btn.done {
+    background: linear-gradient(135deg, #00d4aa, #00b894);
+    box-shadow: 0 8px 24px rgba(0,212,170,0.3);
+  }
+
+  .users-bar-wrap {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .users-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .users-bar-label span:last-child {
+    color: var(--accent3);
+    font-weight: 500;
+  }
+
+  .bar-track {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 99px;
+    transition: width 1.2s cubic-bezier(0.23,1,0.32,1) 0.5s;
+  }
+
+  /* ─── WHATS NEW ─── */
+  .section-head {
+    display: flex; align-items: center; gap: 12px;
+    margin: 24px 0 14px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border));
+  }
+  .section-line:first-child {
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .changes {
+    display: flex; flex-direction: column; gap: 10px;
+    animation: fadeUp 0.6s 0.25s ease both;
+  }
+
+  .change-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .change-item:active { border-color: rgba(79,142,247,0.3); }
+
+  .change-icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .ci-blue   { background: rgba(79,142,247,0.12); }
+  .ci-purple { background: rgba(124,106,255,0.12); }
+  .ci-green  { background: rgba(0,212,170,0.12); }
+  .ci-amber  { background: rgba(255,179,0,0.12); }
+
+  .change-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    letter-spacing: -0.2px;
+  }
+
+  .change-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .change-tag {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .tag-new { background: rgba(0,212,170,0.12); color: var(--accent3); }
+  .tag-fix { background: rgba(255,179,0,0.12); color: #ffb300; }
+  .tag-perf { background: rgba(79,142,247,0.12); color: var(--accent); }
+
+  /* ─── LEGAL ─── */
+  .legal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    margin-top: 16px;
+    animation: fadeUp 0.6s 0.35s ease both;
+  }
+
+  .legal-links {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .legal-link {
+    text-align: center;
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .legal-link:active { background: var(--surface2); color: var(--text); }
+
+  .copyright {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted2);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .socials {
+    display: flex; justify-content: center; gap: 20px;
+  }
+
+  .social-btn {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .social-btn:active { transform: scale(0.9); border-color: var(--accent); color: var(--accent); }
+  .social-btn svg { width: 18px; height: 18px; }
+
+  /* ─── FAB ─── */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(15,22,41,0.95), rgba(21,29,53,0.95));
+    border: 1px solid rgba(79,142,247,0.2);
+    backdrop-filter: blur(20px);
+    padding: 16px 28px;
+    border-radius: 99px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    white-space: nowrap;
+  }
+  .fab:active { transform: translateX(-50%) scale(0.96); }
+
+  .fab-icon {
+    width: 22px; height: 22px;
+    color: var(--accent);
+  }
+
+  .fab-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  /* spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { animation: spin 0.8s linear infinite; display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <button class="back-btn" onclick="history.back()">←</button>
+  <h1>О приложении</h1>
+  <div style="width:40px"></div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="logo-wrap">
+      <div class="logo-glow"></div>
+      <div class="logo-ring">
+        <!-- Tooth SVG -->
+        <svg class="logo-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4f8ef7"/>
+              <stop offset="100%" stop-color="#7c6aff"/>
+            </linearGradient>
+          </defs>
+          <path d="M26 6C18 6 12 11 12 18c0 3.5 1.2 6.5 3 9.5L16 44c0 1 .8 2 2 2h4l2-12c.5-2 1-3 2-3s1.5 1 2 3l2 12h4c1.2 0 2-1 2-2l1-16.5c1.8-3 3-6 3-9.5C40 11 34 6 26 6z" fill="url(#tg)"/>
+          <ellipse cx="26" cy="17" rx="5" ry="4" fill="rgba(255,255,255,0.12)"/>
+        </svg>
+      </div>
+      <div class="pro-chip">PRO</div>
+    </div>
+
+    <div class="app-name">DentalJob</div>
+    <div class="app-sub">Работа твоей мечты в стоматологии</div>
+
+    <div class="platform-pills">
+      <div class="pill">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        iOS
+      </div>
+      <div class="pill">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.341l1.052-1.821a.5.5 0 00-.866-.5l-1.066 1.845A9.006 9.006 0 0012 14c-1.728 0-3.344.487-4.643 1.341L6.29 13.02a.5.5 0 00-.866.5l1.052 1.821A8.995 8.995 0 003 22h18a8.995 8.995 0 00-3.477-6.659zM8 19a1 1 0 110-2 1 1 0 010 2zm8 0a1 1 0 110-2 1 1 0 010 2z"/><path d="M15.315 4.315l1.042-1.804a.5.5 0 10-.866-.5L14.418 3.9A8.99 8.99 0 009.582 3.9L8.51 2.011a.5.5 0 10-.866.5L8.685 4.315A8.982 8.982 0 003 12h18a8.982 8.982 0 00-5.685-7.685z"/></svg>
+        Android
+      </div>
+    </div>
+  </section>
+
+  <!-- VERSION CARD -->
+  <div class="version-card">
+    <div class="version-label">Текущая версия</div>
+    <div class="version-number">2.4.1</div>
+    <div class="version-meta">Сборка&nbsp;241 &nbsp;·&nbsp; 25 февраля 2026</div>
+
+    <button class="update-btn" id="updateBtn" onclick="checkUpdate()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+      </svg>
+      Проверить обновления
+    </button>
+
+    <div class="users-bar-wrap">
+      <div class="users-bar-label">
+        <span>87% пользователей обновились</span>
+        <span>Актуально</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATS NEW -->
+  <div class="section-head">
+    <div class="section-line"></div>
+    <div class="section-title">Что нового в 2.4.1</div>
+    <div class="section-line" style="background:linear-gradient(90deg, transparent, var(--border))"></div>
+  </div>
+
+  <div class="changes">
+    <div class="change-item">
+      <div class="change-icon ci-blue">⚡</div>
+      <div>
+        <div class="change-title">Ускоренный поиск ×3</div>
+        <div class="change-desc">Новый алгоритм подбора вакансий на базе ИИ — результаты мгновенно.</div>
+        <span class="change-tag tag-perf">PERFORMANCE</span>
+      </div>
+    </div>
+
+    <div class="change-item">
+      <div class="change-icon ci-purple">💬</div>
+      <div>
+        <div class="change-title">Видео-сообщения в чате</div>
+        <div class="change-desc">До 60 секунд с автоматическими субтитрами и тихим просмотром.</div>
+        <span class="change-tag tag-new">NEW</span>
+      </div>
+    </div>
+
+    <div class="change-item">
+      <div class="change-icon ci-green">🎯</div>
+      <div>
+        <div class="change-title">Фильтр «чистыми на руки»</div>
+        <div class="change-desc">Фильтрация зарплат с учётом бонусов и дополнительных выплат.</div>
+        <span class="change-tag tag-new">NEW</span>
+      </div>
+    </div>
+
+    <div class="change-item">
+      <div class="change-icon ci-amber">🛠</div>
+      <div>
+        <div class="change-title">Исправления и стабильность</div>
+        <div class="change-desc">Устранено 14 багов, улучшена работа уведомлений и офлайн-режима.</div>
+        <span class="change-tag tag-fix">FIX</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGAL -->
+  <div class="legal-card">
+    <div class="legal-links">
+      <a href="#" class="legal-link">Конфиденциальность</a>
+      <a href="#" class="legal-link">Условия использования</a>
+    </div>
+
+    <div class="copyright">
+      © 2025–2026 DentalJob<br>
+      Все права защищены.<br>
+      <span style="opacity:0.5">Сделано с ❤️ для стоматологов России и СНГ</span>
+    </div>
+
+    <div class="socials">
+      <!-- Telegram -->
+      <div class="social-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      </div>
+      <!-- VK -->
+      <div class="social-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.391 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1.01-1.49-.9-1.744 0 0 .39-.153.78-.79.78-1.198 0-2.52-.71-3.456-2.034-1.42-1.99-1.8-3.476-1.8-3.783 0-.154.077-.298.386-.298h1.744c.286 0 .396.13.508.44.56 1.614 1.5 3.025 1.886 3.025.144 0 .21-.065.21-.42V10.77c-.043-.735-.43-.8-.43-1.063 0-.155.13-.31.34-.31h2.742c.23 0 .31.123.31.386v2.47c0 .23.1.31.165.31.144 0 .265-.08.53-.35 1.623-1.824 2.78-4.634 2.78-4.634.077-.155.23-.3.515-.3h1.744c.52 0 .635.267.52.62-.22.982-2.352 4.008-2.352 4.008-.185.297-.25.43 0 .76.186.25.79.77 1.194 1.234.742.85 1.31 1.568 1.463 2.06.153.49-.11.737-.6.737z"/></svg>
+      </div>
+      <!-- Instagram -->
+      <div class="social-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FAB -->
+<button class="fab" onclick="shareApp()">
+  <svg class="fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="18" cy="5" r="3"></circle>
+    <circle cx="6" cy="12" r="3"></circle>
+    <circle cx="18" cy="19" r="3"></circle>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+  </svg>
+  <span class="fab-text">Поделиться</span>
+</button>
+
+<script>
+  // Animate bar on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('barFill').style.width = '87%';
+    }, 300);
+  });
+
+  function checkUpdate() {
+    const btn = document.getElementById('updateBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner">↻</span>&nbsp;&nbsp;Проверяем...`;
+
+    setTimeout(() => {
+      btn.classList.add('done');
+      btn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        Вы на последней версии
+      `;
+    }, 1800);
+  }
+
+  function shareApp() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'DentalJob',
+        text: 'Лучшее приложение для поиска стоматологических вакансий',
+        url: 'https://dentaljob.app/download'
+      });
+    } else {
+      const fab = document.querySelector('.fab');
+      const orig = fab.innerHTML;
+      fab.innerHTML = `<svg class="fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="fab-text">Ссылка скопирована!</span>`;
+      setTimeout(() => fab.innerHTML = orig, 2000);
+    }
+  }
+</script>
+</body>
+</html>

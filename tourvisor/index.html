@@ -1,104 +1,103 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tourvisor App — Структура интерфейса</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Структура интерфейса Tourvisor App</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
-      color: #1a2a44;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fa;
+      color: #2c3e50;
       margin: 0;
       padding: 40px 20px;
       line-height: 1.6;
     }
     .container {
-      max-width: 1100px;
+      max-width: 1000px;
       margin: 0 auto;
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       overflow: hidden;
     }
     header {
-      background: #3b82f6;
+      background: #2c5282;
       color: white;
-      padding: 40px 50px 30px;
+      padding: 50px 40px 35px;
       text-align: center;
     }
     header h1 {
       margin: 0;
-      font-size: 2.6rem;
-      font-weight: 700;
+      font-size: 2.4rem;
+      font-weight: bold;
     }
     header p {
-      margin: 12px 0 0;
-      font-size: 1.2rem;
-      opacity: 0.95;
+      margin: 10px 0 0;
+      font-size: 1.15rem;
     }
     .content {
-      padding: 40px 50px;
+      padding: 40px;
     }
     .section {
-      margin-bottom: 50px;
+      margin-bottom: 45px;
     }
     .section h2 {
-      color: #2563eb;
-      font-size: 1.9rem;
-      margin: 0 0 20px;
-      border-left: 5px solid #3b82f6;
-      padding-left: 15px;
+      color: #2c5282;
+      font-size: 1.8rem;
+      margin: 0 0 18px;
+      padding-left: 12px;
+      border-left: 4px solid #3b82f6;
     }
     .subsection {
-      margin: 24px 0;
-      padding-left: 28px;
-      border-left: 2px dashed #a5b4fc;
+      margin: 20px 0;
+      padding-left: 24px;
+      border-left: 2px solid #cbd5e0;
     }
     .item {
-      margin: 12px 0;
+      margin: 10px 0;
       font-size: 1.05rem;
     }
     .item strong {
-      color: #1e40af;
+      color: #1a365d;
     }
     .nav-bar {
-      background: #eff6ff;
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 40px;
+      background: #edf2f7;
+      padding: 25px;
+      margin: 30px 0 0;
       text-align: center;
+      border-radius: 8px;
     }
     .nav-bar h3 {
-      margin: 0 0 16px;
-      color: #1e40af;
-      font-size: 1.4rem;
+      margin: 0 0 15px;
+      color: #2c5282;
+      font-size: 1.3rem;
     }
     .nav-items {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 16px;
     }
     .nav-item {
       background: white;
-      padding: 12px 24px;
-      border-radius: 50px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      padding: 10px 20px;
+      border-radius: 999px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       font-weight: 600;
-      color: #2563eb;
+      color: #2c5282;
     }
     footer {
       text-align: center;
-      padding: 30px;
-      color: #64748b;
-      font-size: 0.95rem;
+      padding: 25px;
+      color: #718096;
+      font-size: 0.9rem;
       border-top: 1px solid #e2e8f0;
     }
     @media (max-width: 768px) {
-      .content { padding: 30px 25px; }
-      header { padding: 30px 25px 20px; }
-      .section h2 { font-size: 1.7rem; }
+      .content { padding: 25px; }
+      header { padding: 35px 25px 25px; }
+      .section h2 { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -107,35 +106,35 @@
 <div class="container">
   <header>
     <h1>Tourvisor App</h1>
-    <p>Структура интерфейса и навигации мобильного приложения</p>
+    <p>Структура экранов и навигации мобильного приложения</p>
   </header>
 
   <div class="content">
 
     <div class="section">
-      <h2>1. Главный экран (Home / Поиск) — точка входа</h2>
+      <h2>1. Главный экран (Поиск)</h2>
       <div class="subsection">
         <div class="item"><strong>Верхняя панель</strong>
           <div class="subsection">
-            <div class="item">Логотип + поисковая строка (быстрый переход)</div>
-            <div class="item">Кнопка профиля / авторизации</div>
-            <div class="item">Переключатель режимов: Турист / Турагент (после логина)</div>
+            <div class="item">Логотип и строка быстрого поиска</div>
+            <div class="item">Кнопка профиля и входа</div>
+            <div class="item">Переключатель Турист / Турагент</div>
           </div>
         </div>
-        <div class="item"><strong>Центральная поисковая форма</strong> (основной элемент)
+        <div class="item"><strong>Поисковая форма</strong>
           <div class="subsection">
-            <div class="item">Город вылета (список + аэропорты)</div>
-            <div class="item">Направление (страна → курорт → город + поиск по карте)</div>
-            <div class="item">Даты вылета (интерактивный календарь с мин. ценами и расписанием)</div>
-            <div class="item">Длительность (2–28 ночей)</div>
-            <div class="item">Состав туристов (взрослые + дети с возрастами)</div>
-            <div class="item"><strong style="color:#dc2626">Кнопка «Найти»</strong> (большая, яркая)</div>
+            <div class="item">Город вылета</div>
+            <div class="item">Направление (страна, курорт, город, карта)</div>
+            <div class="item">Даты вылета (календарь с ценами)</div>
+            <div class="item">Количество ночей</div>
+            <div class="item">Состав туристов</div>
+            <div class="item"><strong>Кнопка «Найти»</strong></div>
           </div>
         </div>
-        <div class="item"><strong>Быстрые разделы / табы</strong>
+        <div class="item"><strong>Быстрые вкладки</strong>
           <div class="subsection">
-            <div class="item">Туры (с перелётом)</div>
-            <div class="item">Отели (только размещение)</div>
+            <div class="item">Туры с перелётом</div>
+            <div class="item">Только отели</div>
             <div class="item">Горящие туры</div>
             <div class="item">Минимальные цены</div>
           </div>
@@ -144,87 +143,87 @@
     </div>
 
     <div class="section">
-      <h2>2. Экран результатов поиска (Results)</h2>
+      <h2>2. Результаты поиска</h2>
       <div class="subsection">
-        <div class="item"><strong>Верх</strong>: количество результатов + сортировка (цена, рейтинг, популярность)</div>
-        <div class="item"><strong>Фильтры</strong> (выезжающая панель или чипсы)
+        <div class="item">Количество предложений и сортировка</div>
+        <div class="item"><strong>Фильтры</strong>
           <div class="subsection">
-            <div class="item"><strong>Базовые</strong>: цена, звёзды, питание, пляж, расстояние до моря</div>
-            <div class="item"><strong>Расширенные</strong> (только для агентов): кол-во комнат/спален, площадь номера, ключевые слова (swim-up, джакузи…), авиакомпании</div>
+            <div class="item">Цена, звёзды, питание, пляж, расстояние до моря</div>
+            <div class="item">Для агентов: комнаты, площадь, ключевые слова, авиакомпании</div>
           </div>
         </div>
-        <div class="item"><strong>Список карточек предложений</strong>
+        <div class="item"><strong>Карточки туров</strong>
           <div class="subsection">
-            <div class="item">Фото отеля + галерея</div>
-            <div class="item">Название отеля + рейтинг + питание</div>
-            <div class="item">Цена за человека / за номер + % скидки (last-minute)</div>
-            <div class="item">Оператор / поставщик</div>
-            <div class="item">Кнопки: «Подробнее», «В подборку», «Сравнить»</div>
+            <div class="item">Фото и галерея</div>
+            <div class="item">Название отеля, рейтинг, питание</div>
+            <div class="item">Цена и скидка</div>
+            <div class="item">Туроператор</div>
+            <div class="item">Кнопки: Подробнее, В подборку, Сравнить</div>
           </div>
         </div>
-        <div class="item">Возможность сравнения нескольких туров</div>
+        <div class="item">Сравнение нескольких вариантов</div>
       </div>
     </div>
 
     <div class="section">
-      <h2>3. Экран детальной карточки предложения (Detail)</h2>
+      <h2>3. Карточка предложения</h2>
       <div class="subsection">
-        <div class="item">Галерея фото отеля и номеров</div>
-        <div class="item">Полное описание + встроенные характеристики номера</div>
-        <div class="item">Блок сравнения цен (таблица от разных операторов и сервисов)</div>
-        <div class="item">Дополнительная информация (рейтинги, отзывы, погода, карта)</div>
-        <div class="item"><strong>Блок действий</strong>:
+        <div class="item">Галерея фотографий</div>
+        <div class="item">Описание отеля и номера</div>
+        <div class="item">Сравнение цен от разных операторов</div>
+        <div class="item">Рейтинги, отзывы, погода, карта</div>
+        <div class="item"><strong>Действия</strong>:
           <div class="subsection">
-            <div class="item">«Забронировать онлайн» (переход к партнёру)</div>
-            <div class="item">«Отправить заявку в агентство»</div>
-            <div class="item">«Где купить» → Карта партнёров (2157+ офисов)</div>
-            <div class="item">«Добавить в коллекцию»</div>
-            <div class="item">«Поделиться» (мессенджеры / соцсети)</div>
+            <div class="item">Забронировать онлайн</div>
+            <div class="item">Отправить заявку агенту</div>
+            <div class="item">Где купить (карта офисов)</div>
+            <div class="item">Добавить в коллекцию</div>
+            <div class="item">Поделиться</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2>4. Личный кабинет / Профиль (Profile)</h2>
+      <h2>4. Профиль</h2>
       <div class="subsection">
-        <div class="item"><strong>Общие функции</strong> (для всех)
+        <div class="item"><strong>Для всех пользователей</strong>
           <div class="subsection">
-            <div class="item">Мои коллекции / подборки (создание, редактирование, шаринг)</div>
+            <div class="item">Коллекции и подборки</div>
             <div class="item">Избранное</div>
             <div class="item">История поисков</div>
-            <div class="item">Настройки (уведомления, валюта, язык)</div>
+            <div class="item">Настройки</div>
           </div>
         </div>
-        <div class="item"><strong>Профессиональные функции</strong> (только турагенты)
+        <div class="item"><strong>Для турагентов</strong>
           <div class="subsection">
-            <div class="item">Создание брендированных подборок (логотип, цвета)</div>
-            <div class="item">Фид горящих туров (реал-тайм last-minute)</div>
-            <div class="item">Подписки на алерты (Telegram-бот)</div>
-            <div class="item">Генератор репостов (картинка + текст за 2 клика)</div>
-            <div class="item">Lead-менеджер (работа с заявками)</div>
+            <div class="item">Брендированные подборки</div>
+            <div class="item">Горящие туры в реальном времени</div>
+            <div class="item">Уведомления и алерты</div>
+            <div class="item">Генератор постов</div>
+            <div class="item">Управление заявками</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2>5. Дополнительные экраны / разделы</h2>
+      <h2>5. Дополнительные разделы</h2>
       <div class="subsection">
-        <div class="item">Календарь туров (цены по датам из любого города)</div>
-        <div class="item">Карта «Где купить» (все партнёры с адресами)</div>
-        <div class="item">Поддержка (чат / телефон / email)</div>
-        <div class="item">О приложении / Политика конфиденциальности</div>
+        <div class="item">Календарь цен</div>
+        <div class="item">Карта партнёров</div>
+        <div class="item">Поддержка</div>
+        <div class="item">О приложении</div>
       </div>
     </div>
 
     <div class="nav-bar">
-      <h3>Нижняя навигационная панель (Bottom Bar)</h3>
+      <h3>Нижняя панель навигации</h3>
       <div class="nav-items">
-        <div class="nav-item">Поиск (домой)</div>
-        <div class="nav-item">Результаты / Горящие</div>
+        <div class="nav-item">Поиск</div>
+        <div class="nav-item">Горящие / Результаты</div>
         <div class="nav-item">Коллекции</div>
-        <div class="nav-item">Карта / Календарь</div>
+        <div class="nav-item">Календарь / Карта</div>
         <div class="nav-item">Профиль</div>
       </div>
     </div>
@@ -232,7 +231,7 @@
   </div>
 
   <footer>
-    Структура подготовлена на основе анализа приложения Tourvisor • Февраль 2026
+    Структура интерфейса Tourvisor App — февраль 2026
   </footer>
 </div>
 

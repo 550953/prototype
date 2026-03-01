@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShikinAds</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f2f7;
+    --surface: #ffffff;
+    --surface2: #f5f7fc;
+    --border: #e2e7f0;
+    --border2: #d0d7e6;
+    --accent: #005bff;
+    --accent2: #0040cc;
+    --green: #00b865;
+    --red: #e8274b;
+    --orange: #f07800;
+    --text: #0f1623;
+    --muted: #a0abbe;
+    --muted2: #6b7a90;
+    --gold: #d4a000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 1px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--accent) 40%, transparent);
+    opacity: 0.15;
+  }
+
+  .logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-text {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo-text span {
+    color: var(--accent);
+  }
+
+  .logo-sub {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ROLE SWITCHER */
+  .role-switch {
+    margin: 16px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .role-btn {
+    flex: 1;
+    padding: 7px 4px;
+    border: none;
+    background: transparent;
+    color: var(--muted2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .role-btn.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .role-btn.owner.active { background: var(--gold); color: #000; }
+
+  /* NAV */
+  .nav-section {
+    padding: 8px 12px 0;
+  }
+
+  .nav-section-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--muted2);
+    font-size: 12px;
+    margin-bottom: 1px;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .nav-item.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+
+  .nav-item.active .nav-icon {
+    color: var(--accent);
+  }
+
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .nav-badge.green { background: var(--green); color: #000; }
+  .nav-badge.orange { background: var(--orange); }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+
+  .user-avatar {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    font-family: 'Unbounded', sans-serif;
+  }
+
+  .user-name { font-size: 11px; font-weight: 500; }
+  .user-role { font-size: 9px; color: var(--muted2); margin-top: 1px; }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .page-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn.primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+  .btn.danger { border-color: var(--red); color: var(--red); }
+  .btn.danger:hover { background: var(--red); color: #fff; }
+
+  .btn.success { border-color: var(--green); color: var(--green); }
+  .btn.success:hover { background: var(--green); color: #000; }
+
+  /* CONTENT */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .stat-card.blue::before { background: var(--accent); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.orange::before { background: var(--orange); }
+  .stat-card.gold::before { background: var(--gold); }
+
+  .stat-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 8px; }
+  .stat-value { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 700; }
+  .stat-sub { font-size: 10px; color: var(--muted2); margin-top: 4px; }
+
+  .stat-icon {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 20px;
+    opacity: 0.15;
+  }
+
+  /* TABLE */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .table-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-title { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .table-title .icon { opacity: 0.6; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  td {
+    padding: 12px 18px;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted2);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); color: var(--text); }
+
+  .td-name { color: var(--text); font-weight: 500; }
+  .td-id { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--muted); }
+
+  .status-dot {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot.active { background: var(--green); box-shadow: 0 0 5px rgba(0,184,101,0.4); }
+  .dot.inactive { background: var(--muted); }
+  .dot.paused { background: var(--orange); box-shadow: 0 0 5px rgba(240,120,0,0.3); }
+
+  /* TOGGLE */
+  .toggle {
+    position: relative;
+    width: 36px; height: 20px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .toggle input { display: none; }
+
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--muted);
+    border-radius: 20px;
+    transition: 0.2s;
+  }
+
+  .toggle input:checked + .toggle-track { background: var(--green); }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+
+  .toggle input:checked ~ .toggle-thumb { left: 19px; }
+
+  /* INVITE CARDS */
+  .invite-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .invite-option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .invite-option:hover { border-color: var(--accent); }
+  .invite-option.selected { border-color: var(--accent); background: rgba(0,91,255,0.08); }
+
+  .invite-days {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .invite-label { font-size: 10px; color: var(--muted2); margin-top: 4px; }
+
+  /* TIME SETTINGS */
+  .time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .time-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  .time-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted2); margin-bottom: 10px; }
+
+  .time-display {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  .time-display.off { color: var(--red); }
+  .time-display.on { color: var(--green); }
+
+  .time-sub { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* DAY RULE BADGE */
+  .day-rule {
+    display: inline-flex; align-items: center;
+    font-size: 10px; padding: 3px 8px; border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .day-rule.odd { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.2); }
+  .day-rule.even { background: rgba(0,91,255,0.1); color: var(--accent); border: 1px solid rgba(0,91,255,0.2); }
+  .day-rule.all { background: rgba(0,217,126,0.1); color: var(--green); border: 1px solid rgba(0,217,126,0.2); }
+
+  /* INPUT */
+  .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+
+  input[type="text"], input[type="time"], select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    flex: 1;
+  }
+
+  input:focus, select:focus { border-color: var(--accent); }
+
+  /* ACTION BUTTONS INLINE */
+  .action-btns { display: flex; gap: 6px; }
+
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted2);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .icon-btn.red:hover { border-color: var(--red); color: var(--red); }
+  .icon-btn.green:hover { border-color: var(--green); color: var(--green); }
+
+  /* CAMPAIGN LIVE STATUS */
+  .campaign-row-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.5s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,184,101,0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(0,184,101,0); }
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* MODAL overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 24px;
+    width: 380px;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  .modal-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: var(--muted2);
+    cursor: pointer; font-size: 16px;
+  }
+
+  .invite-link {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 12px;
+    font-size: 10px;
+    color: var(--accent);
+    word-break: break-all;
+    margin-bottom: 10px;
+  }
+
+  .section-gap { height: 20px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-text">Shikin<span>Ads</span></div>
+    <div class="logo-sub">Ozon Campaign Manager</div>
+  </div>
+
+  <!-- ROLE SWITCHER -->
+  <div class="role-switch">
+    <button class="role-btn owner active" onclick="switchRole('owner')">👑 Владелец</button>
+    <button class="role-btn student" onclick="switchRole('student')">🎓 Ученик</button>
+  </div>
+
+  <!-- OWNER NAV -->
+  <div id="nav-owner" class="nav-section">
+    <div class="nav-section-label">Управление</div>
+    <div class="nav-item active" onclick="showPage('students')">
+      <span class="nav-icon">👥</span> Ученики
+      <span class="nav-badge orange">4</span>
+    </div>
+    <div class="nav-item" onclick="showPage('invites')">
+      <span class="nav-icon">✉️</span> Приглашения
+      <span class="nav-badge">2</span>
+    </div>
+    <div class="nav-section-label">Кабинеты</div>
+    <div class="nav-item" onclick="showPage('cabinets')">
+      <span class="nav-icon">🔑</span> Мои кабинеты
+      <span class="nav-badge green">3</span>
+    </div>
+    <div class="nav-section-label">Расписание</div>
+    <div class="nav-item" onclick="showPage('schedule-all')">
+      <span class="nav-icon">⚙️</span> Все кампании
+      <span class="nav-badge orange">8</span>
+    </div>
+  </div>
+
+  <!-- STUDENT NAV -->
+  <div id="nav-student" class="nav-section" style="display:none">
+    <div class="nav-section-label">Мои кабинеты</div>
+    <div class="nav-item active" onclick="showPage('my-cabinets')">
+      <span class="nav-icon">🔑</span> API ключи
+      <span class="nav-badge green">2</span>
+    </div>
+    <div class="nav-section-label">Кампании</div>
+    <div class="nav-item" onclick="showPage('my-schedule')">
+      <span class="nav-icon">⏰</span> Расписание
+    </div>
+    <div class="nav-item" onclick="showPage('campaign-status')">
+      <span class="nav-icon">📊</span> Статус
+      <span class="nav-badge green">LIVE</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar" id="avatar-letter">А</div>
+      <div>
+        <div class="user-name" id="user-display-name">Агентство Alpha</div>
+        <div class="user-role" id="user-display-role">👑 Владелец</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="page-title" id="page-title">Ученики</div>
+    <div class="topbar-actions">
+      <button class="btn" onclick="showModal('modal-invite')" id="btn-create-invite" style="display:none">
+        ✉️ Создать инвайт
+      </button>
+      <button class="btn primary" id="btn-add-cabinet" onclick="showModal('modal-add-cabinet')">
+        ➕ Добавить кабинет
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PAGE: STUDENTS (owner) -->
+    <div class="page active" id="page-students">
+      <div class="stats-grid">
+        <div class="stat-card gold"><div class="stat-icon">👥</div><div class="stat-label">Учеников</div><div class="stat-value">4</div><div class="stat-sub">активных</div></div>
+        <div class="stat-card green"><div class="stat-icon">🔑</div><div class="stat-label">Кабинетов</div><div class="stat-value">11</div><div class="stat-sub">всего в системе</div></div>
+        <div class="stat-card blue"><div class="stat-icon">📢</div><div class="stat-label">Кампаний</div><div class="stat-value">23</div><div class="stat-sub">под управлением</div></div>
+        <div class="stat-card orange"><div class="stat-icon">⏰</div><div class="stat-label">Расписаний</div><div class="stat-value">18</div><div class="stat-sub">активных</div></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">👥</span> Список учеников</div>
+          <button class="btn primary" onclick="showPage('invites'); showModal('modal-invite')">➕ Пригласить</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Имя</th><th>Email</th><th>Кабинеты</th><th>Кампаний</th><th>Доступ до</th><th>Статус</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-name">Иван Петров</td>
+              <td>ivan@example.com</td>
+              <td>3</td><td>7</td>
+              <td>01.06.2025</td>
+              <td><span class="status-dot"><span class="dot active"></span> Активен</span></td>
+              <td><div class="action-btns"><button class="icon-btn red" title="Отозвать">🚫</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-name">Анна Смирнова</td>
+              <td>anna@example.com</td>
+              <td>2</td><td>5</td>
+              <td>15.04.2025</td>
+              <td><span class="status-dot"><span class="dot active"></span> Активна</span></td>
+              <td><div class="action-btns"><button class="icon-btn red" title="Отозвать">🚫</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-name">Дмитрий Козлов</td>
+              <td>dmitry@example.com</td>
+              <td>4</td><td>9</td>
+              <td>30.03.2025</td>
+              <td><span class="status-dot"><span class="dot paused"></span> Истекает</span></td>
+              <td><div class="action-btns"><button class="icon-btn red" title="Отозвать">🚫</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-name">Мария Новикова</td>
+              <td>maria@example.com</td>
+              <td>2</td><td>2</td>
+              <td>20.05.2025</td>
+              <td><span class="status-dot"><span class="dot active"></span> Активна</span></td>
+              <td><div class="action-btns"><button class="icon-btn red" title="Отозвать">🚫</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: INVITES (owner) -->
+    <div class="page" id="page-invites">
+      <div class="invite-grid">
+        <div class="invite-option selected" onclick="selectDuration(this, 7)">
+          <div class="invite-days">7</div>
+          <div class="invite-label">дней</div>
+        </div>
+        <div class="invite-option" onclick="selectDuration(this, 30)">
+          <div class="invite-days">30</div>
+          <div class="invite-label">дней</div>
+        </div>
+        <div class="invite-option" onclick="selectDuration(this, 90)">
+          <div class="invite-days">90</div>
+          <div class="invite-label">дней</div>
+        </div>
+      </div>
+
+      <button class="btn primary" style="margin-bottom: 20px" onclick="generateInvite()">✉️ Сгенерировать инвайт</button>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">✉️</span> Активные приглашения</div>
+        </div>
+        <table>
+          <thead><tr><th>Ссылка</th><th>Срок</th><th>Создан</th><th>Статус</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="td-id">ozonads.app/join/abc123xyz</td>
+              <td>30 дней</td>
+              <td>14.03.2025</td>
+              <td><span class="status-dot"><span class="dot active"></span> Активен</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn" title="Копировать">📋</button>
+                <button class="icon-btn red" title="Отозвать">🗑</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td class="td-id">ozonads.app/join/xyz789abc</td>
+              <td>7 дней</td>
+              <td>12.03.2025</td>
+              <td><span class="status-dot"><span class="dot paused"></span> Истекает</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn" title="Копировать">📋</button>
+                <button class="icon-btn red" title="Отозвать">🗑</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: CABINETS (owner) -->
+    <div class="page" id="page-cabinets">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">🔑</span> Мои кабинеты Ozon</div>
+          <button class="btn primary" onclick="showModal('modal-add-cabinet')">➕ Добавить</button>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Название</th><th>Client ID</th><th>PK-1</th><th>PK-2</th><th>Статус API</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="td-name">Каб 1 ТОП-8</td>
+              <td class="td-id">092560..77290</td>
+              <td class="td-id">23325528</td>
+              <td class="td-id">23332528</td>
+              <td><span class="status-dot"><span class="dot active"></span> OK</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn" title="Проверить токен">🔄</button>
+                <button class="icon-btn red" title="Удалить">🗑</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td class="td-name">Каб 1 Просто 8</td>
+              <td class="td-id">925555..77199</td>
+              <td class="td-id">23323520</td>
+              <td class="td-id">—</td>
+              <td><span class="status-dot"><span class="dot active"></span> OK</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn" title="Проверить токен">🔄</button>
+                <button class="icon-btn red" title="Удалить">🗑</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td class="td-name">Каб 2 Просто 8</td>
+              <td class="td-id">893631..76200</td>
+              <td class="td-id">23302340</td>
+              <td class="td-id">23302411</td>
+              <td><span class="status-dot"><span class="dot paused"></span> Ошибка</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn" title="Проверить токен">🔄</button>
+                <button class="icon-btn red" title="Удалить">🗑</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: SCHEDULE ALL (owner) -->
+    <div class="page" id="page-schedule-all">
+      <div class="stats-grid" style="grid-template-columns: repeat(3,1fr)">
+        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-label">Активных</div><div class="stat-value">14</div></div>
+        <div class="stat-card orange"><div class="stat-icon">⛔</div><div class="stat-label">Выключено</div><div class="stat-value">6</div></div>
+        <div class="stat-card blue"><div class="stat-icon">⏰</div><div class="stat-label">По расписанию</div><div class="stat-value">18</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">⚙️</span> Все кампании</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn danger" onclick="">⛔ Всё выкл</button>
+            <button class="btn success" onclick="">✅ Всё вкл</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Ученик</th><th>Кабинет</th><th>ID кампании</th><th>Выкл</th><th>Вкл</th><th>Дни</th><th>Статус</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Иван П.</td>
+              <td class="td-name">Каб 1 ТОП-8</td>
+              <td class="td-id">23325528</td>
+              <td style="color:var(--red)">12:10</td>
+              <td style="color:var(--green)">16:10</td>
+              <td><span class="day-rule odd">нечёт</span></td>
+              <td><span class="status-dot"><span class="pulse"></span> Активна</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn red">⛔</button>
+                <button class="icon-btn green">▶️</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Анна С.</td>
+              <td class="td-name">Каб 1 Просто 8</td>
+              <td class="td-id">23323520</td>
+              <td style="color:var(--red)">12:10</td>
+              <td style="color:var(--green)">16:10</td>
+              <td><span class="day-rule even">чёт</span></td>
+              <td><span class="status-dot"><span class="dot inactive"></span> Выключена</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn red">⛔</button>
+                <button class="icon-btn green">▶️</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Дмитрий К.</td>
+              <td class="td-name">Каб 2 Просто 8</td>
+              <td class="td-id">23302340</td>
+              <td style="color:var(--red)">10:00</td>
+              <td style="color:var(--green)">18:00</td>
+              <td><span class="day-rule all">каждый</span></td>
+              <td><span class="status-dot"><span class="pulse"></span> Активна</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn red">⛔</button>
+                <button class="icon-btn green">▶️</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: MY CABINETS (student) -->
+    <div class="page" id="page-my-cabinets">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">🔑</span> Мои API ключи</div>
+          <button class="btn primary" onclick="showModal('modal-add-cabinet')">➕ Добавить кабинет</button>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Название</th><th>Client ID</th><th>PK-1</th><th>PK-2</th><th>Статус</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="td-name">Мой кабинет Ozon</td>
+              <td class="td-id">123456..78900</td>
+              <td class="td-id">44451234</td>
+              <td class="td-id">—</td>
+              <td><span class="status-dot"><span class="dot active"></span> OK</span></td>
+              <td><div class="action-btns">
+                <button class="icon-btn red">🗑</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGE: MY SCHEDULE (student) -->
+    <div class="page" id="page-my-schedule">
+      <div class="time-grid">
+        <div class="time-card">
+          <div class="time-label">⛔ Время выключения</div>
+          <div class="time-display off">12:10</div>
+          <div class="time-sub">Кампании остановятся</div>
+          <div class="section-gap"></div>
+          <input type="time" value="12:10">
+        </div>
+        <div class="time-card">
+          <div class="time-label">✅ Время включения</div>
+          <div class="time-display on">16:10</div>
+          <div class="time-sub">Кампании запустятся</div>
+          <div class="section-gap"></div>
+          <input type="time" value="16:10">
+        </div>
+      </div>
+
+      <div class="table-card" style="margin-bottom:16px">
+        <div class="table-header"><div class="table-title">📅 Дни работы</div></div>
+        <div style="padding:16px;display:flex;gap:8px">
+          <button class="btn" onclick="toggleDayBtn(this)" style="border-color:var(--accent);color:var(--accent)">Нечётные</button>
+          <button class="btn">Чётные</button>
+          <button class="btn">Каждый день</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <button class="btn danger" onclick="">⛔ Выключить сейчас</button>
+        <button class="btn success" onclick="">▶️ Включить сейчас</button>
+        <button class="btn primary" onclick="">💾 Сохранить расписание</button>
+      </div>
+    </div>
+
+    <!-- PAGE: CAMPAIGN STATUS (student) -->
+    <div class="page" id="page-campaign-status">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-label">Активных</div><div class="stat-value">3</div></div>
+        <div class="stat-card orange"><div class="stat-icon">⛔</div><div class="stat-label">Выключено</div><div class="stat-value">2</div></div>
+        <div class="stat-card blue"><div class="stat-icon">⏰</div><div class="stat-label">Следующее вкл</div><div class="stat-value">16:10</div></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="icon">📊</span> Мои кампании</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn danger">⛔ Всё выкл</button>
+            <button class="btn success">▶️ Всё вкл</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>ID кампании</th><th>Кабинет</th><th>Выкл</th><th>Вкл</th><th>Дни</th><th>Статус</th><th>Действие</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="td-id">44451234</td>
+              <td class="td-name">Мой кабинет Ozon</td>
+              <td style="color:var(--red)">12:10</td>
+              <td style="color:var(--green)">16:10</td>
+              <td><span class="day-rule odd">нечёт</span></td>
+              <td><span class="status-dot"><span class="pulse"></span> Активна</span></td>
+              <td><div class="campaign-row-actions">
+                <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+              </div></td>
+            </tr>
+            <tr>
+              <td class="td-id">44459999</td>
+              <td class="td-name">Мой кабинет Ozon</td>
+              <td style="color:var(--red)">12:10</td>
+              <td style="color:var(--green)">16:10</td>
+              <td><span class="day-rule even">чёт</span></td>
+              <td><span class="status-dot"><span class="dot inactive"></span> Выключена</span></td>
+              <td><div class="campaign-row-actions">
+                <label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL: ADD CABINET -->
+<div class="modal-overlay" id="modal-add-cabinet">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-add-cabinet')">✕</button>
+    <div class="modal-title">➕ Добавить кабинет</div>
+    <div class="input-row"><input type="text" placeholder="Название кабинета"></div>
+    <div class="input-row"><input type="text" placeholder="Client ID"></div>
+    <div class="input-row"><input type="text" placeholder="Client Secret"></div>
+    <div class="input-row"><input type="text" placeholder="PK-1 ID (необязательно)"></div>
+    <div class="input-row"><input type="text" placeholder="PK-2 ID (необязательно)"></div>
+    <div class="input-row">
+      <select>
+        <option>UTC+3 (Москва)</option>
+        <option>UTC+5 (Екатеринбург)</option>
+        <option>UTC+7 (Новосибирск)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" onclick="closeModal('modal-add-cabinet')">Отмена</button>
+      <button class="btn primary" style="flex:1">🔑 Проверить и сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: INVITE -->
+<div class="modal-overlay" id="modal-invite">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-invite')">✕</button>
+    <div class="modal-title">✉️ Новое приглашение</div>
+    <div style="font-size:11px;color:var(--muted2);margin-bottom:16px">Ученик получит доступ на выбранный срок</div>
+    <div class="invite-grid" style="margin-bottom:16px">
+      <div class="invite-option selected" onclick="selectDurationModal(this,7)"><div class="invite-days">7</div><div class="invite-label">дней</div></div>
+      <div class="invite-option" onclick="selectDurationModal(this,30)"><div class="invite-days">30</div><div class="invite-label">дней</div></div>
+      <div class="invite-option" onclick="selectDurationModal(this,90)"><div class="invite-days">90</div><div class="invite-label">дней</div></div>
+    </div>
+    <div id="invite-result" style="display:none">
+      <div class="invite-link" id="invite-link-text">ozonads.app/join/генерация...</div>
+      <button class="btn" style="width:100%" onclick="copyInvite()">📋 Скопировать ссылку</button>
+    </div>
+    <div id="invite-generate-btn">
+      <button class="btn primary" style="width:100%" onclick="generateInviteModal()">Создать ссылку</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentRole = 'owner';
+  let selectedDuration = 7;
+
+  const pageConfig = {
+    'students':        { title: 'Ученики',             showAdd: false, showInvite: true  },
+    'invites':         { title: 'Приглашения',          showAdd: false, showInvite: true  },
+    'cabinets':        { title: 'Мои кабинеты',         showAdd: true,  showInvite: false },
+    'schedule-all':    { title: 'Все кампании',          showAdd: false, showInvite: false },
+    'my-cabinets':     { title: 'Мои API ключи',         showAdd: true,  showInvite: false },
+    'my-schedule':     { title: 'Расписание кампаний',   showAdd: false, showInvite: false },
+    'campaign-status': { title: 'Статус кампаний',       showAdd: false, showInvite: false },
+  };
+
+  function switchRole(role) {
+    currentRole = role;
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.role-btn.' + role).classList.add('active');
+    document.getElementById('nav-owner').style.display = role === 'owner' ? '' : 'none';
+    document.getElementById('nav-student').style.display = role === 'student' ? '' : 'none';
+    document.getElementById('avatar-letter').textContent = role === 'owner' ? 'А' : 'И';
+    document.getElementById('user-display-name').textContent = role === 'owner' ? 'Агентство Alpha' : 'Иван Петров';
+    document.getElementById('user-display-role').textContent = role === 'owner' ? '👑 Владелец' : '🎓 Ученик';
+    showPage(role === 'owner' ? 'students' : 'my-cabinets');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const firstNav = document.querySelector('#nav-' + role + ' .nav-item');
+    if (firstNav) firstNav.classList.add('active');
+  }
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-' + id);
+    if (page) page.classList.add('active');
+
+    const cfg = pageConfig[id] || {};
+    document.getElementById('page-title').textContent = cfg.title || '';
+    document.getElementById('btn-add-cabinet').style.display = cfg.showAdd ? '' : 'none';
+    document.getElementById('btn-create-invite').style.display = cfg.showInvite ? '' : 'none';
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event && event.currentTarget && event.currentTarget.classList && event.currentTarget.classList.add('active');
+  }
+
+  function showModal(id) {
+    document.getElementById(id).classList.add('open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    if (id === 'modal-invite') {
+      document.getElementById('invite-result').style.display = 'none';
+      document.getElementById('invite-generate-btn').style.display = '';
+    }
+  }
+
+  function selectDuration(el, days) {
+    document.querySelectorAll('#page-invites .invite-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDuration = days;
+  }
+
+  function selectDurationModal(el, days) {
+    document.querySelectorAll('#modal-invite .invite-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDuration = days;
+  }
+
+  function generateInvite() {
+    showPage('invites');
+  }
+
+  function generateInviteModal() {
+    const token = Math.random().toString(36).substring(2, 12);
+    document.getElementById('invite-link-text').textContent = `ozonads.app/join/${token}`;
+    document.getElementById('invite-result').style.display = '';
+    document.getElementById('invite-generate-btn').style.display = 'none';
+  }
+
+  function copyInvite() {
+    const text = document.getElementById('invite-link-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('#modal-invite .btn');
+      if (btn) { btn.textContent = '✅ Скопировано!'; setTimeout(() => btn.textContent = '📋 Скопировать ссылку', 1500); }
+    });
+  }
+
+  function toggleDayBtn(el) {
+    // visual only
+  }
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>

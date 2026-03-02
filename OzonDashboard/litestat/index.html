@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MarketPulse — Аналитика OZON & WB</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vant/4.8.6/index.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #F4F6FB;
+  --surface:  #FFFFFF;
+  --surface2: #F9FAFD;
+  --border:   #E4E9F5;
+  --text:     #1A1D2E;
+  --muted:    #8892AA;
+  --muted2:   #B5BDD0;
+  --ozon:     #005BFF;
+  --wb:       #CB11AB;
+  --green:    #00C48C;
+  --red:      #FF4D6A;
+  --yellow:   #FFB800;
+  --teal:     #00BFCC;
+  --accent:   #5B6CF6;
+  --pink:     #EC4899;
+  --purple:   #8B5CF6;
+  --font:     'Onest', sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+  --r:        14px;
+  --rsm:      9px;
+  --shadow:   0 2px 14px rgba(91,108,246,.07);
+  --shadow-md:0 6px 28px rgba(91,108,246,.13);
+}
+html,body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+a { text-decoration: none; color: inherit; }
+
+/* ── SHELL ── */
+.shell { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 228px; background: var(--surface); border-right: 1.5px solid var(--border);
+  display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 200; transition: transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow: 4px 0 28px rgba(0,0,0,.04);
+}
+.sb-logo { padding: 22px 18px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1.5px solid var(--border); }
+.sb-icon { width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg,#5B6CF6,#8B5CF6); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #fff; flex-shrink: 0; }
+.sb-name { font-size: 18px; font-weight: 800; letter-spacing: -.6px; }
+.sb-name em { font-style: normal; color: var(--accent); }
+.sb-ver { font-size: 10px; color: var(--muted2); }
+.nav-sec { padding: 12px 10px 4px; }
+.nav-sec-label { font-size: 10px; font-weight: 700; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding: 0 8px; margin-bottom: 5px; }
+.nav-a {
+  display: flex; align-items: center; gap: 9px; padding: 9px 10px;
+  border-radius: var(--rsm); font-size: 13.5px; font-weight: 500;
+  color: var(--muted); transition: all .17s; margin-bottom: 2px; cursor: pointer; position: relative;
+}
+.nav-a:hover { background: var(--surface2); color: var(--text); }
+.nav-a.active { background: linear-gradient(135deg,#EEF0FF,#F4F0FF); color: var(--accent); font-weight: 700; }
+.nav-a.active::before { content:''; position:absolute; left:0; top:18%; height:64%; width:3px; background: linear-gradient(180deg,#5B6CF6,#8B5CF6); border-radius: 0 3px 3px 0; }
+.nav-ic { font-size: 15px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; border-radius: 20px; padding: 1px 7px; }
+.sb-mps { padding: 12px; border-top: 1.5px solid var(--border); }
+.sb-mp-label { font-size: 10px; font-weight: 700; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; padding: 0 4px; }
+.mp-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: var(--rsm); margin-bottom: 6px; cursor: pointer; }
+.mp-ozon { background: linear-gradient(135deg,#E8EEFF,#DCE4FF); }
+.mp-wb   { background: linear-gradient(135deg,#FCEEFF,#F5D8F8); }
+.mp-n { font-size: 13px; font-weight: 700; }
+.mp-ozon .mp-n { color: var(--ozon); }
+.mp-wb   .mp-n { color: var(--wb); }
+.mp-s { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); font-weight: 600; }
+.mp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+/* ── MAIN ── */
+.main { margin-left: 228px; flex: 1; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--surface); border-bottom: 1.5px solid var(--border);
+  padding: 0 26px; display: flex; align-items: center; height: 57px;
+  position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+}
+.burger { display: none; font-size: 22px; cursor: pointer; margin-right: 12px; }
+.top-tabs { display: flex; flex: 1; }
+.top-tab { padding: 0 16px; height: 57px; display: flex; align-items: center; font-size: 13.5px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2.5px solid transparent; transition: all .17s; white-space: nowrap; }
+.top-tab.active { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
+.top-right { display: flex; align-items: center; gap: 14px; }
+.top-api { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--green); background: #E6FBF4; border: 1px solid #ADE8CC; border-radius: 20px; padding: 4px 14px; cursor: pointer; }
+.top-bell { position: relative; cursor: pointer; font-size: 20px; }
+.top-bell-b { position: absolute; top: -4px; right: -6px; background: var(--accent); color: #fff; font-size: 9px; font-weight: 800; border-radius: 10px; padding: 1px 5px; }
+.top-org { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+/* ── PAGE ── */
+.page { padding: 24px 26px; }
+.pg-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.pg-title { font-size: 26px; font-weight: 900; letter-spacing: -.7px; }
+.pg-link { font-size: 13px; color: var(--accent); cursor: pointer; }
+
+/* ── TABS ROW ── */
+.tabs-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid var(--border); margin-bottom: 16px; }
+.pg-tabs { display: flex; }
+.pg-tab { padding: 8px 15px 11px; font-size: 13.5px; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: all .17s; white-space: nowrap; }
+.pg-tab.active { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
+.period-row { display: flex; gap: 4px; padding-bottom: 10px; }
+.pbtn { padding: 5px 13px; font-size: 12.5px; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all .17s; }
+.pbtn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pbtn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+/* ── SVODKA ── */
+.svodka-row { display: flex; gap: 6px; margin-bottom: 16px; }
+
+/* ── ALERT ── */
+.alert { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: var(--r); padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 12px; position: relative; animation: slideD .3s ease; }
+@keyframes slideD { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none} }
+.alert-icon { font-size: 18px; flex-shrink: 0; }
+.alert-body { flex: 1; }
+.alert-t { font-size: 13.5px; font-weight: 700; color: #92400E; }
+.alert-d { font-size: 12.5px; color: #B45309; margin-top: 3px; line-height: 1.5; }
+.alert-btn { flex-shrink:0; background:#fff; border:1.5px solid #FDE68A; border-radius:10px; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; color:#92400E; white-space:nowrap; font-family:var(--font); }
+.alert-x { position:absolute;top:10px;right:12px;font-size:16px;color:var(--muted2);cursor:pointer;padding:4px; }
+
+/* ── GRID ── */
+.g2   { display: grid; grid-template-columns: 1fr 1.65fr; gap: 16px; }
+.g2eq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g-stack { display: flex; flex-direction: column; gap: 16px; }
+.mt { margin-top: 16px; }
+
+/* ── CARD ── */
+.card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px 22px; box-shadow: var(--shadow); transition: box-shadow .2s; }
+.card:hover { box-shadow: var(--shadow-md); }
+.c-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.c-title { font-size: 14px; font-weight: 800; letter-spacing: -.2px; }
+.c-info { font-size: 12px; color: var(--muted); cursor: pointer; }
+
+/* ── BADGE ── */
+.badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.bg-g { background: #D1FAE5; color: #065F46; }
+.bg-r { background: #FEE2E2; color: #991B1B; }
+.bg-y { background: #FEF3C7; color: #92400E; }
+.bg-gray { background: #F1F3F9; color: var(--muted); }
+.badge-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.pl { font-size: 11.5px; color: var(--muted2); }
+
+/* ── METRICS PANEL ── */
+.mp-panel { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); }
+.mp-ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1.5px solid var(--border); }
+.mp-pt { font-size: 14px; font-weight: 800; }
+.score-wrap { display: flex; align-items: center; gap: 8px; }
+.score-bar { width: 60px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; background: var(--green); transition: width .6s ease; }
+.score-val { font-size: 13px; font-weight: 700; }
+
+.mrow { display: flex; align-items: center; padding: 7px 8px; border-radius: 8px; cursor: pointer; transition: background .14s; gap: 4px; }
+.mrow:hover { background: var(--surface2); }
+.mrow.sel { background: linear-gradient(90deg,#EEF0FF,#FFF0FB); border: 1.5px solid var(--border); }
+.mrow .circ {
+  width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all .14s;
+}
+.mrow .circ.on { border: none; }
+.mrow .circ .cx { font-size: 9px; color: #fff; font-weight: 700; }
+.mrow .mn { font-size: 13px; color: var(--muted); flex: 1; padding-left: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mrow .mi { font-size: 12px; color: var(--muted2); margin-right: 2px; }
+.mrow .mv { font-size: 12.5px; font-weight: 600; font-family: var(--mono); color: var(--text); white-space: nowrap; margin-right: 6px; }
+
+/* ── CHART ── */
+.chart-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px 22px; box-shadow: var(--shadow); }
+.chart-toggle { display: flex; gap: 4px; flex-wrap: wrap; }
+.ctbtn { padding: 4px 12px; font-size: 12px; font-weight: 600; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all .17s; }
+.ctbtn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chart-legend { display: flex; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+.cl-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.cl-line { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.chart-wrap { position: relative; }
+.chart-wrap svg { display: block; overflow: visible; }
+.ct-tooltip {
+  position: absolute; background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; font-size: 12px; pointer-events: none; box-shadow: var(--shadow-md);
+  min-width: 165px; opacity: 0; transition: opacity .14s; z-index: 10;
+}
+.ct-tooltip.vis { opacity: 1; }
+.tt-date { font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.tt-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+.tt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.tt-lbl { color: var(--muted); flex: 1; }
+.tt-val { font-weight: 700; font-family: var(--mono); }
+
+/* ── ABC ── */
+.abc-grid { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.abc-items { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.abc-item .ah { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.abc-item .an { font-size: 13px; font-weight: 700; }
+.abc-item .av { font-size: 12.5px; color: var(--muted); font-family: var(--mono); margin-top: 4px; }
+.abc-pct { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+/* ── DONUT ── */
+.donut-w { position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.donut-c { position: absolute; text-align: center; pointer-events: none; }
+.donut-cb { font-size: 12px; font-weight: 800; line-height: 1.1; }
+.donut-cs { font-size: 10px; color: var(--muted); }
+
+/* ── AD ── */
+.ad-stats { flex: 1; display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+.asv { font-size: 15px; font-weight: 800; font-family: var(--mono); }
+.asv.red { color: var(--red); }
+.asl { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.asb { margin-top: 6px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+
+/* ── WAREHOUSE ── */
+.wh-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1.5px solid var(--border); gap: 8px; }
+.wh-row:last-child { border-bottom: none; }
+.wh-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.wh-n { font-size: 12.5px; font-weight: 600; flex: 1; }
+.wh-p { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.wh-pct { font-size: 11.5px; font-weight: 700; color: var(--accent); background: #EEEEFF; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+
+/* ── CHANNEL ── */
+.ch-bar { height: 20px; border-radius: 8px; background: linear-gradient(90deg,var(--ozon),#3D8BFF); margin-top: 10px; overflow: hidden; }
+.ch-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.ch-logo { width: 24px; height: 16px; border-radius: 4px; background: #E53935; display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:800; }
+
+/* ── ANIMATIONS ── */
+.fade { animation: fadeA .32s ease; }
+@keyframes fadeA { from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none} }
+
+/* ── OVERLAY + BURGER ── */
+.overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;backdrop-filter:blur(2px); }
+.overlay.open { display:block; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:none;box-shadow:var(--shadow-md);}
+  .main{margin-left:0;}
+  .burger{display:block;}
+  .page{padding:14px;}
+  .g2,.g2eq{grid-template-columns:1fr;}
+  .ad-stats{grid-template-columns:repeat(2,1fr);}
+  .abc-items{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .topbar{padding:0 12px;}
+  .top-tab:not(.active){display:none;}
+  .top-api{display:none;}
+  .abc-grid{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="overlay" id="overlay" onclick="closeSB()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">MP</div>
+    <div><div class="sb-name">Market<em>Pulse</em></div><div class="sb-ver">v2.0 · beta</div></div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-label">Аналитика</div>
+    <div class="nav-a active"><span class="nav-ic">💹</span> Главная</div>
+    <div class="nav-a"><span class="nav-ic">📦</span> Товары</div>
+    <div class="nav-a"><span class="nav-ic">📢</span> Реклама <span class="nav-badge">3</span></div>
+    <div class="nav-a"><span class="nav-ic">🛒</span> Заказы</div>
+    <div class="nav-a"><span class="nav-ic">🏭</span> Склад</div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-label">Управление</div>
+    <div class="nav-a"><span class="nav-ic">💰</span> Финансы</div>
+    <div class="nav-a"><span class="nav-ic">📈</span> Отчёты</div>
+    <div class="nav-a"><span class="nav-ic">⚙️</span> Настройки</div>
+  </div>
+  <div class="sb-mps">
+    <div class="sb-mp-label">Подключённые</div>
+    <div class="mp-row mp-ozon"><span class="mp-n">OZON</span><span class="mp-s"><span class="mp-dot"></span> Активен</span></div>
+    <div class="mp-row mp-wb"><span class="mp-n">Wildberries</span><span class="mp-s"><span class="mp-dot"></span> Активен</span></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="burger" onclick="toggleSB()">☰</div>
+    <div class="top-tabs">
+      <div class="top-tab active" onclick="topTab(this)">Управление магазинами</div>
+      <div class="top-tab" onclick="topTab(this)">Управленческая отчётность</div>
+    </div>
+    <div class="top-right">
+      <div class="top-api">✓ API</div>
+      <div class="top-bell">🔔<span class="top-bell-b">90</span></div>
+      <div class="top-org">Магазин Иванова ▾</div>
+    </div>
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+    <div class="pg-head">
+      <div class="pg-title">Аналитика</div>
+      <div class="pg-link">📖 Почитать о разделе</div>
+    </div>
+
+    <!-- TABS + PERIOD -->
+    <div class="tabs-row">
+      <div class="pg-tabs">
+        <div class="pg-tab active" onclick="pgTab(this)">Главная</div>
+        <div class="pg-tab" onclick="pgTab(this)">Товары</div>
+        <div class="pg-tab" onclick="pgTab(this)">Реклама</div>
+        <div class="pg-tab" onclick="pgTab(this)">Заказы</div>
+        <div class="pg-tab" onclick="pgTab(this)">Склад</div>
+      </div>
+      <div class="period-row">
+        <button class="pbtn" onclick="setPeriod(7,this)">7 дней</button>
+        <button class="pbtn" onclick="setPeriod(14,this)">14 дней</button>
+        <button class="pbtn active" onclick="setPeriod(30,this)">30 дней</button>
+      </div>
+    </div>
+
+    <!-- SVODKA -->
+    <div class="svodka-row">
+      <button class="pbtn active" onclick="swBtn(this)">Сводка</button>
+      <button class="pbtn" onclick="swBtn(this)">По магазинам</button>
+    </div>
+
+    <!-- ALERT -->
+    <div class="alert" id="alertEl">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-body">
+        <div class="alert-t">Расчёт этих показателей завязан на себестоимости</div>
+        <div class="alert-d">Для корректного отображения заполните себестоимость всех товаров в разделе «Товары»</div>
+      </div>
+      <button class="alert-btn">Заполнить →</button>
+      <span class="alert-x" onclick="document.getElementById('alertEl').remove()">✕</span>
+    </div>
+
+    <!-- ROW 1: Metrics panel + Chart -->
+    <div class="g2 fade" id="mainRow">
+
+      <!-- LEFT: Metrics Panel -->
+      <div class="mp-panel">
+        <div class="mp-ph">
+          <span class="mp-pt">Показатели</span>
+          <div class="score-wrap">
+            <div class="score-bar"><div class="score-fill" id="scoreBar" style="width:69.77%"></div></div>
+            <span class="score-val">69.77%</span>
+            <span style="font-size:13px;color:var(--muted);cursor:pointer">ℹ</span>
+          </div>
+        </div>
+        <div id="metricsRows"></div>
+      </div>
+
+      <!-- RIGHT: Chart -->
+      <div class="chart-card">
+        <div class="c-head">
+          <span class="c-title">График</span>
+          <div class="chart-toggle">
+            <button class="ctbtn active" onclick="setCM('rubles',this)">В рублях</button>
+            <button class="ctbtn" onclick="setCM('units',this)">В штуках</button>
+            <button class="ctbtn" onclick="setCM('pct',this)">В процентах</button>
+          </div>
+        </div>
+        <div class="chart-legend" id="chartLegend"></div>
+        <div class="chart-wrap" id="chartWrap">
+          <svg id="mainSVG" viewBox="0 0 620 195" style="width:100%"></svg>
+          <div class="ct-tooltip" id="tooltip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Profit + Profitability -->
+    <div class="g2eq mt">
+      <div class="card">
+        <div class="c-head"><span class="c-title" style="color:var(--green)">● Прибыль</span><span class="c-info">ℹ</span></div>
+        <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--green)">865 662.68 ₽</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Общая</div>
+        <div class="badge-row"><span class="badge bg-r">-7%</span><span class="pl">за период</span></div>
+      </div>
+      <div class="card">
+        <div class="c-head"><span class="c-title" style="color:var(--yellow)">⚠ Рентабельность</span><span class="c-info">ℹ</span></div>
+        <div style="font-size:22px;font-weight:900;font-family:var(--mono)">24.17 %</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">За период</div>
+        <div class="badge-row"><span class="badge bg-g">+3%</span><span class="pl">за период</span></div>
+      </div>
+    </div>
+
+    <!-- ROW 3: ABC -->
+    <div class="card mt">
+      <div class="c-head">
+        <span class="c-title">АВС анализ ›</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="ctbtn active">Заказы</button>
+          <button class="ctbtn" style="color:var(--yellow);border-color:var(--yellow)">⚠ Прибыль</button>
+          <span class="c-info">ℹ</span>
+        </div>
+      </div>
+      <div class="abc-grid">
+        <div class="donut-w">
+          <svg width="80" height="80" id="abcSVG"></svg>
+          <div class="donut-c"><div class="donut-cb">106</div><div class="donut-cs">шт</div></div>
+        </div>
+        <div class="abc-items">
+          <div class="abc-item">
+            <div class="ah"><div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:var(--green)"></div><span class="an" style="color:var(--green)">Товары A ›</span></div><span class="abc-pct" style="background:#D1FAE5;color:#065F46">32.08%</span></div>
+            <div class="av">6 526 600 ₽ · 34 шт</div>
+          </div>
+          <div class="abc-item">
+            <div class="ah"><div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:var(--yellow)"></div><span class="an" style="color:var(--yellow)">Товары B ›</span></div><span class="abc-pct" style="background:#FEF3C7;color:#92400E">29.25%</span></div>
+            <div class="av">1 228 587 ₽ · 31 шт</div>
+          </div>
+          <div class="abc-item">
+            <div class="ah"><div style="display:flex;align-items:center;gap:6px"><div style="width:9px;height:9px;border-radius:50%;background:var(--red)"></div><span class="an" style="color:var(--red)">Товары C ›</span></div><span class="abc-pct" style="background:#FEE2E2;color:#991B1B">38.68%</span></div>
+            <div class="av">327 599 ₽ · 41 шт</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 4: Ads -->
+    <div class="card mt">
+      <div class="c-head"><span class="c-title">Реклама ›</span><span class="c-info">ℹ</span></div>
+      <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+        <div class="donut-w">
+          <svg width="80" height="80" id="adSVG"></svg>
+          <div class="donut-c"><div class="donut-cb">67.54</div><div class="donut-cs">%</div></div>
+        </div>
+        <div class="ad-stats">
+          <div><div class="asv">8 113 232 ₽</div><div class="asl">Заказов всего</div><div class="asb"><span class="badge bg-g">+12%</span><span class="pl">за период</span></div></div>
+          <div><div class="asv">5 479 434 ₽</div><div class="asl">Заказы по рекламе</div><div class="asb"><span class="badge bg-g">+1%</span><span class="pl">за период</span></div></div>
+          <div><div class="asv red">-805 471 ₽</div><div class="asl">Расход на РК</div><div class="asb"><span class="badge bg-r">-7%</span><span class="pl">за период</span></div></div>
+          <div><div class="asv">9.93 %</div><div class="asl">Общая ДРР</div><div class="asb"><span class="badge bg-r">-17%</span><span class="pl">за период</span></div></div>
+          <div><div class="asv">14.70 %</div><div class="asl">ДРР от РК</div><div class="asb"><span class="badge bg-r">-8%</span><span class="pl">за период</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 5: Warehouse + Channels/Remainder -->
+    <div class="g2 mt">
+      <div class="card">
+        <div class="c-head"><span class="c-title" style="color:var(--yellow)">⚠ Общая оценка склада ›</span><span class="c-info">ℹ</span></div>
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;flex-wrap:wrap">
+          <div class="donut-w">
+            <svg width="80" height="80" id="whSVG"></svg>
+            <div class="donut-c"><div class="donut-cb" style="font-size:11px">14 319</div><div class="donut-cs">шт</div></div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--muted)">Себестоимость</div>
+            <div style="font-size:15px;font-weight:700;color:var(--muted)">–</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:8px">Розничная цена</div>
+            <div style="font-size:15px;font-weight:700;font-family:var(--mono)">15 613 270 ₽</div>
+          </div>
+        </div>
+        <div class="wh-row"><div class="wh-dot" style="background:var(--accent)"></div><div class="wh-n">Склад FBO / 12 919 шт</div><div class="wh-p">14 065 423 ₽</div><div class="wh-pct">90.22%</div></div>
+        <div class="wh-row"><div class="wh-dot" style="background:var(--teal)"></div><div class="wh-n">Склад FBS / 457 шт</div><div class="wh-p">499 440 ₽</div><div class="wh-pct">3.19%</div></div>
+        <div class="wh-row"><div class="wh-dot" style="background:var(--pink)"></div><div class="wh-n">В пути к клиенту / 854 шт</div><div class="wh-p">948 295 ₽</div><div class="wh-pct">5.96%</div></div>
+        <div class="wh-row"><div class="wh-dot" style="background:var(--yellow)"></div><div class="wh-n">В пути от клиента / 89 шт</div><div class="wh-p">100 112 ₽</div><div class="wh-pct">0.62%</div></div>
+      </div>
+
+      <div class="g-stack">
+        <div class="card">
+          <div class="c-title" style="margin-bottom:12px">Доля каналов по заказам</div>
+          <div class="ch-bar" style="width:100%;height:20px"></div>
+          <div class="ch-row">
+            <div style="display:flex;align-items:center;gap:8px"><div class="ch-logo">WB</div><span style="font-size:13px;font-weight:600">41 486</span></div>
+            <div style="display:flex;gap:8px;align-items:center"><span style="font-size:13px;color:var(--muted)">100%</span><span class="badge bg-g">+34%</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="c-head"><span class="c-title">График остатков / 30 дней</span><span class="c-info">ℹ</span></div>
+          <div class="chart-wrap">
+            <svg id="remSVG" style="width:100%;display:block;overflow:visible"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ════════════════════════════════════════════════════
+//  COLOURS
+// ════════════════════════════════════════════════════
+const C = {
+  teal:'#00BFCC', salmon:'#FF6B8A', green:'#00C48C',
+  accent:'#5B6CF6', pink:'#EC4899', yellow:'#FFB800',
+  red:'#FF4D6A', purple:'#8B5CF6', gray:'#B5BDD0'
+};
+
+// ════════════════════════════════════════════════════
+//  GENERATE DATA
+// ════════════════════════════════════════════════════
+function wave(n,base,amp,freq,off=0){
+  return Array.from({length:n},(_,i)=>
+    Math.max(0, base + Math.sin(i*freq+off)*amp + (Math.random()-.5)*amp*.4)
+  );
+}
+const DAYS_RU=['вс','пн','вт','ср','чт','пт','сб'];
+function makeLabels(n){
+  return Array.from({length:n},(_,i)=>{
+    const d=new Date(2026,1,1+i);
+    return `${i+1}, ${DAYS_RU[d.getDay()]}`;
+  });
+}
+const BASE={
+  ordered: wave(30,280000,75000,.35),
+  expenses:wave(30,140000,38000,.35,1),
+  returns: wave(30,16000, 9000,.5,2),
+  adSpend: wave(30,22000, 7000,.4,3),
+  profit:  wave(30,62000,22000,.3,4),
+  cancels: wave(30,12000, 6000,.6,5),
+  units:   wave(30,250,75,.35).map(Math.round),
+  unitRet: wave(30,28,11,.5,2).map(Math.round),
+};
+function slice30(k,n){ return {labels:makeLabels(n), ...Object.fromEntries(Object.entries(BASE).map(([k2,v])=>[k2,v.slice(-n)]))}; }
+
+// ════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════
+let period    = 30;
+let chartMode = 'rubles';
+let selected  = null;
+let active    = new Set(['ordered','cancels','returns']);
+
+// ════════════════════════════════════════════════════
+//  METRIC DEFINITIONS
+// ════════════════════════════════════════════════════
+const MDEFS = [
+  {id:'orders',   lbl:'Заказы',              color:C.gray,   ser:false, val:'3 715 шт',                   pct:'-10%', neg:true},
+  {id:'cancels',  lbl:'Отмены',              color:C.pink,   ser:true,  val:'315 шт',                     pct:'-37%', neg:true},
+  {id:'ordered',  lbl:'Итого зак.',          color:C.teal,   ser:true,  val:'3 580 990 ₽ / 3 400 шт',    pct:'-10%', neg:true},
+  {id:'returns',  lbl:'Возвраты',            color:C.salmon, ser:true,  val:'-37 559 ₽ / 35 шт',         pct:'-61%', neg:true},
+  {id:'comm',     lbl:'Комиссия',            color:null,     ser:false, val:'-1 295 941 ₽',               pct:'-9%',  neg:true},
+  {id:'logi',     lbl:'Логистика',           color:null,     ser:false, val:'-317 122 ₽',                 pct:'+13%', neg:false},
+  {id:'ad',       lbl:'Реклама',             color:C.purple, ser:true,  val:'-298 384 ₽',                 pct:'-33%', neg:true},
+  {id:'extra',    lbl:'Доп. расходы',        color:null,     ser:false, val:'-24 950 ₽',                  pct:'-35%', neg:true},
+  {id:'cost',     lbl:'Себестоимость',       color:null,     ser:false, val:'-632 954 ₽',                 pct:'0%',   neg:false},
+  {id:'nds',      lbl:'Невозвр. НДС',        color:null,     ser:false, val:'-90 345 ₽',                  pct:'-7%',  neg:true},
+  {id:'tax',      lbl:'Налог',               color:null,     ser:false, val:'-18 069 ₽',                  pct:'-7%',  neg:true},
+  {id:'profit',   lbl:'Прибыль',             color:C.green,  ser:true,  val:'865 662 ₽',                  pct:'-7%',  neg:true},
+  {id:'perday',   lbl:'Заказов в день',      color:null,     ser:false, val:'255 785 ₽ / 242 шт',         pct:'-10%', neg:true},
+  {id:'renta',    lbl:'Рентабельность',      color:null,     ser:false, val:'24.17 %',                    pct:'+3%',  neg:false},
+  {id:'buyout1',  lbl:'Выкупаемость б/о',   color:null,     ser:false, val:'69.32 %',                    pct:'-30%', neg:true},
+  {id:'buyout2',  lbl:'Выкупаемость с/о',   color:null,     ser:false, val:'63.45 %',                    pct:'0%',   neg:false},
+  {id:'drr',      lbl:'ДРР',                 color:null,     ser:false, val:'8.33 %',                     pct:'-25%', neg:true},
+];
+
+const SERIES = {
+  ordered:{key:'ordered', color:C.teal,   lbl:'Итого заказано'},
+  cancels:{key:'cancels', color:C.pink,   lbl:'Отменено'},
+  returns:{key:'returns', color:C.salmon, lbl:'Возвращено'},
+  profit: {key:'profit',  color:C.green,  lbl:'Прибыль'},
+  ad:     {key:'adSpend', color:C.purple, lbl:'Реклама'},
+};
+
+// ════════════════════════════════════════════════════
+//  RENDER METRICS ROWS
+// ════════════════════════════════════════════════════
+function renderMetrics(){
+  const el = document.getElementById('metricsRows');
+  el.innerHTML = '';
+  MDEFS.forEach(m=>{
+    const hasSer = m.ser && !!SERIES[m.id];
+    const isOn   = active.has(m.id);
+    const isSel  = selected===m.id;
+    const isNeg  = m.neg && m.pct.startsWith('-');
+    const isZero = m.pct==='0%';
+
+    const row = document.createElement('div');
+    row.className = 'mrow'+(isSel?' sel':'');
+
+    // Circle
+    const circ = document.createElement('div');
+    circ.className = 'circ'+(isOn&&hasSer?' on':'');
+    if(isOn && hasSer && m.color){
+      circ.style.background = m.color;
+      circ.innerHTML = '<span class="cx">✕</span>';
+    } else if(hasSer && m.color){
+      circ.style.borderColor = m.color;
+    } else {
+      circ.style.borderColor='#E4E9F5';
+    }
+    circ.onclick = e=>{
+      e.stopPropagation();
+      if(!hasSer) return;
+      if(active.has(m.id)) active.delete(m.id);
+      else active.add(m.id);
+      renderMetrics(); renderChart();
+    };
+
+    const name = document.createElement('span');
+    name.className='mn';
+    if(m.color && hasSer) name.style.color = isOn? m.color:'var(--muted)';
+    name.textContent = m.lbl;
+
+    const info = document.createElement('span');
+    info.className='mi'; info.textContent='ℹ';
+    info.title = 'Подробнее';
+
+    const val = document.createElement('span');
+    val.className='mv'; val.textContent=m.val;
+
+    const badge = document.createElement('span');
+    badge.className='badge '+(isZero?'bg-gray':isNeg?'bg-r':'bg-g');
+    badge.textContent=m.pct;
+
+    row.append(circ, name, info, val, badge);
+    row.onclick=()=>{
+      selected=(selected===m.id)?null:m.id;
+      if(hasSer){ active.add(m.id); }
+      renderMetrics(); renderChart();
+    };
+    el.appendChild(row);
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  CHART
+// ════════════════════════════════════════════════════
+const CW=620, CH=185;
+
+function getData(serId){
+  const d = slice30(period,period);
+  const s = SERIES[serId];
+  if(!s) return [];
+  let raw = d[s.key]||[];
+  if(chartMode==='units'){
+    if(serId==='ordered') return d.units;
+    if(serId==='returns') return d.unitRet;
+    return raw.map(v=>Math.round(v/850));
+  }
+  if(chartMode==='pct'){
+    const mx=Math.max(...raw)||1;
+    return raw.map(v=>+(v/mx*100).toFixed(1));
+  }
+  return raw;
+}
+
+function smoothPath(vals, minV, maxV){
+  const n=vals.length;
+  if(!n) return {d:'',pts:[]};
+  const pts=vals.map((v,i)=>[
+    n>1?(i/(n-1))*CW:CW/2,
+    CH - ((v-minV)/((maxV-minV)||1))*(CH-14) - 7
+  ]);
+  let d=`M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){
+    const [px,py]=pts[i-1],[x,y]=pts[i];
+    const dx=(x-px)*0.42;
+    d+=` C ${(px+dx).toFixed(1)},${py.toFixed(1)} ${(x-dx).toFixed(1)},${y.toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}`;
+  }
+  return {d,pts};
+}
+
+function renderChart(){
+  const svg    = document.getElementById('mainSVG');
+  const legEl  = document.getElementById('chartLegend');
+  svg.innerHTML=''; legEl.innerHTML='';
+
+  const acts = [...active].filter(id=>!!SERIES[id]);
+  if(!acts.length){
+    svg.innerHTML=`<text x="310" y="100" text-anchor="middle" fill="#B5BDD0" font-size="14" font-family="Onest,sans-serif">Выберите метрику слева →</text>`;
+    return;
+  }
+
+  const d = slice30(period,period);
+  const labels=d.labels;
+  const n=labels.length;
+
+  let allVals=[];
+  acts.forEach(id=>{ allVals=allVals.concat(getData(id)); });
+  const maxV=Math.max(...allVals)*1.09||1, minV=0;
+
+  // defs for gradients
+  let defs='<defs>';
+  acts.forEach(id=>{
+    const sm=SERIES[id];
+    const hex=sm.color;
+    defs+=`<linearGradient id="grad_${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${hex}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${hex}" stop-opacity=".01"/>
+    </linearGradient>`;
+  });
+  defs+='</defs>';
+  svg.innerHTML=defs;
+
+  // grid
+  [.25,.5,.75,1].forEach(t=>{
+    const y=CH-t*(CH-14)-7;
+    const v=minV+(maxV-minV)*t;
+    const lbl=chartMode==='rubles'?fR(v):chartMode==='units'?Math.round(v)+'шт':v.toFixed(1)+'%';
+    addEl(svg,'line',{x1:0,y1:y,x2:CW,y2:y,stroke:'#E4E9F5','stroke-width':1,'stroke-dasharray':'4,4'});
+    addTxt(svg,lbl,CW+5,y+4,'10','#B5BDD0','start');
+  });
+
+  // x labels
+  const step=Math.max(1,Math.floor(n/8));
+  for(let i=0;i<n;i+=step){
+    const x=n>1?(i/(n-1))*CW:CW/2;
+    addTxt(svg,labels[i],x,CH+18,'10','#8892AA','middle');
+  }
+
+  // series
+  acts.forEach(id=>{
+    const sm=SERIES[id];
+    const vals=getData(id);
+    const {d:pathD,pts}=smoothPath(vals,minV,maxV);
+    if(!pts.length) return;
+
+    // area
+    const areaD=pathD+` L ${pts[pts.length-1][0].toFixed(1)},${CH} L 0,${CH} Z`;
+    addEl(svg,'path',{d:areaD,fill:`url(#grad_${id})`,'fill-opacity':1});
+    // line
+    addEl(svg,'path',{d:pathD,fill:'none',stroke:sm.color,'stroke-width':2.5,'stroke-linecap':'round','stroke-linejoin':'round'});
+
+    // legend
+    const li=document.createElement('div');
+    li.className='cl-item';
+    li.innerHTML=`<div class="cl-line" style="background:${sm.color}"></div><span>${sm.lbl}</span>`;
+    legEl.appendChild(li);
+  });
+
+  // hover overlay
+  const overlay=addEl(svg,'rect',{x:0,y:0,width:CW,height:CH,fill:'transparent',style:'cursor:crosshair'});
+  svg._state={acts,labels,n,minV,maxV};
+
+  overlay.addEventListener('mousemove',e=>onChartHover(e,svg));
+  overlay.addEventListener('mouseleave',()=>{
+    document.getElementById('tooltip').classList.remove('vis');
+    svg.querySelectorAll('.xhair,.xdot').forEach(el=>el.remove());
+  });
+}
+
+function onChartHover(e,svg){
+  const rect=svg.getBoundingClientRect();
+  const {acts,labels,n,minV,maxV}=svg._state;
+  const mx=e.clientX-rect.left;
+  const svgX=(mx/rect.width)*CW;
+  const idx=Math.max(0,Math.min(n-1,Math.round((svgX/CW)*(n-1))));
+  const x=n>1?(idx/(n-1))*CW:CW/2;
+
+  svg.querySelectorAll('.xhair,.xdot').forEach(el=>el.remove());
+  const xl=addEl(svg,'line',{x1:x,y1:0,x2:x,y2:CH,stroke:'#5B6CF6','stroke-width':1,'stroke-dasharray':'4,3',class:'xhair'});
+
+  acts.forEach(id=>{
+    const sm=SERIES[id];
+    const vals=getData(id);
+    const y=CH-((vals[idx]-minV)/((maxV-minV)||1))*(CH-14)-7;
+    addEl(svg,'circle',{cx:x,cy:y,r:4,fill:sm.color,stroke:'#fff','stroke-width':2,class:'xdot'});
+  });
+
+  let html=`<div class="tt-date">${labels[idx]}</div>`;
+  acts.forEach(id=>{
+    const sm=SERIES[id];
+    const v=getData(id)[idx];
+    const fv=chartMode==='rubles'?fR(v):chartMode==='units'?Math.round(v)+' шт':v.toFixed(1)+'%';
+    html+=`<div class="tt-row"><div class="tt-dot" style="background:${sm.color}"></div><span class="tt-lbl">${sm.lbl}</span><span class="tt-val">${fv}</span></div>`;
+  });
+  const tt=document.getElementById('tooltip');
+  tt.innerHTML=html;
+
+  const wRect=document.getElementById('chartWrap').getBoundingClientRect();
+  const tx=e.clientX-wRect.left+14;
+  const ty=e.clientY-wRect.top-30;
+  tt.style.left=(tx+170>wRect.width? tx-185:tx)+'px';
+  tt.style.top=Math.max(0,ty)+'px';
+  tt.classList.add('vis');
+}
+
+// ════════════════════════════════════════════════════
+//  DONUTS
+// ════════════════════════════════════════════════════
+function drawDonut(id,slices,sz=80,sw=10){
+  const svg=document.getElementById(id);
+  if(!svg) return;
+  const c=sz/2, r=sz/2-sw/2-1;
+  const circ=2*Math.PI*r;
+  let offset=0, html='';
+  slices.forEach(s=>{
+    const dash=(s.pct/100)*circ;
+    html+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${s.color}"
+      stroke-width="${sw}" stroke-dasharray="${dash} ${circ-dash}"
+      stroke-linecap="butt" transform="rotate(${-90+(offset/100)*360} ${c} ${c})"/>`;
+    offset+=s.pct;
+  });
+  svg.setAttribute('viewBox',`0 0 ${sz} ${sz}`);
+  svg.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════
+//  REMAINDER CHART
+// ════════════════════════════════════════════════════
+function renderRem(){
+  const svg=document.getElementById('remSVG');
+  const W2=400, H2=90;
+  const vals=Array.from({length:30},(_,i)=>{
+    if(i<23) return 120+Math.random()*80;
+    return 120+(i-22)*1700+Math.random()*300;
+  });
+  const maxV=Math.max(...vals);
+  const pts=vals.map((v,i)=>[(i/29)*W2, H2-((v/maxV)*(H2-8))-4]);
+  let pathD=`M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for(let i=1;i<pts.length;i++){
+    const [px,py]=pts[i-1],[x,y]=pts[i];
+    const dx=(x-px)*0.42;
+    pathD+=` C ${(px+dx).toFixed(1)},${py.toFixed(1)} ${(x-dx).toFixed(1)},${y.toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}`;
+  }
+  const aD=pathD+` L ${pts[pts.length-1][0].toFixed(1)},${H2} L 0,${H2} Z`;
+  const lbs=['1,вс','4,ср','7,сб','10,вт','13,пт','16,пн','19,чт','22,вс','25,ср','28,сб'];
+  const ltxt=lbs.map((l,i)=>`<text x="${(i/9)*W2}" y="${H2+13}" text-anchor="middle" fill="#8892AA" font-size="9" font-family="Onest,sans-serif">${l}</text>`).join('');
+  svg.setAttribute('viewBox',`0 0 ${W2} ${H2+18}`);
+  svg.innerHTML=`<defs>
+    <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5B6CF6" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#5B6CF6" stop-opacity=".01"/>
+    </linearGradient></defs>
+    <path d="${aD}" fill="url(#rg)"/>
+    <path d="${pathD}" fill="none" stroke="#5B6CF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${ltxt}`;
+}
+
+// ════════════════════════════════════════════════════
+//  SVG HELPERS
+// ════════════════════════════════════════════════════
+function addEl(parent,tag,attrs){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+  parent.appendChild(el); return el;
+}
+function addTxt(parent,text,x,y,size,fill,anchor){
+  const el=document.createElementNS('http://www.w3.org/2000/svg','text');
+  el.setAttribute('x',x); el.setAttribute('y',y);
+  el.setAttribute('font-size',size); el.setAttribute('fill',fill);
+  el.setAttribute('text-anchor',anchor||'middle');
+  el.setAttribute('font-family','Onest,sans-serif');
+  el.textContent=text;
+  parent.appendChild(el); return el;
+}
+
+// ════════════════════════════════════════════════════
+//  FORMAT
+// ════════════════════════════════════════════════════
+function fR(v){
+  if(v>=1e6) return (v/1e6).toFixed(1)+'М ₽';
+  if(v>=1e3) return Math.round(v/1e3)+'К ₽';
+  return Math.round(v)+' ₽';
+}
+
+// ════════════════════════════════════════════════════
+//  UI HANDLERS
+// ════════════════════════════════════════════════════
+function setPeriod(p,btn){
+  period=p;
+  btn.closest('.period-row').querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  animChart(); renderChart();
+}
+function setCM(mode,btn){
+  chartMode=mode;
+  document.querySelectorAll('.chart-toggle .ctbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  animChart(); renderChart();
+}
+function swBtn(btn){
+  btn.closest('.svodka-row').querySelectorAll('.pbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function topTab(el){
+  document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function pgTab(el){
+  document.querySelectorAll('.pg-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleSB(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSB(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+function animChart(){
+  const w=document.getElementById('chartWrap');
+  w.style.opacity='0'; w.style.transform='translateY(6px)';
+  requestAnimationFrame(()=>{
+    w.style.transition='opacity .3s ease,transform .3s ease';
+    w.style.opacity='1'; w.style.transform='none';
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+renderMetrics();
+renderChart();
+drawDonut('abcSVG',[{pct:32.08,color:C.green},{pct:29.25,color:C.yellow},{pct:38.68,color:C.salmon}]);
+drawDonut('adSVG',[{pct:67.54,color:C.purple},{pct:32.46,color:'#E4E9F5'}]);
+drawDonut('whSVG',[{pct:90.22,color:C.accent},{pct:3.19,color:C.teal},{pct:5.96,color:C.pink},{pct:0.62,color:C.yellow}]);
+renderRem();
+</script>
+</body>
+</html>

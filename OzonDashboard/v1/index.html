@@ -349,14 +349,6 @@ td { padding: 6px 0; font-size: 11px; border-bottom: 1px solid var(--surf2); ove
 
 <script>
 function tab(btn, id) {
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(id).classList.add('active');
-}
-</script>
-<script>
-function tab(btn, id) {
   // 1. Снимаем выделение со всех пунктов меню
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   

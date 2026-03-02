@@ -355,6 +355,23 @@ function tab(btn, id) {
   document.getElementById(id).classList.add('active');
 }
 </script>
-
+<script>
+function tab(btn, id) {
+  // 1. Снимаем выделение со всех пунктов меню
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  
+  // 2. Скрываем все вкладки с контентом
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  // 3. Выделяем текущую кнопку в меню
+  btn.classList.add('active');
+  
+  // 4. Показываем нужную вкладку по её ID
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+  }
+}
+</script>
 </body>
 </html>

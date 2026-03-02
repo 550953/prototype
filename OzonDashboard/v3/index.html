@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ShikinN — Ozon ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  /* Фон и поверхности */
+  --bg:       #f8fafc;    /* Светло-серый фон страницы */
+  --surf:     #ffffff;    /* Белый фон боковой панели и шапки */
+  --surf2:    #f1f5f9;    /* Светлый фон для наведения и инпутов */
+  --surf3:    #e2e8f0;    /* Более темный серый для акцентов */
+  
+  /* Границы */
+  --border:   #e2e8f0;    /* Светлые разделители */
+  --border2:  #cbd5e1;    /* Более заметные границы */
+
+  /* Акценты (можно оставить прежними или чуть приглушить) */
+  --accent:   #3b82f6;    
+  --accent2:  #8b5cf6;
+  --green:    #16a34a;
+  --red:      #dc2626;
+  --orange:   #ea580c;
+  --yellow:   #ca8a04;
+  --purple:   #9333ea;
+
+  /* Текст */
+  --text:     #0f172a;    /* Почти черный основной текст */
+  --text2:    #475569;    /* Темно-серый вторичный текст */
+  --text3:    #94a3b8;    /* Светло-серый для подписей */
+
+  /* Остальные переменные (шрифты, радиусы) оставляем без изменений */
+  --font-h:   'Syne', sans-serif;
+  --font-m:   'JetBrains Mono', monospace;
+  --radius:   12px;
+  --radius-s: 7px;
+  --nav-h:    60px;
+  --sidebar-w:240px;
+  --trans:    0.18s cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: var(--font-m);
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; border: none; cursor: pointer; background: none; }
+input, select { font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════════ */
+.shell {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR (desktop) ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surf);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  transition: transform var(--trans);
+  z-index: 200;
+}
+
+/* ── MAIN ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: var(--nav-h);
+  background: var(--surf);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+/* ── PAGE CONTENT ── */
+.page-wrap {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+}
+
+/* ═══════════════════════════════════════════
+   LOGO
+═══════════════════════════════════════════ */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h);
+  font-weight: 800; font-size: 16px;
+  color: white;
+  letter-spacing: -1px;
+  box-shadow: 0 0 18px rgba(79,142,255,0.35);
+}
+.logo-text { font-family: var(--font-h); font-weight: 800; font-size: 17px; letter-spacing: -0.5px; }
+.logo-text span { color: var(--accent); }
+.logo-sub { font-size: 9px; color: var(--text3); font-weight: 400; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ═══════════════════════════════════════════
+   NAV ITEMS
+═══════════════════════════════════════════ */
+.nav-section { padding: 12px 12px 4px; }
+.nav-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .1em; padding: 0 8px 6px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--radius-s);
+  font-size: 12px; color: var(--text2);
+  cursor: pointer;
+  transition: all var(--trans);
+  user-select: none;
+}
+.nav-item:hover { background: var(--surf2); color: var(--text); }
+.nav-item.active { background: linear-gradient(90deg, rgba(79,142,255,.18), rgba(124,92,255,.08)); color: var(--accent); }
+.nav-item .icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-item .label { flex: 1; }
+.nav-item .badge {
+  font-size: 9px; padding: 1px 6px; border-radius: 8px;
+  background: rgba(79,142,255,.2); color: var(--accent);
+}
+
+.sidebar-footer {
+  margin-top: auto; padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.sync-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; color: var(--text3);
+}
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ═══════════════════════════════════════════
+   TOPBAR CONTENTS
+═══════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  width: 36px; height: 36px; border-radius: var(--radius-s);
+  background: var(--surf2); align-items: center; justify-content: center;
+  font-size: 18px; color: var(--text2);
+  flex-shrink: 0;
+}
+.topbar-title { font-family: var(--font-h); font-weight: 700; font-size: 15px; flex: 1; }
+.topbar-actions { display: flex; gap: 8px; }
+.btn-icon {
+  width: 34px; height: 34px; border-radius: var(--radius-s);
+  background: var(--surf2); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text2);
+  border: 1px solid var(--border);
+  transition: all var(--trans);
+}
+.btn-icon:hover { background: var(--surf3); color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   BOTTOM NAV (mobile only)
+═══════════════════════════════════════════ */
+.bottom-nav {
+  display: none;
+  height: 60px;
+  background: var(--surf);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.bottom-nav-inner {
+  display: flex; height: 100%;
+}
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer;
+  color: var(--text3); font-size: 9px;
+  transition: color var(--trans);
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.bnav-item .bicon { font-size: 20px; }
+.bnav-item.active { color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   DRAWER OVERLAY (mobile)
+═══════════════════════════════════════════ */
+.drawer-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 190;
+  backdrop-filter: blur(3px);
+}
+
+/* ═══════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════ */
+.page { display: none; animation: fadeIn .25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* ═══════════════════════════════════════════
+   STAT CARDS
+═══════════════════════════════════════════ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent-color, var(--accent));
+}
+.stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.stat-val { font-family: var(--font-h); font-size: 22px; font-weight: 800; line-height: 1; }
+.stat-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.stat-delta { font-size: 11px; margin-top: 6px; }
+.stat-delta.up { color: var(--green); }
+.stat-delta.down { color: var(--red); }
+
+/* ═══════════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════════ */
+.section-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.section-title { font-family: var(--font-h); font-size: 16px; font-weight: 700; }
+.section-badge {
+  font-size: 9px; padding: 2px 8px; border-radius: 8px;
+  background: var(--surf2); color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE TABLES  
+═══════════════════════════════════════════ */
+.table-wrap {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.table-toolbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surf2); border: 1px solid var(--border2);
+  border-radius: var(--radius-s); padding: 7px 12px;
+  flex: 1; min-width: 140px;
+}
+.search-box input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-size: 12px; width: 100%;
+}
+.search-box input::placeholder { color: var(--text3); }
+.btn-sm {
+  padding: 7px 14px; border-radius: var(--radius-s);
+  font-size: 11px; font-weight: 600;
+  background: var(--surf2); color: var(--text2);
+  border: 1px solid var(--border2);
+  transition: all var(--trans);
+  white-space: nowrap;
+}
+.btn-sm:hover { background: var(--surf3); color: var(--text); }
+.btn-sm.primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-sm.primary:hover { opacity: .9; }
+
+/* ── Desktop table ── */
+.tbl-scroll { overflow-x: auto; }
+.tbl {
+  width: 100%; border-collapse: collapse;
+  font-size: 12px;
+}
+.tbl th {
+  background: var(--surf2);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 1;
+}
+.tbl td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  color: var(--text2);
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(79,142,255,.04); }
+.tbl td.primary { color: var(--text); font-weight: 600; }
+.tbl td.mono { font-family: var(--font-m); }
+.tbl td.green { color: var(--green); }
+.tbl td.red { color: var(--red); }
+.tbl td.yellow { color: var(--yellow); }
+.tbl td.orange { color: var(--orange); }
+.tbl td.blue { color: var(--accent); }
+
+/* ── Mobile card list (replaces table on mobile) ── */
+.card-list { display: none; }
+.m-card {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+}
+.m-card:last-child { border-bottom: none; }
+.m-card-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.m-card-title { font-weight: 600; font-size: 13px; color: var(--text); flex: 1; line-height: 1.3; }
+.m-card-status { font-size: 10px; padding: 2px 8px; border-radius: 8px; white-space: nowrap; }
+.m-card-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.m-row { display: flex; flex-direction: column; gap: 1px; }
+.m-row-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+.m-row-val { font-size: 12px; color: var(--text2); }
+.m-row-val.hi { color: var(--text); font-weight: 600; }
+.m-row-val.green { color: var(--green); }
+.m-row-val.red { color: var(--red); }
+.m-row-val.yellow { color: var(--yellow); }
+.m-row-val.blue { color: var(--accent); }
+.m-card-expand {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: none;
+}
+.m-card-expand.open { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.expand-btn {
+  width: 100%; text-align: left; padding: 8px 0 0;
+  font-size: 10px; color: var(--text3);
+  display: flex; align-items: center; gap: 4px;
+}
+.expand-btn svg { transition: transform var(--trans); }
+.expand-btn.open svg { transform: rotate(180deg); }
+
+/* ═══════════════════════════════════════════
+   PILL TABS
+═══════════════════════════════════════════ */
+.tabs {
+  display: flex; gap: 4px;
+  background: var(--surf2);
+  padding: 4px;
+  border-radius: var(--radius-s);
+  margin-bottom: 20px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+.tab {
+  padding: 7px 16px; border-radius: 6px;
+  font-size: 11px; color: var(--text3);
+  cursor: pointer; white-space: nowrap;
+  transition: all var(--trans);
+}
+.tab.active { background: var(--surf3); color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ═══════════════════════════════════════════
+   CHIPS / BADGES
+═══════════════════════════════════════════ */
+.chip {
+  display: inline-flex; align-items: center;
+  font-size: 10px; padding: 2px 8px; border-radius: 8px;
+  font-family: var(--font-m);
+}
+.chip.green  { background: rgba(34,197,94,.15);  color: var(--green); }
+.chip.red    { background: rgba(239,68,68,.15);   color: var(--red); }
+.chip.orange { background: rgba(249,115,22,.15);  color: var(--orange); }
+.chip.yellow { background: rgba(234,179,8,.15);   color: var(--yellow); }
+.chip.blue   { background: rgba(79,142,255,.15);  color: var(--accent); }
+.chip.purple { background: rgba(168,85,247,.15);  color: var(--purple); }
+.chip.gray   { background: var(--surf3);          color: var(--text3); }
+
+/* ═══════════════════════════════════════════
+   MINI BARS (sparklines)
+═══════════════════════════════════════════ */
+.mini-bar { display: flex; align-items: flex-end; gap: 2px; height: 24px; }
+.bar-seg {
+  flex: 1; border-radius: 2px;
+  transition: height .3s;
+}
+
+/* ═══════════════════════════════════════════
+   ALERT BANNER
+═══════════════════════════════════════════ */
+.alert {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border-radius: var(--radius);
+  margin-bottom: 16px; font-size: 12px; line-height: 1.5;
+}
+.alert.warn { background: rgba(234,179,8,.08); border: 1px solid rgba(234,179,8,.2); color: var(--yellow); }
+.alert.info { background: rgba(79,142,255,.08); border: 1px solid rgba(79,142,255,.2); color: var(--accent); }
+.alert.ok   { background: rgba(34,197,94,.08);  border: 1px solid rgba(34,197,94,.2);  color: var(--green); }
+
+/* ═══════════════════════════════════════════
+   UNIT COLUMNS LEGEND
+═══════════════════════════════════════════ */
+.col-groups { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.col-group {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.col-group-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--surf2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.col-group-label { font-family: var(--font-h); font-size: 13px; font-weight: 700; flex: 1; }
+.col-group-count { font-size: 10px; color: var(--text3); }
+.col-group-body { padding: 12px 16px; display: none; }
+.col-group-body.open { display: block; }
+.col-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.col-chip {
+  background: var(--surf3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-s);
+  padding: 5px 10px;
+  font-size: 11px;
+}
+.col-chip .cn { color: var(--accent); font-weight: 600; }
+.col-chip .cd { color: var(--text3); font-size: 10px; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════ */
+.progress { height: 4px; background: var(--surf3); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 1s; }
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: .4; }
+.empty-text { font-size: 12px; }
+
+/* ═══════════════════════════════════════════
+   GRID CARDS (dashboard)
+═══════════════════════════════════════════ */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dash-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.dash-card h3 { font-family: var(--font-h); font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 8px 0 40px rgba(0,0,0,.5);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .drawer-overlay.open { display: block; }
+  .hamburger { display: flex; }
+  .bottom-nav { display: flex; }
+  .tbl-scroll { display: none; }
+  .card-list { display: block; }
+  .page-wrap { padding: 16px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 14px; }
+  .stat-val { font-size: 18px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .table-toolbar { gap: 8px; }
+  .topbar { padding: 0 12px; }
+  .topbar-title { font-size: 13px; }
+}
+
+@media (min-width: 769px) {
+  .hamburger { display: none !important; }
+  .bottom-nav { display: none !important; }
+  .sidebar { transform: none !important; }
+  .tbl-scroll { display: block; }
+  .card-list { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════
+   MISC
+═══════════════════════════════════════════ */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.text-muted { color: var(--text3); }
+.fw700 { font-weight: 700; }
+.mt8 { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.inline-flex { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ABC colors */
+.abc-a { color: var(--green); font-weight: 700; }
+.abc-b { color: var(--yellow); font-weight: 700; }
+.abc-c { color: var(--red); font-weight: 700; }
+
+/* ROI meter */
+.roi-bar { display: flex; align-items: center; gap: 8px; }
+.roi-fill { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--green)); min-width: 4px; }
+
+/* ═══════════════════════════════════════════
+   FILTER ROW
+═══════════════════════════════════════════ */
+.filter-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filter-chip {
+  padding: 5px 12px; border-radius: 20px; font-size: 11px;
+  background: var(--surf2); color: var(--text3);
+  border: 1px solid var(--border);
+  cursor: pointer; transition: all var(--trans);
+}
+.filter-chip.active { background: rgba(79,142,255,.2); color: var(--accent); border-color: rgba(79,142,255,.4); }
+
+/* ── Unit tag groups ── */
+.tag-group {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px 3px 6px;
+  border-radius: 20px;
+  font-size: 10px;
+  cursor: pointer;
+  margin: 2px;
+  transition: all var(--trans);
+}
+.tag-group .tg-dot { width: 8px; height: 8px; border-radius: 50%; }
+.tag-group:hover { filter: brightness(1.15); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     DRAWER OVERLAY
+══════════════════════════════════════ -->
+<div class="drawer-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════════════════════════════
+     SHELL
+══════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-mark">Sh</div>
+      <div>
+        <div class="logo-text">Shikin<span>N</span></div>
+        <div class="logo-sub">Ozon ERP · v2.0</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Главная</div>
+      <div class="nav-item active" onclick="nav('dashboard',this)">
+        <span class="icon">⚡</span><span class="label">Дашборд</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Товары</div>
+      <div class="nav-item" onclick="nav('unit',this)">
+        <span class="icon">🧠</span><span class="label">UNIT-экономика</span>
+        <span class="badge">94 кол.</span>
+      </div>
+      <div class="nav-item" onclick="nav('products',this)">
+        <span class="icon">📦</span><span class="label">Список товаров</span>
+      </div>
+      <div class="nav-item" onclick="nav('inventory',this)">
+        <span class="icon">🏭</span><span class="label">Остатки</span>
+      </div>
+      <div class="nav-item" onclick="nav('procurement',this)">
+        <span class="icon">🛒</span><span class="label">Закупка</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Финансы</div>
+      <div class="nav-item" onclick="nav('finance',this)">
+        <span class="icon">💰</span><span class="label">Расчёт ЧП</span>
+      </div>
+      <div class="nav-item" onclick="nav('transactions',this)">
+        <span class="icon">📋</span><span class="label">Начисления</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Реклама</div>
+      <div class="nav-item" onclick="nav('ads',this)">
+        <span class="icon">📣</span><span class="label">Реклама</span>
+      </div>
+      <div class="nav-item" onclick="nav('prices',this)">
+        <span class="icon">🏷️</span><span class="label">Цены и акции</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Логистика</div>
+      <div class="nav-item" onclick="nav('delivery',this)">
+        <span class="icon">🚚</span><span class="label">Поставки</span>
+      </div>
+      <div class="nav-item" onclick="nav('tariffs',this)">
+        <span class="icon">⚖️</span><span class="label">Тарифы</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Аналитика</div>
+      <div class="nav-item" onclick="nav('orders',this)">
+        <span class="icon">🛍️</span><span class="label">Заказы</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sync-status">
+        <div class="sync-dot"></div>
+        Обновлено: 26.02.2026 22:03
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button class="hamburger btn-icon" onclick="openSidebar()">☰</button>
+      <div class="topbar-title" id="topbar-title">Дашборд</div>
+      <div class="topbar-actions">
+        <button class="btn-icon" title="Поиск">🔍</button>
+        <button class="btn-icon" title="Уведомления">🔔</button>
+        <button class="btn-icon" title="Настройки">⚙️</button>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-wrap" id="page-wrap">
+
+      <!-- ══ PAGE: DASHBOARD ══════════════════════════════════ -->
+      <div class="page active" id="p-dashboard">
+
+        <div class="alert info">
+          <span>ℹ️</span>
+          <div>Период: <strong>16.02 — 28.02.2026</strong> · Доступно обновление от 22 января</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card" style="--accent-color:var(--green)">
+            <div class="stat-label">Выручка</div>
+            <div class="stat-val">2.81М</div>
+            <div class="stat-sub">₽ за период</div>
+            <div class="stat-delta up">↑ +12.4%</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--accent)">
+            <div class="stat-label">Выкупов</div>
+            <div class="stat-val">2 669</div>
+            <div class="stat-sub">шт. за период</div>
+            <div class="stat-delta up">↑ % выкупа 87.5%</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--red)">
+            <div class="stat-label">Возвратов</div>
+            <div class="stat-val">46</div>
+            <div class="stat-sub">шт. за период</div>
+            <div class="stat-delta down">↓ Отмен: 329</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--yellow)">
+            <div class="stat-label">ДРР общ.</div>
+            <div class="stat-val">5.43%</div>
+            <div class="stat-sub">реклама / выручка</div>
+            <div class="stat-delta up">↑ с учётом выкупа 19.2%</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--purple)">
+            <div class="stat-label">Комиссия</div>
+            <div class="stat-val">1.04М</div>
+            <div class="stat-sub">₽ всего</div>
+            <div class="stat-delta" style="color:var(--text3)">37.1% от выручки</div>
+          </div>
+          <div class="stat-card" style="--accent-color:var(--orange)">
+            <div class="stat-label">ЧП Итого</div>
+            <div class="stat-val">≈180К</div>
+            <div class="stat-sub">₽ оценка</div>
+            <div class="stat-delta up">↑ маржа ~6.4%</div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <!-- ABC -->
+          <div class="dash-card">
+            <h3>ABC-анализ товаров</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div class="flex-between" style="margin-bottom:4px;">
+                  <span class="abc-a">A — Лидеры</span>
+                  <span class="text-muted" style="font-size:11px;">rumka_skladnaya, portsigar</span>
+                </div>
+                <div class="progress"><div class="progress-fill" style="width:65%;background:var(--green)"></div></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:3px;">~65% выручки · 20% SKU</div>
+              </div>
+              <div>
+                <div class="flex-between" style="margin-bottom:4px;">
+                  <span class="abc-b">B — Середина</span>
+                  <span class="text-muted" style="font-size:11px;">derzatel_sery, flajka</span>
+                </div>
+                <div class="progress"><div class="progress-fill" style="width:25%;background:var(--yellow)"></div></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:3px;">~25% выручки · 30% SKU</div>
+              </div>
+              <div>
+                <div class="flex-between" style="margin-bottom:4px;">
+                  <span class="abc-c">C — Аутсайдеры</span>
+                  <span class="text-muted" style="font-size:11px;">kupalnik, flajka_170ml</span>
+                </div>
+                <div class="progress"><div class="progress-fill" style="width:10%;background:var(--red)"></div></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:3px;">~10% выручки · 50% SKU</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Остатки -->
+          <div class="dash-card">
+            <h3>Остатки на Ozon FBO</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">derzatel_sery</span>
+                <span style="font-family:var(--font-h);font-size:14px;font-weight:700">112 шт</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">rumka_skladnaya</span>
+                <span style="font-family:var(--font-h);font-size:14px;font-weight:700">83 шт</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">portsigar_20_85mm</span>
+                <span style="font-family:var(--font-h);font-size:14px;font-weight:700">290 шт</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">portsigar_20_100mm</span>
+                <span style="font-family:var(--font-h);font-size:14px;font-weight:700">330 шт</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--red)">flajka_170ml ⚠️</span>
+                <span style="font-family:var(--font-h);font-size:14px;font-weight:700;color:var(--red)">0 шт</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Реклама -->
+          <div class="dash-card">
+            <h3>Реклама за период</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">Поиск + Рекомендации</span>
+                <span class="chip blue">ДРР 14.7%</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">Выручка</span>
+                <span style="color:var(--green);font-weight:600">53 288 ₽</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">Расход</span>
+                <span style="color:var(--red)">7 844 ₽</span>
+              </div>
+              <div class="divider"></div>
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">Трафарет</span>
+                <span class="chip yellow">ДРР ~29%</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text2)">Кримпер расход</span>
+                <span style="color:var(--red)">280–326 ₽/день</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Деньги в товаре -->
+          <div class="dash-card">
+            <h3>Деньги в товаре</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">Закупается в Китае</span>
+                <span style="font-weight:600">1 731 200 ₽</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">В пути из Китая</span>
+                <span style="font-weight:600">0 ₽</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">Наш склад</span>
+                <span style="font-weight:600">1 004 935 ₽</span>
+              </div>
+              <div class="flex-between">
+                <span style="font-size:11px;color:var(--text3)">На Ozon FBO</span>
+                <span style="font-weight:600">2 742 386 ₽</span>
+              </div>
+              <div class="divider"></div>
+              <div class="flex-between">
+                <span style="font-size:12px;color:var(--text);font-weight:700">ИТОГО в товаре</span>
+                <span style="font-family:var(--font-h);font-size:16px;font-weight:800;color:var(--accent)">5.75 М ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ PAGE: UNIT ══════════════════════════════════════ -->
+      <div class="page" id="p-unit">
+
+        <div class="alert info">
+          <span>ℹ️</span>
+          <div>Лист <strong>1. UNIT</strong> — 94 колонки, 3 товара. Ниже — описание всех групп + интерактивная таблица с реальными данными.</div>
+        </div>
+
+        <div class="tabs" id="unit-tabs">
+          <div class="tab active" onclick="switchTab('unit','overview',this)">Обзор</div>
+          <div class="tab" onclick="switchTab('unit','costs',this)">Затраты</div>
+          <div class="tab" onclick="switchTab('unit','stock',this)">Остатки</div>
+          <div class="tab" onclick="switchTab('unit','economics',this)">Экономика</div>
+          <div class="tab" onclick="switchTab('unit','dynamics',this)">Динамика</div>
+        </div>
+
+        <!-- Overview -->
+        <div class="tab-panel active" id="unit-overview">
+          <div class="section-head">
+            <div class="section-title">Колонки листа UNIT</div>
+            <div class="section-badge">94 колонки</div>
+          </div>
+          <div class="col-groups">
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">🆔</span>
+                <span class="col-group-label">Идентификация товара</span>
+                <span class="col-group-count">9 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body open">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">№</div><div class="cd">Порядковый номер</div></div>
+                  <div class="col-chip"><div class="cn">Фильтр</div><div class="cd">← из листа Фильтр</div></div>
+                  <div class="col-chip"><div class="cn">Схема продаж</div><div class="cd">FBO / FBS</div></div>
+                  <div class="col-chip"><div class="cn">Точка отгрузки</div><div class="cd">Склад / Магазин</div></div>
+                  <div class="col-chip"><div class="cn">Тип грузоместа</div><div class="cd">Моно / Микс</div></div>
+                  <div class="col-chip"><div class="cn">Super</div><div class="cd">Суперкомиссия</div></div>
+                  <div class="col-chip"><div class="cn">Артикул</div><div class="cd">PK товара</div></div>
+                  <div class="col-chip"><div class="cn">Название</div><div class="cd">Полное наименование</div></div>
+                  <div class="col-chip"><div class="cn">Статус</div><div class="cd">Продаётся / Скрыт</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">💸</span>
+                <span class="col-group-label">Затраты на единицу</span>
+                <span class="col-group-count">11 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">Себ</div><div class="cd">Себестоимость ₽</div></div>
+                  <div class="col-chip"><div class="cn">Объём, л</div><div class="cd">Для тарифа</div></div>
+                  <div class="col-chip"><div class="cn">Комиссия + 1.5% эквайр</div><div class="cd">Доля от цены</div></div>
+                  <div class="col-chip"><div class="cn">Лог</div><div class="cd">Логистика FBO, ₽</div></div>
+                  <div class="col-chip"><div class="cn">Миля</div><div class="cd">Из начислений</div></div>
+                  <div class="col-chip"><div class="cn">Кроссдок отгрузка</div><div class="cd">₽</div></div>
+                  <div class="col-chip"><div class="cn">Кроссдок перевозка</div><div class="cd">₽</div></div>
+                  <div class="col-chip"><div class="cn">Приёмка поставок</div><div class="cd">₽</div></div>
+                  <div class="col-chip"><div class="cn">Обработка отправл. FBS</div><div class="cd">₽</div></div>
+                  <div class="col-chip"><div class="cn">Хранение 0.75₽</div><div class="cd">₽/день</div></div>
+                  <div class="col-chip"><div class="cn">Налог</div><div class="cd">УСН/НДС</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">📦</span>
+                <span class="col-group-label">Остатки по локациям</span>
+                <span class="col-group-count">7 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">На закупе в К</div><div class="cd">Заказано в Китае, шт</div></div>
+                  <div class="col-chip"><div class="cn">В пути из К</div><div class="cd">Едут в карго, шт</div></div>
+                  <div class="col-chip"><div class="cn">Наш склад</div><div class="cd">У нас, шт</div></div>
+                  <div class="col-chip"><div class="cn">В пути на FBO</div><div class="cd">Едут на Ozon, шт</div></div>
+                  <div class="col-chip"><div class="cn">FBO</div><div class="cd">На складе Ozon, шт</div></div>
+                  <div class="col-chip"><div class="cn">FBS</div><div class="cd">По схеме FBS, шт</div></div>
+                  <div class="col-chip"><div class="cn">% Выкупа</div><div class="cd">Исторический %</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">🔄</span>
+                <span class="col-group-label">Статусы заказов (текущие)</span>
+                <span class="col-group-count">5 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">Сборка</div><div class="cd">шт. в сборке</div></div>
+                  <div class="col-chip"><div class="cn">Отгрузка</div><div class="cd">шт. отгружается</div></div>
+                  <div class="col-chip"><div class="cn">Доставляется</div><div class="cd">шт. в пути к клиенту</div></div>
+                  <div class="col-chip"><div class="cn">Доставлен</div><div class="cd">шт. доставлено</div></div>
+                  <div class="col-chip"><div class="cn">Отменён</div><div class="cd">шт. отменено</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">📅</span>
+                <span class="col-group-label">Динамика заказов по дням</span>
+                <span class="col-group-count">31 колонка</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips" style="gap:4px;">
+                  <div class="col-chip" style="font-size:10px"><div class="cn">31.01–02.03</div><div class="cd">Заказы за каждый день (числовой Excel-формат → дата)</div></div>
+                </div>
+                <div style="margin-top:10px;font-size:11px;color:var(--text3);">
+                  Колонки 34–64 хранят числовые коды дат Excel (46053 = 31.01.2026 …). Данные: derzatel_sery имеет 8 заказов за 31 день, rumka — 49 заказов.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">📈</span>
+                <span class="col-group-label">Аналитика продаж</span>
+                <span class="col-group-count">8 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">Отмены за 31 день</div><div class="cd">шт.</div></div>
+                  <div class="col-chip"><div class="cn">Ск-ть продаж</div><div class="cd">шт./день</div></div>
+                  <div class="col-chip"><div class="cn">Запас в днях для FBO</div><div class="cd">дней</div></div>
+                  <div class="col-chip"><div class="cn">Динамика продаж</div><div class="cd">↑/↓ тренд</div></div>
+                  <div class="col-chip"><div class="cn">Выручка</div><div class="cd">₽ за 31 день</div></div>
+                  <div class="col-chip"><div class="cn">Доля в обороте</div><div class="cd">% от всей выручки</div></div>
+                  <div class="col-chip"><div class="cn">ABC-анализ (beta)</div><div class="cd">A / B / C</div></div>
+                  <div class="col-chip"><div class="cn">Ср. цена продажи</div><div class="cd">₽ факт</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">💎</span>
+                <span class="col-group-label">Unit-экономика (без/с рекламой)</span>
+                <span class="col-group-count">8 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">Текущая цена</div><div class="cd">₽ (из PricingConfig)</div></div>
+                  <div class="col-chip"><div class="cn">Чистыми</div><div class="cd">ЧП без рекл, ₽</div></div>
+                  <div class="col-chip"><div class="cn">ROI</div><div class="cd">Без рекл, %</div></div>
+                  <div class="col-chip"><div class="cn">Маржа</div><div class="cd">Без рекл, %</div></div>
+                  <div class="col-chip"><div class="cn">Чистыми +Р</div><div class="cd">ЧП с рекл, ₽</div></div>
+                  <div class="col-chip"><div class="cn">ROI +Р</div><div class="cd">С рекл, %</div></div>
+                  <div class="col-chip"><div class="cn">Маржа +Р</div><div class="cd">С рекл, %</div></div>
+                  <div class="col-chip"><div class="cn">Моя цена без карты</div><div class="cd">₽ (видит покупатель)</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-group">
+              <div class="col-group-head" onclick="toggleGroup(this)">
+                <span style="font-size:16px">🏁</span>
+                <span class="col-group-label">Конкуренты + реклама</span>
+                <span class="col-group-count">6 колонок</span>
+                <span>▾</span>
+              </div>
+              <div class="col-group-body">
+                <div class="col-chips">
+                  <div class="col-chip"><div class="cn">Конкурент №1/2/3</div><div class="cd">Цена без OZON-карты</div></div>
+                  <div class="col-chip"><div class="cn">МОЙ СПП</div><div class="cd">108 / 114</div></div>
+                  <div class="col-chip"><div class="cn">ДРР c учётом % выкупа</div><div class="cd">расчётный %</div></div>
+                  <div class="col-chip"><div class="cn">ДРР с листа Реклама</div><div class="cd">фактический %</div></div>
+                  <div class="col-chip"><div class="cn">Рейтинг товара</div><div class="cd">4.90 / 5.0</div></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Costs tab -->
+        <div class="tab-panel" id="unit-costs">
+          <div class="table-wrap">
+            <div class="table-toolbar">
+              <div class="search-box"><span>🔍</span><input type="text" placeholder="Артикул..."></div>
+              <button class="btn-sm">Схема ▾</button>
+            </div>
+            <div class="tbl-scroll">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Артикул</th><th>Схема</th><th>Себес, ₽</th><th>Объём, л</th>
+                    <th>Комисс.+экв</th><th>Лог FBO</th><th>Миля</th>
+                    <th>Кросд.отгр</th><th>Кросд.перев</th><th>Налог</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="primary">derzatel_sery</td><td>FBO</td>
+                    <td class="green">49 ₽</td><td>0.52</td>
+                    <td>21.5%</td><td>38.05 ₽</td><td>1.33 ₽</td>
+                    <td>0.39 ₽</td><td>4.16 ₽</td><td>17.14 ₽</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">flajka_170ml</td><td>FBO</td>
+                    <td class="yellow">104 ₽</td><td>0.31</td>
+                    <td>38.5%</td><td>82.45 ₽</td><td>25.00 ₽</td>
+                    <td>0.23 ₽</td><td>2.48 ₽</td><td>34.97 ₽</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">rumka_skladnaya</td><td>FBO</td>
+                    <td class="green">65 ₽</td><td>0.65</td>
+                    <td>38.5%</td><td>87.34 ₽</td><td>6.66 ₽</td>
+                    <td>0.49 ₽</td><td>5.20 ₽</td><td>36.86 ₽</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Mobile cards -->
+            <div class="card-list">
+              <div class="m-card">
+                <div class="m-card-head">
+                  <div class="m-card-title">derzatel_sery</div>
+                  <span class="chip blue">FBO</span>
+                </div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val hi">49 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Комиссия+экв</div><div class="m-row-val">21.5%</div></div>
+                  <div class="m-row"><div class="m-row-label">Логистика FBO</div><div class="m-row-val">38.05 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Миля</div><div class="m-row-val">1.33 ₽</div></div>
+                </div>
+                <button class="expand-btn" onclick="expandCard(this)">
+                  Ещё &nbsp;<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+                </button>
+                <div class="m-card-expand">
+                  <div class="m-row"><div class="m-row-label">Кроссдок отгр</div><div class="m-row-val">0.39 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Кроссдок перев</div><div class="m-row-val">4.16 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Налог</div><div class="m-row-val">17.14 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Объём, л</div><div class="m-row-val">0.52</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head">
+                  <div class="m-card-title">flajka_170ml</div>
+                  <span class="chip blue">FBO</span>
+                </div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val hi">104 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Комиссия+экв</div><div class="m-row-val">38.5%</div></div>
+                  <div class="m-row"><div class="m-row-label">Логистика FBO</div><div class="m-row-val">82.45 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Миля</div><div class="m-row-val">25.00 ₽</div></div>
+                </div>
+                <button class="expand-btn" onclick="expandCard(this)">
+                  Ещё &nbsp;<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+                </button>
+                <div class="m-card-expand">
+                  <div class="m-row"><div class="m-row-label">Кроссдок отгр</div><div class="m-row-val">0.23 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Кроссдок перев</div><div class="m-row-val">2.48 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Налог</div><div class="m-row-val">34.97 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Объём, л</div><div class="m-row-val">0.31</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head">
+                  <div class="m-card-title">rumka_skladnaya</div>
+                  <span class="chip blue">FBO</span>
+                </div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val hi">65 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Комиссия+экв</div><div class="m-row-val">38.5%</div></div>
+                  <div class="m-row"><div class="m-row-label">Логистика FBO</div><div class="m-row-val">87.34 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Миля</div><div class="m-row-val">6.66 ₽</div></div>
+                </div>
+                <button class="expand-btn" onclick="expandCard(this)">
+                  Ещё &nbsp;<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3l3 3 3-3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+                </button>
+                <div class="m-card-expand">
+                  <div class="m-row"><div class="m-row-label">Кроссдок отгр</div><div class="m-row-val">0.49 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Кроссдок перев</div><div class="m-row-val">5.20 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Налог</div><div class="m-row-val">36.86 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Объём, л</div><div class="m-row-val">0.65</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock tab -->
+        <div class="tab-panel" id="unit-stock">
+          <div class="table-wrap">
+            <div class="tbl-scroll">
+              <table class="tbl">
+                <thead>
+                  <tr><th>Артикул</th><th>% выкупа</th><th>Закуп К</th><th>В пути К</th><th>Наш склад</th><th>В пути FBO</th><th>FBO</th><th>FBS</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="primary">derzatel_sery</td>
+                    <td class="green">95%</td>
+                    <td>—</td><td>—</td>
+                    <td class="blue">127 шт</td>
+                    <td>10 шт</td>
+                    <td class="green">112 шт</td>
+                    <td class="text-muted">0</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">flajka_170ml</td>
+                    <td class="green">95%</td>
+                    <td>—</td><td>—</td>
+                    <td class="red">0 шт ⚠️</td>
+                    <td>0</td>
+                    <td class="red">0 шт</td>
+                    <td class="text-muted">0</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">rumka_skladnaya</td>
+                    <td class="yellow">91.7%</td>
+                    <td class="orange">400 шт</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td class="green">83 шт</td>
+                    <td class="text-muted">0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-list">
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip green">95% выкуп</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Наш склад</div><div class="m-row-val blue">127 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">В пути FBO</div><div class="m-row-val">10 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val green">112 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">В Китае</div><div class="m-row-val">—</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">flajka_170ml</div><span class="chip red">⚠️ нет остатков</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Наш склад</div><div class="m-row-val red">0 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val red">0 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">% выкупа</div><div class="m-row-val green">95%</div></div>
+                  <div class="m-row"><div class="m-row-label">В Китае</div><div class="m-row-val">—</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="chip yellow">91.7% выкуп</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Закуп Китай</div><div class="m-row-val orange">400 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val green">83 шт</div></div>
+                  <div class="m-row"><div class="m-row-label">% выкупа</div><div class="m-row-val">91.7%</div></div>
+                  <div class="m-row"><div class="m-row-label">Наш склад</div><div class="m-row-val">—</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Economics tab -->
+        <div class="tab-panel" id="unit-economics">
+          <div class="table-wrap">
+            <div class="tbl-scroll">
+              <table class="tbl">
+                <thead>
+                  <tr><th>Артикул</th><th>Цена ₽</th><th>Ср.цена факт</th><th>Чистыми</th><th>ROI</th><th>Маржа</th><th>Чист.+Рекл</th><th>ROI+Р</th><th>Маржа+Р</th><th>Рейтинг</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="primary">derzatel_sery</td>
+                    <td>300 ₽</td>
+                    <td class="text-muted">282.6 ₽</td>
+                    <td class="green">100.4 ₽</td>
+                    <td class="green">136%</td>
+                    <td class="green">33.5%</td>
+                    <td class="red">🔴 —</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td class="yellow">⭐ 4.90</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">flajka_170ml</td>
+                    <td>630 ₽</td>
+                    <td class="text-muted">—</td>
+                    <td class="green">102.2 ₽</td>
+                    <td class="green">79.3%</td>
+                    <td class="green">16.7%</td>
+                    <td class="red">🔴 —</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td class="yellow">⭐ 4.40</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">rumka_skladnaya</td>
+                    <td>645 ₽</td>
+                    <td class="text-muted">645 ₽</td>
+                    <td class="green">170.1 ₽</td>
+                    <td class="green">189%</td>
+                    <td class="green">26.4%</td>
+                    <td class="green">43.6 ₽</td>
+                    <td class="green">48.4%</td>
+                    <td class="green">6.76%</td>
+                    <td class="yellow">⭐ 4.80</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-list">
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip green">ROI 136%</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Цена</div><div class="m-row-val hi">300 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Чистыми</div><div class="m-row-val green">100.4 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Маржа</div><div class="m-row-val green">33.5%</div></div>
+                  <div class="m-row"><div class="m-row-label">Рейтинг</div><div class="m-row-val yellow">⭐ 4.90</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="chip green">ROI 189%</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Цена</div><div class="m-row-val hi">645 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Чистыми</div><div class="m-row-val green">170.1 ₽</div></div>
+                  <div class="m-row"><div class="m-row-label">Маржа</div><div class="m-row-val green">26.4%</div></div>
+                  <div class="m-row"><div class="m-row-label">Рейтинг</div><div class="m-row-val yellow">⭐ 4.80</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamics tab -->
+        <div class="tab-panel" id="unit-dynamics">
+          <div class="table-wrap">
+            <div class="tbl-scroll">
+              <table class="tbl">
+                <thead>
+                  <tr><th>Артикул</th><th>Заказов/31д</th><th>Скорость/день</th><th>Запас дней</th><th>Выручка/31д</th><th>Доля %</th><th>ABC</th><th>ДРР+выкуп</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="primary">derzatel_sery</td>
+                    <td>8</td>
+                    <td>0.258</td>
+                    <td class="green">434 дн</td>
+                    <td class="green">2 543 ₽</td>
+                    <td>0.032%</td>
+                    <td><span class="abc-c">C</span></td>
+                    <td class="text-muted">—</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">flajka_170ml</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td class="red">∞ (нет продаж)</td>
+                    <td class="red">0 ₽</td>
+                    <td>0%</td>
+                    <td><span class="abc-c">C</span></td>
+                    <td class="text-muted">—</td>
+                  </tr>
+                  <tr>
+                    <td class="primary">rumka_skladnaya</td>
+                    <td>49</td>
+                    <td>1.58</td>
+                    <td class="yellow">52.5 дн</td>
+                    <td class="green">32 250 ₽</td>
+                    <td>0.40%</td>
+                    <td><span class="abc-a">A</span></td>
+                    <td class="green">19.6%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-list">
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="abc-a">A</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Заказов/31д</div><div class="m-row-val hi">49</div></div>
+                  <div class="m-row"><div class="m-row-label">Скорость</div><div class="m-row-val green">1.58/день</div></div>
+                  <div class="m-row"><div class="m-row-label">Запас</div><div class="m-row-val yellow">52.5 дн</div></div>
+                  <div class="m-row"><div class="m-row-label">Выручка/мес</div><div class="m-row-val green">32 250 ₽</div></div>
+                </div>
+              </div>
+              <div class="m-card">
+                <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="abc-c">C</span></div>
+                <div class="m-card-rows">
+                  <div class="m-row"><div class="m-row-label">Заказов/31д</div><div class="m-row-val">8</div></div>
+                  <div class="m-row"><div class="m-row-label">Скорость</div><div class="m-row-val">0.26/день</div></div>
+                  <div class="m-row"><div class="m-row-label">Запас</div><div class="m-row-val green">434 дн</div></div>
+                  <div class="m-row"><div class="m-row-label">Выручка/мес</div><div class="m-row-val">2 543 ₽</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ PAGE: PRODUCTS ══════════════════════════════════ -->
+      <div class="page" id="p-products">
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-box"><span>🔍</span><input type="text" placeholder="Название или артикул..."></div>
+            <button class="btn-sm">Статус ▾</button>
+            <button class="btn-sm primary">+ Добавить</button>
+          </div>
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead>
+                <tr><th>Артикул</th><th>OzonID</th><th>SKU</th><th>Название</th><th>Статус</th><th>Отзывы</th><th>Рейтинг</th><th>Категория</th><th>FBO</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="primary">derzatel_sery</td><td class="mono">34012750</td><td class="mono">191748716</td><td>Zurkibet Кухонный держатель для губок</td><td><span class="chip green">Продаётся</span></td><td>663</td><td class="yellow">4.90</td><td>Аксессуары кухни</td><td class="green">112</td></tr>
+                <tr><td class="primary">flajka_170ml</td><td class="mono">51405294</td><td class="mono">224283892</td><td>Фляжка из нержавейки</td><td><span class="chip yellow">Готов к продаже</span></td><td>93</td><td class="yellow">4.40</td><td>Туристическая посуда</td><td class="red">0</td></tr>
+                <tr><td class="primary">rumka_skladnaya</td><td class="mono">57740804</td><td class="mono">236870360</td><td>Рюмка походная складная 70 мл</td><td><span class="chip green">Продаётся</span></td><td>351</td><td class="yellow">4.80</td><td>Туристическая посуда</td><td class="green">83</td></tr>
+                <tr><td class="primary">portsigar_20_85mm</td><td class="mono">58496899</td><td class="mono">239196987</td><td>Металлический портсигар 20 шт 85мм</td><td><span class="chip green">Продаётся</span></td><td>634</td><td class="yellow">4.90</td><td>Товары для курения</td><td class="green">290</td></tr>
+                <tr><td class="primary">portsigar_20_100mm</td><td class="mono">58496909</td><td class="mono">239203401</td><td>Металлический портсигар 20 шт 100мм</td><td><span class="chip green">Продаётся</span></td><td>717</td><td class="yellow">4.90</td><td>Товары для курения</td><td class="green">330</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip green">Продаётся</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">OzonID</div><div class="m-row-val mono">34012750</div></div>
+                <div class="m-row"><div class="m-row-label">Отзывы</div><div class="m-row-val">663</div></div>
+                <div class="m-row"><div class="m-row-label">Рейтинг</div><div class="m-row-val yellow">⭐ 4.90</div></div>
+                <div class="m-row"><div class="m-row-label">FBO</div><div class="m-row-val green">112 шт</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">flajka_170ml</div><span class="chip yellow">Готов к продаже</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">OzonID</div><div class="m-row-val mono">51405294</div></div>
+                <div class="m-row"><div class="m-row-label">Отзывы</div><div class="m-row-val">93</div></div>
+                <div class="m-row"><div class="m-row-label">Рейтинг</div><div class="m-row-val yellow">⭐ 4.40</div></div>
+                <div class="m-row"><div class="m-row-label">FBO</div><div class="m-row-val red">0 шт ⚠️</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="chip green">Продаётся</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">OzonID</div><div class="m-row-val mono">57740804</div></div>
+                <div class="m-row"><div class="m-row-label">Отзывы</div><div class="m-row-val">351</div></div>
+                <div class="m-row"><div class="m-row-label">Рейтинг</div><div class="m-row-val yellow">⭐ 4.80</div></div>
+                <div class="m-row"><div class="m-row-label">FBO</div><div class="m-row-val green">83 шт</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: INVENTORY ═════════════════════════════════ -->
+      <div class="page" id="p-inventory">
+        <div class="alert warn"><span>⚠️</span><div>flajka_170ml — нулевые остатки на всех складах. Необходима закупка.</div></div>
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-box"><span>🔍</span><input type="text" placeholder="Артикул..."></div>
+            <button class="btn-sm">Склад ▾</button>
+          </div>
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Артикул</th><th>Закуп.цена</th><th>Наш склад</th><th>В пути FBO</th><th>FBO Ozon</th><th>В Китае</th><th>В пути К</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">kupalnik_black_M</td><td>353 ₽</td><td>0</td><td>—</td><td><span class="chip gray">1577 (план)</span></td><td>0</td><td>0</td></tr>
+                <tr><td class="primary">derzhatel_schetok_mini</td><td>22 ₽</td><td>0</td><td>—</td><td><span class="chip gray">98 (план)</span></td><td>0</td><td>0</td></tr>
+                <tr><td class="primary">derzatel_sery</td><td>49 ₽</td><td class="blue">127</td><td>10</td><td class="green">112</td><td>—</td><td>—</td></tr>
+                <tr><td class="primary">flajka_170ml</td><td>104 ₽</td><td class="red">0 ⚠️</td><td>0</td><td class="red">0</td><td>—</td><td>—</td></tr>
+                <tr><td class="primary">rumka_skladnaya</td><td>65 ₽</td><td>—</td><td>—</td><td class="green">83</td><td class="orange">400</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip blue">В норме</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val">49 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Наш склад</div><div class="m-row-val blue">127 шт</div></div>
+                <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val green">112 шт</div></div>
+                <div class="m-row"><div class="m-row-label">В пути FBO</div><div class="m-row-val">10 шт</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">flajka_170ml ⚠️</div><span class="chip red">Нет остатков</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val">104 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Наш склад</div><div class="m-row-val red">0 шт</div></div>
+                <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val red">0 шт</div></div>
+                <div class="m-row"><div class="m-row-label">В Китае</div><div class="m-row-val">—</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="chip orange">В Китае</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val">65 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">FBO Ozon</div><div class="m-row-val green">83 шт</div></div>
+                <div class="m-row"><div class="m-row-label">В Китае</div><div class="m-row-val orange">400 шт</div></div>
+                <div class="m-row"><div class="m-row-label">Запас дней</div><div class="m-row-val yellow">52 дн</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: PROCUREMENT ═══════════════════════════════ -->
+      <div class="page" id="p-procurement">
+        <div class="stat-grid">
+          <div class="stat-card" style="--accent-color:var(--accent)"><div class="stat-label">Запас дней цель</div><div class="stat-val">60</div><div class="stat-sub">дней</div></div>
+          <div class="stat-card" style="--accent-color:var(--yellow)"><div class="stat-label">Бюджет закупа</div><div class="stat-val">0 ₽</div><div class="stat-sub">текущий</div></div>
+          <div class="stat-card" style="--accent-color:var(--orange)"><div class="stat-label">Цикл закупки</div><div class="stat-val">41 дн</div><div class="stat-sub">до продажи</div></div>
+          <div class="stat-card" style="--accent-color:var(--purple)"><div class="stat-label">Курс юаня</div><div class="stat-val">13 ₽</div><div class="stat-sub">за юань</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Артикул</th><th>Запас дней</th><th>Скорость</th><th>Заказать шт</th><th>Себес</th><th>Сумма</th><th>Статус</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">derzatel_sery</td><td class="green">434</td><td>0.26/д</td><td class="text-muted">0</td><td>49 ₽</td><td>0 ₽</td><td><span class="chip gray">Не нужен</span></td></tr>
+                <tr><td class="primary">flajka_170ml</td><td class="red">0</td><td>0/д</td><td class="red">требует анализа</td><td>104 ₽</td><td>—</td><td><span class="chip red">⚠️ Срочно</span></td></tr>
+                <tr><td class="primary">rumka_skladnaya</td><td class="yellow">52</td><td>1.58/д</td><td class="orange">35 (до 60 дн)</td><td>65 ₽</td><td>2 275 ₽</td><td><span class="chip yellow">Планируется</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">rumka_skladnaya</div><span class="chip yellow">Планируется</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Запас сейчас</div><div class="m-row-val yellow">52 дня</div></div>
+                <div class="m-row"><div class="m-row-label">Скорость</div><div class="m-row-val">1.58/день</div></div>
+                <div class="m-row"><div class="m-row-label">Заказать</div><div class="m-row-val orange">~35 шт</div></div>
+                <div class="m-row"><div class="m-row-label">Сумма</div><div class="m-row-val">2 275 ₽</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">flajka_170ml</div><span class="chip red">⚠️ Срочно</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Запас</div><div class="m-row-val red">0 дней</div></div>
+                <div class="m-row"><div class="m-row-label">Продажи/д</div><div class="m-row-val">нет данных</div></div>
+                <div class="m-row"><div class="m-row-label">Себес</div><div class="m-row-val">104 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Статус</div><div class="m-row-val red">Нет остатков</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: FINANCE ═══════════════════════════════════ -->
+      <div class="page" id="p-finance">
+        <div class="stat-grid">
+          <div class="stat-card" style="--accent-color:var(--green)"><div class="stat-label">Выручка</div><div class="stat-val">2.81М ₽</div></div>
+          <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">Комиссия</div><div class="stat-val">-1.04М ₽</div></div>
+          <div class="stat-card" style="--accent-color:var(--orange)"><div class="stat-label">Эквайринг</div><div class="stat-val">-23.7К ₽</div></div>
+          <div class="stat-card" style="--accent-color:var(--purple)"><div class="stat-label">Логистика</div><div class="stat-val">-204К ₽</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Артикул</th><th>Выкупов</th><th>Возврат</th><th>Выручка</th><th>Комиссия</th><th>ЧП</th><th>ROI</th><th>% выкупа</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">podsvetka_dla_foto</td><td>77</td><td>4</td><td class="green">87 793 ₽</td><td class="red">-35 995 ₽</td><td class="orange">~50К ₽</td><td>~57%</td><td>59.3%</td></tr>
+                <tr><td class="primary">derz_met_sklad_kruk</td><td>9</td><td>0</td><td class="green">7 398 ₽</td><td class="red">-2 959 ₽</td><td>~3.7К ₽</td><td>~50%</td><td>100%</td></tr>
+                <tr><td class="primary">zoo_filtr_poilka</td><td>34</td><td>1</td><td class="green">37 809 ₽</td><td class="red">-13 233 ₽</td><td>~20К ₽</td><td>~53%</td><td>97.1%</td></tr>
+                <tr><td class="primary">antiplesen</td><td>14</td><td>0</td><td class="green">4 196 ₽</td><td class="red">-839 ₽</td><td>~2.5К ₽</td><td>~60%</td><td>100%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">podsvetka_dla_foto</div><span class="chip green">ЧП ~50К ₽</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Выкупов</div><div class="m-row-val">77 шт</div></div>
+                <div class="m-row"><div class="m-row-label">Выручка</div><div class="m-row-val green">87 793 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Комиссия</div><div class="m-row-val red">-35 995 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">% выкупа</div><div class="m-row-val yellow">59.3%</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: TRANSACTIONS ══════════════════════════════ -->
+      <div class="page" id="p-transactions">
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-box"><span>🔍</span><input type="text" placeholder="Номер отправления..."></div>
+            <button class="btn-sm">Тип ▾</button>
+          </div>
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Дата</th><th>Тип</th><th>Отправление</th><th>Артикул</th><th>SKU</th><th>За продажу</th><th>Комиссия</th><th>Лог.прям</th><th>Миля</th><th>Итого</th></tr></thead>
+              <tbody>
+                <tr><td class="text-muted">16.02.2026</td><td><span class="chip gray" style="font-size:9px">Возврат/невыкуп</span></td><td class="mono">79044331-0063-1</td><td class="primary">podsvetka_dla_foto</td><td class="mono">1547037353</td><td>0 ₽</td><td>0 ₽</td><td class="red">-46.77 ₽</td><td class="red">-21.48 ₽</td><td class="red">-68.25 ₽</td></tr>
+                <tr><td class="text-muted">16.02.2026</td><td><span class="chip gray" style="font-size:9px">Эквайринг</span></td><td class="mono">56804970-0214</td><td class="primary">derz_met_sklad</td><td class="mono">564593851</td><td>0 ₽</td><td>0 ₽</td><td>0 ₽</td><td>0 ₽</td><td class="red">-8.92 ₽</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">podsvetka_dla_foto</div><span class="chip gray">Возврат</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Дата</div><div class="m-row-val">16.02.2026</div></div>
+                <div class="m-row"><div class="m-row-label">Отправление</div><div class="m-row-val mono" style="font-size:10px">79044331-0063-1</div></div>
+                <div class="m-row"><div class="m-row-label">Лог.прямая</div><div class="m-row-val red">-46.77 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Итого</div><div class="m-row-val red">-68.25 ₽</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: ADS ════════════════════════════════════════ -->
+      <div class="page" id="p-ads">
+        <div class="stat-grid">
+          <div class="stat-card" style="--accent-color:var(--accent)"><div class="stat-label">ДРР Общий</div><div class="stat-val">5.43%</div></div>
+          <div class="stat-card" style="--accent-color:var(--yellow)"><div class="stat-label">ДРР+выкуп</div><div class="stat-val">19.23%</div></div>
+          <div class="stat-card" style="--accent-color:var(--green)"><div class="stat-label">Выручка</div><div class="stat-val">319К ₽</div></div>
+          <div class="stat-card" style="--accent-color:var(--red)"><div class="stat-label">Расход</div><div class="stat-val">17.3К ₽</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Дата</th><th>Артикул</th><th>Тип</th><th>Кол-во</th><th>Выручка</th><th>Расход</th><th>ДРР</th></tr></thead>
+              <tbody>
+                <tr><td>25.01.2026</td><td class="primary">Swimming_goggles_golub</td><td><span class="chip blue">Поиск</span></td><td>1</td><td class="green">910 ₽</td><td class="red">91 ₽</td><td>10%</td></tr>
+                <tr><td>25.01.2026</td><td class="primary">datchik_davleniya_TY01</td><td><span class="chip blue">Поиск</span></td><td>1</td><td class="green">2 820 ₽</td><td class="red">282 ₽</td><td>10%</td></tr>
+                <tr><td>29.01.2026</td><td class="primary">krimper</td><td><span class="chip purple">Трафарет</span></td><td>0</td><td>0 ₽</td><td class="red">280.85 ₽</td><td>—</td></tr>
+                <tr><td>31.01.2026</td><td class="primary">krimper</td><td><span class="chip purple">Трафарет</span></td><td>1</td><td class="green">990 ₽</td><td class="red">291.93 ₽</td><td class="red">29.5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">Swimming_goggles_golub</div><span class="chip blue">Поиск</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Дата</div><div class="m-row-val">25.01.2026</div></div>
+                <div class="m-row"><div class="m-row-label">Выручка</div><div class="m-row-val green">910 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Расход</div><div class="m-row-val red">91 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">ДРР</div><div class="m-row-val green">10%</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">krimper (Трафарет)</div><span class="chip purple">Трафарет</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">31.01 заказов</div><div class="m-row-val">1 шт</div></div>
+                <div class="m-row"><div class="m-row-label">Выручка</div><div class="m-row-val green">990 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Расход</div><div class="m-row-val red">291.93 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">ДРР</div><div class="m-row-val red">29.5%</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: PRICES ════════════════════════════════════ -->
+      <div class="page" id="p-prices">
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Артикул</th><th>До скидки</th><th>Текущая</th><th>Мин цена</th><th>Акционная</th><th>Участие в акции</th><th>Комиссия%</th><th>Лог FBO мин</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">derzatel_sery</td><td>590 ₽</td><td class="green">300 ₽</td><td>—</td><td>270 ₽</td><td><span class="chip green">Да</span></td><td>20%</td><td>21.35 ₽</td></tr>
+                <tr><td class="primary">flajka_170ml</td><td>690 ₽</td><td class="green">630 ₽</td><td>—</td><td>—</td><td><span class="chip gray">Нет</span></td><td>37%</td><td>46.77 ₽</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip green">В акции</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">До скидки</div><div class="m-row-val">590 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Текущая</div><div class="m-row-val green">300 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Акционная</div><div class="m-row-val blue">270 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Комиссия</div><div class="m-row-val">20%</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: DELIVERY ══════════════════════════════════ -->
+      <div class="page" id="p-delivery">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Кластер</div><div class="stat-val" style="font-size:14px">Все кластеры</div></div>
+          <div class="stat-card"><div class="stat-label">Склад</div><div class="stat-val" style="font-size:14px">ХОРУГВИНО</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Артикул</th><th>Допоставка (дн)</th><th>Доступно</th><th>Заказы/31д</th><th>Москва %</th><th>Тверь %</th><th>СПб %</th><th>Уфа %</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">derzatel_sery</td><td class="green">473</td><td class="blue">127</td><td>8</td><td>23.1%</td><td>7.7%</td><td>7.7%</td><td>7.7%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">derzatel_sery</div><span class="chip green">473 дня запас</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Доступно</div><div class="m-row-val blue">127 шт</div></div>
+                <div class="m-row"><div class="m-row-label">Заказов/31д</div><div class="m-row-val">8</div></div>
+                <div class="m-row"><div class="m-row-label">Москва</div><div class="m-row-val">23.1% · 3 шт</div></div>
+                <div class="m-row"><div class="m-row-label">СПб/Тверь/Уфа</div><div class="m-row-val">~7.7% каждый</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: TARIFFS ═══════════════════════════════════ -->
+      <div class="page" id="p-tariffs">
+        <div class="table-wrap">
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Объём, л</th><th>FBO ₽</th><th>До 300₽ товар</th><th>Миля</th><th>Льгота <300₽</th><th>Льгота <100₽</th></tr></thead>
+              <tbody>
+                <tr><td>0.1</td><td>46 ₽</td><td>17 ₽</td><td>5.5%</td><td class="green">20%</td><td class="green">14%</td></tr>
+                <tr><td>0.2</td><td>46 ₽</td><td>17 ₽</td><td>min ₽</td><td>—</td><td>—</td></tr>
+                <tr><td>0.3</td><td>46 ₽</td><td>19 ₽</td><td>25 ₽</td><td>—</td><td>—</td></tr>
+                <tr><td>0.4</td><td>46 ₽</td><td>19 ₽</td><td>max ₽</td><td>—</td><td>—</td></tr>
+                <tr><td>0.5</td><td>46 ₽</td><td>21 ₽</td><td>25 ₽</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">Объём 0.1–0.2 л</div><span class="chip blue">46 ₽</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">FBO</div><div class="m-row-val">46 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">До 300₽</div><div class="m-row-val">17 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Миля</div><div class="m-row-val">5.5%</div></div>
+                <div class="m-row"><div class="m-row-label">Льгота <300₽</div><div class="m-row-val green">20%</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE: ORDERS ════════════════════════════════════ -->
+      <div class="page" id="p-orders">
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-box"><span>🔍</span><input type="text" placeholder="Артикул или номер..."></div>
+            <button class="btn-sm">Статус ▾</button>
+            <button class="btn-sm">Кластер ▾</button>
+          </div>
+          <div class="tbl-scroll">
+            <table class="tbl">
+              <thead><tr><th>Дата</th><th>Отправление</th><th>Статус</th><th>Артикул</th><th>Сумма</th><th>Кл.отгр</th><th>Кл.дост</th><th>Склад</th><th>Город</th></tr></thead>
+              <tbody>
+                <tr><td>27.01</td><td class="mono" style="font-size:10px">0151364421-0354-1</td><td><span class="chip green">Доставлен</span></td><td class="primary">avto_klema_2sht</td><td class="green">823 ₽</td><td>Уфа</td><td>Дальн.Вост</td><td>УФА_РФЦ</td><td>Николаевск</td></tr>
+                <tr><td>27.01</td><td class="mono" style="font-size:10px">55220297-0400-2</td><td><span class="chip green">Доставлен</span></td><td class="primary">cardholder_black</td><td class="green">300 ₽</td><td>Москва</td><td>Москва</td><td>ХОРУГВИНО</td><td>Долгопрудный</td></tr>
+                <tr><td>27.01</td><td class="mono" style="font-size:10px">08496748-0033-1</td><td><span class="chip red">Отменён</span></td><td class="primary">ero_prostyn_red</td><td class="text-muted">2 393 ₽</td><td>СПб</td><td>СПб</td><td>СПБ_БУГРЫ</td><td>Санкт-Петербург</td></tr>
+                <tr><td>27.01</td><td class="mono" style="font-size:10px">0147890022-0480-5</td><td><span class="chip green">Доставлен</span></td><td class="primary">sport_maska_black</td><td class="green">1 835 ₽</td><td>Дальн.Вост</td><td>Дальн.Вост</td><td>ХАБАРОВСК_2</td><td>Владивосток</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-list">
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">avto_klema_2sht</div><span class="chip green">Доставлен</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Дата</div><div class="m-row-val">27.01.2026</div></div>
+                <div class="m-row"><div class="m-row-label">Сумма</div><div class="m-row-val green">823 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Откуда</div><div class="m-row-val">Уфа</div></div>
+                <div class="m-row"><div class="m-row-label">Куда</div><div class="m-row-val">Николаевск-на-Амуре</div></div>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-card-head"><div class="m-card-title">ero_prostyn_red</div><span class="chip red">Отменён</span></div>
+              <div class="m-card-rows">
+                <div class="m-row"><div class="m-row-label">Дата</div><div class="m-row-val">27.01.2026</div></div>
+                <div class="m-row"><div class="m-row-label">Сумма</div><div class="m-row-val text-muted">2 393 ₽</div></div>
+                <div class="m-row"><div class="m-row-label">Склад</div><div class="m-row-val">СПБ_БУГРЫ_РФЦ</div></div>
+                <div class="m-row"><div class="m-row-label">Город</div><div class="m-row-val">Санкт-Петербург</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-wrap -->
+
+    <!-- BOTTOM NAV (mobile) -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav-inner">
+        <button class="bnav-item active" onclick="nav('dashboard',this,true)"><span class="bicon">⚡</span>Дашборд</button>
+        <button class="bnav-item" onclick="nav('unit',this,true)"><span class="bicon">📊</span>UNIT</button>
+        <button class="bnav-item" onclick="nav('inventory',this,true)"><span class="bicon">📦</span>Остатки</button>
+        <button class="bnav-item" onclick="nav('ads',this,true)"><span class="bicon">📣</span>Реклама</button>
+        <button class="bnav-item" onclick="openSidebar()"><span class="bicon">☰</span>Ещё</button>
+      </div>
+    </nav>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+const pageNames = {
+  dashboard:'Дашборд', unit:'UNIT-экономика', products:'Товары',
+  inventory:'Остатки', procurement:'Закупка', finance:'Расчёт ЧП',
+  transactions:'Начисления', ads:'Реклама', prices:'Цены и акции',
+  delivery:'Поставки', tariffs:'Тарифы', orders:'Заказы'
+};
+
+function nav(id, el, fromBottom) {
+  // pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  // topbar title
+  document.getElementById('topbar-title').textContent = pageNames[id] || id;
+  // sidebar nav
+  document.querySelectorAll('.sidebar .nav-item').forEach(n => n.classList.remove('active'));
+  if (!fromBottom && el) el.classList.add('active');
+  // bottom nav
+  if (fromBottom) {
+    document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+  // scroll top
+  document.getElementById('page-wrap').scrollTop = 0;
+  closeSidebar();
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function switchTab(page, tabId, el) {
+  const panels = document.querySelectorAll(`#p-${page} .tab-panel`);
+  const tabs = document.querySelectorAll(`#${page}-tabs .tab`);
+  panels.forEach(p => p.classList.remove('active'));
+  tabs.forEach(t => t.classList.remove('active'));
+  document.getElementById(`${page}-${tabId}`).classList.add('active');
+  el.classList.add('active');
+}
+
+function toggleGroup(head) {
+  const body = head.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function expandCard(btn) {
+  const expand = btn.nextElementSibling;
+  expand.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+</script>
+</body>
+</html>

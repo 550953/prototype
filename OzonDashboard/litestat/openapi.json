@@ -1,0 +1,1014 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ShikinN Analytics API",
+    "description": "REST API для аналитической платформы маркетплейсов. Все данные в рублях (RUB). Даты в формате ISO 8601 (YYYY-MM-DD).",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ShikinN Analytics",
+      "email": "api@shikinn.ru"
+    }
+  },
+  "servers": [
+    { "url": "https://api.shikinn.ru/v1", "description": "Production" },
+    { "url": "http://localhost:3000/v1",  "description": "Local mock" }
+  ],
+  "tags": [
+    { "name": "organization", "description": "Организация и магазины" },
+    { "name": "analytics",    "description": "Аналитика продаж" },
+    { "name": "products",     "description": "Товары" },
+    { "name": "ads",          "description": "Реклама и кампании" },
+    { "name": "orders",       "description": "Заказы" },
+    { "name": "finance",      "description": "Финансы и отчётность" },
+    { "name": "notifications","description": "Уведомления" }
+  ],
+  "paths": {
+    "/organization": {
+      "get": {
+        "tags": ["organization"],
+        "summary": "Получить данные организации",
+        "operationId": "getOrganization",
+        "responses": {
+          "200": {
+            "description": "Данные организации",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Organization" },
+                "example": {
+                  "id": "org_001",
+                  "name": "Название организации",
+                  "account_id": "79871816696",
+                  "subscription": "pro",
+                  "balance_rub": 0.00,
+                  "shops": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/summary": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Сводные показатели аналитики",
+        "operationId": "getAnalyticsSummary",
+        "parameters": [
+          { "$ref": "#/components/parameters/periodDays" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          { "$ref": "#/components/parameters/shopId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сводные данные аналитики за период",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AnalyticsSummary" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/chart": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Данные графика по дням",
+        "operationId": "getAnalyticsChart",
+        "parameters": [
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          { "$ref": "#/components/parameters/shopId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Массив точек для графика",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/ChartPoint" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/abc": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "ABC-анализ товаров",
+        "operationId": "getAbcAnalysis",
+        "parameters": [
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          { "$ref": "#/components/parameters/shopId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Результат ABC-анализа",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AbcAnalysis" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/warehouse": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Остатки на складах",
+        "operationId": "getWarehouseStock",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Информация по складам",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WarehouseInfo" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["products"],
+        "summary": "Список товаров",
+        "operationId": "getProducts",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          {
+            "name": "abc_z",
+            "in": "query",
+            "description": "Фильтр по ABC-классу (заказы)",
+            "schema": { "type": "string", "enum": ["A","B","C"] }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Поле сортировки",
+            "schema": { "type": "string", "enum": ["revenue_rub","qty_sold","profit_rub","buyout_pct"] }
+          },
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/perPage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пагинированный список товаров",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data":  { "type": "array", "items": { "$ref": "#/components/schemas/Product" } },
+                    "total": { "type": "integer", "example": 106 },
+                    "page":  { "type": "integer", "example": 1 },
+                    "per_page": { "type": "integer", "example": 20 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "tags": ["products"],
+        "summary": "Карточка товара",
+        "operationId": "getProductById",
+        "parameters": [
+          { "name": "productId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Карточка товара",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Product" } } }
+          },
+          "404": { "description": "Товар не найден" }
+        }
+      }
+    },
+    "/ads/summary": {
+      "get": {
+        "tags": ["ads"],
+        "summary": "Сводные показатели рекламы",
+        "operationId": "getAdsSummary",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Метрики рекламных кампаний",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AdsSummary" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/days": {
+      "get": {
+        "tags": ["ads"],
+        "summary": "Данные рекламы по дням (3-уровневая структура)",
+        "operationId": "getAdsDays",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Дни → кампании → артикулы",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/AdsDayRow" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/campaigns": {
+      "get": {
+        "tags": ["ads"],
+        "summary": "Список рекламных кампаний",
+        "operationId": "getAdsCampaigns",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["active","paused","stopped"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список кампаний",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/AdCampaign" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/chart": {
+      "get": {
+        "tags": ["ads"],
+        "summary": "Данные графика рекламы",
+        "operationId": "getAdsChart",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Временные ряды по рекламным метрикам",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdsChartData" } }
+            }
+          }
+        }
+      }
+    },
+    "/ads/heatmap": {
+      "get": {
+        "tags": ["ads"],
+        "summary": "Тепловая карта заказов",
+        "operationId": "getAdsHeatmap",
+        "parameters": [{ "$ref": "#/components/parameters/shopId" }],
+        "responses": {
+          "200": {
+            "description": "Матрица день×час",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Heatmap" } } }
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": ["orders"],
+        "summary": "Список заказов",
+        "operationId": "getOrders",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/perPage" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Заказы с разбивкой по товарам",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "summary": { "$ref": "#/components/schemas/OrdersSummary" },
+                    "data":    { "type": "array", "items": { "$ref": "#/components/schemas/OrderItem" } },
+                    "total":   { "type": "integer" },
+                    "page":    { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/finance/summary": {
+      "get": {
+        "tags": ["finance"],
+        "summary": "Финансовая сводка (Главная финансов)",
+        "operationId": "getFinanceSummary",
+        "parameters": [
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Сводные финансовые блоки",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FinanceSummary" } } }
+          }
+        }
+      }
+    },
+    "/finance/marketplace-report": {
+      "get": {
+        "tags": ["finance"],
+        "summary": "Отчёт маркетплейса",
+        "operationId": "getMarketplaceReport",
+        "parameters": [
+          { "$ref": "#/components/parameters/shopId" },
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "description": "Группировка данных",
+            "schema": { "type": "string", "enum": ["day","week","month"], "default": "week" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Строки отчёта маркетплейса",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MarketplaceReport" } } }
+          }
+        }
+      }
+    },
+    "/finance/pnl": {
+      "get": {
+        "tags": ["finance"],
+        "summary": "P&L отчёт (Прибыли и убытки)",
+        "operationId": "getPnlReport",
+        "parameters": [
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "PnL по месяцам + итого",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PnlReport" } } }
+          }
+        }
+      }
+    },
+    "/finance/balance": {
+      "get": {
+        "tags": ["finance"],
+        "summary": "Управленческий баланс",
+        "operationId": "getBalance",
+        "parameters": [
+          {
+            "name": "periods",
+            "in": "query",
+            "description": "Количество последних периодов",
+            "schema": { "type": "integer", "enum": [3,6], "default": 3 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Баланс активов и пассивов",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BalanceSheet" } } }
+          }
+        }
+      }
+    },
+    "/finance/expenses-income": {
+      "get": {
+        "tags": ["finance"],
+        "summary": "Внешние расходы и доходы",
+        "operationId": "getExpensesIncome",
+        "parameters": [
+          { "$ref": "#/components/parameters/dateFrom" },
+          { "$ref": "#/components/parameters/dateTo" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список косвенных расходов и доходов",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExpensesIncome" } } }
+          }
+        }
+      }
+    },
+    "/finance/expenses-income/entry": {
+      "post": {
+        "tags": ["finance"],
+        "summary": "Добавить запись расхода или дохода",
+        "operationId": "addExpenseIncomeEntry",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ExpenseIncomeEntry" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Запись создана" },
+          "400": { "description": "Ошибка валидации" }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": ["notifications"],
+        "summary": "Уведомления",
+        "operationId": "getNotifications",
+        "parameters": [
+          {
+            "name": "unread_only",
+            "in": "query",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список уведомлений",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unread_count": { "type": "integer", "example": 90 },
+                    "items": { "type": "array", "items": { "$ref": "#/components/schemas/Notification" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "shopId":    { "name": "shop_id",    "in": "query", "schema": { "type": "string" }, "example": "shop_ozon_001" },
+      "dateFrom":  { "name": "date_from",  "in": "query", "schema": { "type": "string", "format": "date" }, "example": "2026-02-01" },
+      "dateTo":    { "name": "date_to",    "in": "query", "schema": { "type": "string", "format": "date" }, "example": "2026-03-03" },
+      "periodDays":{ "name": "period_days","in": "query", "schema": { "type": "integer", "enum": [7,14,30], "default": 30 } },
+      "page":      { "name": "page",       "in": "query", "schema": { "type": "integer", "default": 1 } },
+      "perPage":   { "name": "per_page",   "in": "query", "schema": { "type": "integer", "default": 20, "maximum": 100 } }
+    },
+    "schemas": {
+      "Organization": {
+        "type": "object",
+        "required": ["id","name"],
+        "properties": {
+          "id":           { "type": "string",  "example": "org_001" },
+          "name":         { "type": "string",  "example": "Название организации" },
+          "account_id":   { "type": "string",  "example": "79871816696" },
+          "subscription": { "type": "string",  "enum": ["free","pro","enterprise"], "example": "pro" },
+          "balance_rub":  { "type": "number",  "format": "float", "example": 0.00 },
+          "shops":        { "type": "array",   "items": { "$ref": "#/components/schemas/Shop" } }
+        }
+      },
+      "Shop": {
+        "type": "object",
+        "required": ["id","marketplace","name","status"],
+        "properties": {
+          "id":            { "type": "string", "example": "shop_ozon_001" },
+          "marketplace":   { "type": "string", "enum": ["ozon","wildberries","yandex"], "example": "ozon" },
+          "name":          { "type": "string", "example": "OZON магазин" },
+          "external_id":   { "type": "string", "example": "41486" },
+          "status":        { "type": "string", "enum": ["active","inactive","error"], "example": "active" },
+          "api_connected": { "type": "boolean","example": true }
+        }
+      },
+      "AnalyticsSummary": {
+        "type": "object",
+        "properties": {
+          "period_days": { "type": "integer", "example": 30 },
+          "date_from":   { "type": "string",  "format": "date" },
+          "date_to":     { "type": "string",  "format": "date" },
+          "ordered": {
+            "type": "object",
+            "properties": {
+              "total_rub":    { "type": "number", "example": 3580990.00 },
+              "total_qty":    { "type": "integer","example": 3400 },
+              "avg_day_rub":  { "type": "number", "example": 255785.00 },
+              "delta_pct":    { "type": "number", "example": -10.0 },
+              "buyout_pct":   { "type": "number", "example": 69.77 }
+            }
+          },
+          "expense": {
+            "type": "object",
+            "properties": {
+              "total_rub":       { "type": "number", "example": -2715327.00 },
+              "pct_of_orders":   { "type": "number", "example": 75.83 },
+              "delta_pct":       { "type": "number", "example": -11.0 }
+            }
+          },
+          "profit": {
+            "type": "object",
+            "properties": {
+              "total_rub":  { "type": "number", "example": 865662.68 },
+              "delta_pct":  { "type": "number", "example": -7.0 }
+            }
+          },
+          "renta_pct":       { "type": "number", "example": 24.17 },
+          "renta_delta_pct": { "type": "number", "example": 3.0 }
+        }
+      },
+      "ChartPoint": {
+        "type": "object",
+        "required": ["date"],
+        "properties": {
+          "date":         { "type": "string", "format": "date", "example": "2026-02-01" },
+          "ordered_rub":  { "type": "number", "example": 280000 },
+          "expense_rub":  { "type": "number", "example": 180000 },
+          "profit_rub":   { "type": "number", "example": 65000  },
+          "ordered_qty":  { "type": "integer","example": 250    }
+        }
+      },
+      "AbcAnalysis": {
+        "type": "object",
+        "properties": {
+          "total_products": { "type": "integer", "example": 106 },
+          "a": { "$ref": "#/components/schemas/AbcGroup" },
+          "b": { "$ref": "#/components/schemas/AbcGroup" },
+          "c": { "$ref": "#/components/schemas/AbcGroup" }
+        }
+      },
+      "AbcGroup": {
+        "type": "object",
+        "properties": {
+          "count":       { "type": "integer", "example": 34 },
+          "revenue_rub": { "type": "number",  "example": 6526600 },
+          "pct":         { "type": "number",  "example": 32.08 },
+          "color":       { "type": "string",  "example": "#00C48C" }
+        }
+      },
+      "WarehouseInfo": {
+        "type": "object",
+        "properties": {
+          "total_qty":         { "type": "integer", "example": 14319 },
+          "cost_price_rub":    { "type": "number",  "example": 3065526 },
+          "retail_price_rub":  { "type": "number",  "example": 15613270 },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type":       { "type": "string", "enum": ["fbo","fbs","way1","way2"] },
+                "label":      { "type": "string", "example": "Склад FBO" },
+                "qty":        { "type": "integer","example": 12919 },
+                "value_rub":  { "type": "number", "example": 14065423 },
+                "pct":        { "type": "number", "example": 90.22 },
+                "color":      { "type": "string", "example": "#5B6CF6" }
+              }
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": ["id","name","article"],
+        "properties": {
+          "id":              { "type": "string",  "example": "prod_001" },
+          "shop_id":         { "type": "string",  "example": "shop_wb_001" },
+          "name":            { "type": "string",  "example": "Швабра для плитки" },
+          "article":         { "type": "string",  "example": "745209202" },
+          "seller_article":  { "type": "string",  "example": "shvabra_sk" },
+          "variant":         { "type": "string",  "nullable": true, "example": "медь" },
+          "category":        { "type": "string",  "example": "Инвентарь для уборки" },
+          "schema":          { "type": "array", "items": { "type": "string", "enum": ["FBO","FBS"] } },
+          "revenue_rub":     { "type": "number",  "example": 19567.00 },
+          "qty_sold":        { "type": "integer", "example": 21 },
+          "profit_rub":      { "type": "number",  "example": 6535.05 },
+          "abc_z":           { "type": "string",  "enum": ["A","B","C"], "example": "C" },
+          "abc_p":           { "type": "string",  "enum": ["A","B","C"], "example": "B" },
+          "buyout_pct":      { "type": "number",  "example": 80.95 },
+          "stock_qty":       { "type": "integer", "example": 45 },
+          "price_rub":       { "type": "number",  "example": 932.00 },
+          "cost_price_rub":  { "type": "number",  "example": 0.00 }
+        }
+      },
+      "AdsSummary": {
+        "type": "object",
+        "properties": {
+          "date_from":    { "type": "string", "format": "date" },
+          "date_to":      { "type": "string", "format": "date" },
+          "top_summary":  { "$ref": "#/components/schemas/AdsTopSummary" },
+          "metrics":      { "type": "object", "additionalProperties": { "$ref": "#/components/schemas/MetricValue" } }
+        }
+      },
+      "AdsTopSummary": {
+        "type": "object",
+        "properties": {
+          "orders_total_rub":          { "type": "number", "example": 2590648.00 },
+          "orders_from_ads_rub":       { "type": "number", "example": 1465926.00 },
+          "spend_rub":                 { "type": "number", "example": -197463.00 },
+          "drr_total_pct":             { "type": "number", "example": 7.62 },
+          "drr_from_rk_pct":           { "type": "number", "example": 13.47 },
+          "orders_total_delta_pct":    { "type": "number", "example": 1.0 },
+          "orders_from_ads_delta_pct": { "type": "number", "example": -20.0 },
+          "spend_delta_pct":           { "type": "number", "example": -24.0 },
+          "drr_total_delta_pct":       { "type": "number", "example": -25.0 },
+          "drr_from_rk_delta_pct":     { "type": "number", "example": -5.0 }
+        }
+      },
+      "MetricValue": {
+        "type": "object",
+        "properties": {
+          "value":     { "type": "number" },
+          "unit":      { "type": "string", "example": "₽" },
+          "delta_pct": { "type": "number", "example": -13.0 }
+        }
+      },
+      "AdsDayRow": {
+        "type": "object",
+        "required": ["date"],
+        "properties": {
+          "date":          { "type": "string", "format": "date" },
+          "impressions":   { "type": "integer" },
+          "clicks":        { "type": "integer" },
+          "ctr_pct":       { "type": "string"  },
+          "cpc_rub":       { "type": "string"  },
+          "cpm_rub":       { "type": "string"  },
+          "cart_adds":     { "type": "integer" },
+          "orders_rub":    { "type": "string"  },
+          "orders_qty":    { "type": "integer" },
+          "spend_rub":     { "type": "string"  },
+          "cr_pct":        { "type": "string"  },
+          "cpa_rub":       { "type": "string"  },
+          "drr_pct":       { "type": "string"  },
+          "drr_total_pct": { "type": "string"  },
+          "campaigns": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AdsCampaignDayRow" }
+          }
+        }
+      },
+      "AdsCampaignDayRow": {
+        "type": "object",
+        "properties": {
+          "campaign_id":   { "type": "string" },
+          "campaign_name": { "type": "string" },
+          "impressions":   { "type": "integer" },
+          "clicks":        { "type": "integer" },
+          "ctr_pct":       { "type": "string"  },
+          "cpc_rub":       { "type": "string"  },
+          "cpm_rub":       { "type": "string"  },
+          "cart_adds":     { "type": "integer" },
+          "orders_rub":    { "type": "string"  },
+          "orders_qty":    { "type": "integer" },
+          "spend_rub":     { "type": "string"  },
+          "cr_pct":        { "type": "string"  },
+          "cpa_rub":       { "type": "string"  },
+          "drr_pct":       { "type": "string"  },
+          "drr_total_pct": { "type": "string"  },
+          "articles": { "type": "array", "items": { "$ref": "#/components/schemas/AdsArticleDayRow" } }
+        }
+      },
+      "AdsArticleDayRow": {
+        "type": "object",
+        "properties": {
+          "product_id":      { "type": "string" },
+          "name":            { "type": "string" },
+          "article":         { "type": "string" },
+          "seller_article":  { "type": "string" },
+          "impressions":     { "type": "integer" },
+          "clicks":          { "type": "integer" },
+          "ctr_pct":         { "type": "string"  },
+          "cpc_rub":         { "type": "string"  },
+          "cpm_rub":         { "type": "string"  },
+          "cart_adds":       { "type": "integer" },
+          "orders_rub":      { "type": "string"  },
+          "orders_qty":      { "type": "integer" },
+          "spend_rub":       { "type": "string"  },
+          "cr_pct":          { "type": "string"  },
+          "cpa_rub":         { "type": "string"  },
+          "drr_pct":         { "type": "string"  }
+        }
+      },
+      "AdCampaign": {
+        "type": "object",
+        "required": ["id","name","status"],
+        "properties": {
+          "id":          { "type": "string",  "example": "19064936" },
+          "marketplace": { "type": "string",  "enum": ["ozon","wildberries"], "example": "ozon" },
+          "status":      { "type": "string",  "enum": ["active","paused","stopped"], "example": "active" },
+          "type":        { "type": "string",  "enum": ["top_promo","pay_per_order","templates"], "example": "top_promo" },
+          "name":        { "type": "string",  "example": "ski_goggles_black" },
+          "created":     { "type": "string",  "format": "date" },
+          "updated":     { "type": "string",  "format": "date" },
+          "orders_rub":  { "type": "string",  "example": "2330487" },
+          "orders_qty":  { "type": "string",  "example": "789 шт" },
+          "spend_rub":   { "type": "string",  "example": "-113610.50" },
+          "drr_pct":     { "type": "string",  "example": "4.87" }
+        }
+      },
+      "AdsChartData": {
+        "type": "object",
+        "properties": {
+          "dates":       { "type": "array", "items": { "type": "string", "format": "date" } },
+          "impressions": { "type": "array", "items": { "type": "integer" } },
+          "clicks":      { "type": "array", "items": { "type": "integer" } },
+          "ctr_pct":     { "type": "array", "items": { "type": "number"  } },
+          "cpm_rub":     { "type": "array", "items": { "type": "number"  } },
+          "cart_adds":   { "type": "array", "items": { "type": "integer" } },
+          "orders_rub":  { "type": "array", "items": { "type": "number"  } },
+          "spend_rub":   { "type": "array", "items": { "type": "number"  } },
+          "cpa_rub":     { "type": "array", "items": { "type": "number"  } },
+          "drr_from_rk": { "type": "array", "items": { "type": "number"  } },
+          "drr_total":   { "type": "array", "items": { "type": "number"  } }
+        }
+      },
+      "Heatmap": {
+        "type": "object",
+        "properties": {
+          "days":  { "type": "array", "items": { "type": "string" }, "example": ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"] },
+          "hours": { "type": "array", "items": { "type": "integer" } },
+          "data":  { "type": "object", "description": "day_index → { hour_index: count }", "additionalProperties": { "type": "object", "additionalProperties": { "type": "integer" } } }
+        }
+      },
+      "OrdersSummary": {
+        "type": "object",
+        "properties": {
+          "total_qty":       { "type": "integer", "example": 72 },
+          "cancelled_qty":   { "type": "integer", "example": 2  },
+          "orders_rub":      { "type": "number",  "example": 73185.00 },
+          "orders_qty":      { "type": "integer", "example": 70 },
+          "returns_rub":     { "type": "number",  "example": 0.00 },
+          "commission_rub":  { "type": "number",  "example": -27083.46 },
+          "logistics_rub":   { "type": "number",  "example": -6603.56 },
+          "ads_rub":         { "type": "number",  "example": -4396.88 },
+          "profit_rub":      { "type": "number",  "nullable": true },
+          "renta_pct":       { "type": "number",  "nullable": true },
+          "drr_pct":         { "type": "number",  "example": 6.01 }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": ["id","name"],
+        "properties": {
+          "id":          { "type": "string" },
+          "name":        { "type": "string" },
+          "seller_article":{ "type": "string" },
+          "variant":     { "type": "string",  "nullable": true },
+          "schema":      { "type": "string",  "enum": ["FBO","FBS"] },
+          "qty":         { "type": "integer" },
+          "sum_rub":     { "type": "number"  },
+          "returns_rub": { "type": "number"  },
+          "profit_rub":  { "type": "number"  },
+          "renta_pct":   { "type": "number"  },
+          "drr_pct":     { "type": "number"  }
+        }
+      },
+      "FinanceSummary": {
+        "type": "object",
+        "properties": {
+          "marketplace": {
+            "type": "object",
+            "properties": {
+              "total_sold_rub":  { "type": "number", "example": 14695704.00 },
+              "sold_delta_pct":  { "type": "number", "example": 12.68 },
+              "profit_rub":      { "type": "number", "nullable": true },
+              "renta_pct":       { "type": "number", "nullable": true },
+              "chart_monthly":   { "type": "array", "items": { "$ref": "#/components/schemas/MonthlyPoint" } }
+            }
+          },
+          "indirect": {
+            "type": "object",
+            "properties": {
+              "expenses_rub": { "type": "number", "example": 0.00 },
+              "income_rub":   { "type": "number", "example": 0.00 }
+            }
+          },
+          "balance_preview": {
+            "type": "object",
+            "properties": {
+              "total_assets_rub":     { "type": "number", "example": 0.00 },
+              "total_liabilities_rub":{ "type": "number", "example": 0.00 },
+              "retained_earnings_rub":{ "type": "number", "example": 0.00 }
+            }
+          }
+        }
+      },
+      "MonthlyPoint": {
+        "type": "object",
+        "properties": {
+          "month":    { "type": "string", "example": "2026-01" },
+          "sold_rub": { "type": "number", "example": 7094804.00 }
+        }
+      },
+      "MarketplaceReport": {
+        "type": "object",
+        "properties": {
+          "date_from": { "type": "string", "format": "date" },
+          "date_to":   { "type": "string", "format": "date" },
+          "periods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label":     { "type": "string" },
+                "date_from": { "type": "string", "format": "date" },
+                "date_to":   { "type": "string", "format": "date" }
+              }
+            }
+          },
+          "rows": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReportRow" }
+          }
+        }
+      },
+      "ReportRow": {
+        "type": "object",
+        "properties": {
+          "key":        { "type": "string", "example": "sold" },
+          "label":      { "type": "string", "example": "Продано" },
+          "icon":       { "type": "string", "nullable": true, "enum": ["circle","info",null] },
+          "color":      { "type": "string", "nullable": true, "enum": ["teal","red","yellow",null] },
+          "expandable": { "type": "boolean","nullable": true },
+          "parent":     { "type": "string", "nullable": true, "example": "sold" },
+          "values":     { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PnlReport": {
+        "type": "object",
+        "properties": {
+          "updated_at": { "type": "string", "format": "date" },
+          "monthly":    { "type": "array", "items": { "$ref": "#/components/schemas/PnlMonth" } },
+          "totals":     { "$ref": "#/components/schemas/PnlTotals" }
+        }
+      },
+      "PnlMonth": {
+        "type": "object",
+        "properties": {
+          "month":               { "type": "string", "example": "2026-01" },
+          "label":               { "type": "string", "example": "Январь 2026" },
+          "revenue_rub":         { "type": "number", "example": 7094804.00 },
+          "direct_costs_rub":    { "type": "number", "example": -5546557.79 },
+          "compensation_rub":    { "type": "number", "example": 6929.71 },
+          "gross_profit_rub":    { "type": "number", "nullable": true },
+          "gross_renta_pct":     { "type": "number", "nullable": true },
+          "ebitda_rub":          { "type": "number", "nullable": true },
+          "ebitda_renta_pct":    { "type": "number", "nullable": true },
+          "taxes_rub":           { "type": "number", "example": -210825.01 },
+          "net_profit_rub":      { "type": "number", "nullable": true },
+          "net_renta_pct":       { "type": "number", "nullable": true },
+          "cost_price_rub":      { "type": "number", "nullable": true },
+          "logistics_rub":       { "type": "number", "example": -713467.34 },
+          "commission_rub":      { "type": "number", "example": -2626622.08 },
+          "ads_rub":             { "type": "number", "example": -902202.16 },
+          "internal_costs_rub":  { "type": "number", "example": -197673.21 },
+          "nnds_rub":            { "type": "number", "example": -175629.37 },
+          "usn_tax_rub":         { "type": "number", "example": -35195.64 },
+          "transfer_to_seller_rub":{ "type": "number", "example": 2661768.91 }
+        }
+      },
+      "PnlTotals": {
+        "type": "object",
+        "properties": {
+          "revenue_rub":       { "type": "number", "example": 14695704.00 },
+          "direct_costs_rub":  { "type": "number", "example": -11355897.23 },
+          "compensation_rub":  { "type": "number", "example": 4326.26 },
+          "gross_profit_rub":  { "type": "number", "nullable": true },
+          "gross_renta_pct":   { "type": "number", "nullable": true },
+          "ebitda_rub":        { "type": "number", "nullable": true },
+          "taxes_rub":         { "type": "number", "example": -423197.39 },
+          "net_profit_rub":    { "type": "number", "nullable": true },
+          "net_renta_pct":     { "type": "number", "nullable": true }
+        }
+      },
+      "BalanceSheet": {
+        "type": "object",
+        "properties": {
+          "periods": { "type": "array", "items": { "type": "string" }, "example": ["2025-12","2026-01","2026-02","2026-03"] },
+          "assets":      { "$ref": "#/components/schemas/BalanceAssets" },
+          "liabilities": { "$ref": "#/components/schemas/BalanceLiabilities" },
+          "control":     { "$ref": "#/components/schemas/BalanceControl" }
+        }
+      },
+      "BalanceAssets": {
+        "type": "object",
+        "properties": {
+          "fixed_assets":           { "type": "array", "items": { "type": "number", "nullable": true } },
+          "goods_in_transit":       { "type": "array", "items": { "type": "number", "nullable": true } },
+          "goods_own_warehouse":    { "type": "array", "items": { "type": "number", "nullable": true } },
+          "goods_mp_warehouse":     { "type": "array", "items": { "type": "number", "nullable": true } },
+          "materials":              { "type": "array", "items": { "type": "number", "nullable": true } },
+          "cash":                   { "type": "array", "items": { "type": "number", "nullable": true } },
+          "receivable_mp":          { "type": "array", "items": { "type": "number", "nullable": true } },
+          "receivable_suppliers":   { "type": "array", "items": { "type": "number", "nullable": true } },
+          "receivable_other":       { "type": "array", "items": { "type": "number", "nullable": true } },
+          "additional":             { "type": "array", "items": { "type": "number", "nullable": true } },
+          "total_assets":           { "type": "array", "items": { "type": "number", "nullable": true } }
+        }
+      },
+      "BalanceLiabilities": {
+        "type": "object",
+        "properties": {
+          "authorized_capital":  { "type": "array", "items": { "type": "number", "nullable": true } },
+          "loans":               { "type": "array", "items": { "type": "number", "nullable": true } },
+          "accounts_payable":    { "type": "array", "items": { "type": "number", "nullable": true } },
+          "retained_earnings":   { "type": "array", "items": { "type": "number", "nullable": true } },
+          "additional":          { "type": "array", "items": { "type": "number", "nullable": true } },
+          "total_liabilities":   { "type": "array", "items": { "type": "number", "nullable": true } }
+        }
+      },
+      "BalanceControl": {
+        "type": "object",
+        "properties": {
+          "net_profit_pnl":       { "type": "array", "items": { "type": "number", "nullable": true } },
+          "dividends_paid":       { "type": "array", "items": { "type": "number", "nullable": true } },
+          "net_profit_retained":  { "type": "array", "items": { "type": "number", "nullable": true } },
+          "net_profit_balance":   { "type": "array", "items": { "type": "number", "nullable": true } },
+          "control_ratio":        { "type": "array", "items": { "type": "number", "nullable": true } }
+        }
+      },
+      "ExpensesIncome": {
+        "type": "object",
+        "properties": {
+          "date_from":         { "type": "string", "format": "date" },
+          "date_to":           { "type": "string", "format": "date" },
+          "external_expenses": { "type": "array", "items": { "$ref": "#/components/schemas/ExpenseIncomeEntry" } },
+          "external_income":   { "type": "array", "items": { "$ref": "#/components/schemas/ExpenseIncomeEntry" } },
+          "total_expenses_rub":{ "type": "number", "example": 0.00 },
+          "total_income_rub":  { "type": "number", "example": 0.00 }
+        }
+      },
+      "ExpenseIncomeEntry": {
+        "type": "object",
+        "required": ["type","amount_rub","date","category"],
+        "properties": {
+          "id":          { "type": "string" },
+          "type":        { "type": "string", "enum": ["expense","income"] },
+          "amount_rub":  { "type": "number", "example": 5000.00 },
+          "date":        { "type": "string", "format": "date" },
+          "category":    { "type": "string", "example": "Маркетинг" },
+          "description": { "type": "string", "example": "Оплата рекламы в соцсетях" },
+          "shop_id":     { "type": "string", "nullable": true }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id":         { "type": "string" },
+          "type":       { "type": "string", "enum": ["info","warning","success","error"] },
+          "title":      { "type": "string" },
+          "message":    { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "read":       { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

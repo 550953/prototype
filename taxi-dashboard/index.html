@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Такси Диспетчерская</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Шапка */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0066CC;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .online-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 30px;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Основная сетка */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+        
+        /* Секция заказов */
+        .orders-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .order-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #0066CC;
+            transition: transform 0.2s;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .order-id {
+            font-weight: 700;
+            font-size: 16px;
+            color: #0066CC;
+            background: #e3f2fd;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge.new {
+            background: #ffeb3b;
+            color: #000;
+        }
+        
+        .badge.assigned {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .badge.completed {
+            background: #9e9e9e;
+            color: white;
+        }
+        
+        .wait-time {
+            color: #ff9800;
+            font-size: 13px;
+            background: #fff3e0;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .client-info {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .client-phone {
+            color: #666;
+            font-family: monospace;
+        }
+        
+        .addresses {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .address {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .address.to {
+            color: #666;
+        }
+        
+        .emoji {
+            font-size: 16px;
+            min-width: 24px;
+        }
+        
+        .recognized-text {
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-style: italic;
+            border: 1px dashed #0066CC;
+        }
+        
+        .text-label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0066CC;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .text-content {
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .audio-duration {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+        
+        .refusals {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .btn-primary {
+            background: #0066CC;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0052a3;
+            transform: scale(1.02);
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            flex: none;
+        }
+        
+        /* Сайдбар */
+        .sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .drivers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .driver-card {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid #eee;
+        }
+        
+        .driver-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status.online {
+            background: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .status.offline {
+            background: #9e9e9e;
+        }
+        
+        .driver-car {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        
+        .driver-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .driver-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .driver-stats .refusal {
+            color: #f44336;
+        }
+        
+        .map-placeholder {
+            background: #e9ecef;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Анимация загрузки */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0066CC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Нижняя панель */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .bottom-bar .btn {
+            flex: 1;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="logo">
+                <span>🚕</span>
+                <span>ТАКСИ ДИСПЕТЧЕРСКАЯ</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="new-count">3</div>
+                    <div class="stat-label">Новых</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="active-count">2</div>
+                    <div class="stat-label">В работе</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completed-count">15</div>
+                    <div class="stat-label">Выполнено</div>
+                </div>
+                <div class="online-indicator">
+                    <span class="dot"></span>
+                    <span id="online-count">4</span>
+                    <span>онлайн</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="main-grid">
+            <!-- Список заказов -->
+            <div class="orders-section">
+                <div class="section-title">
+                    <span>📋</span>
+                    <span>Активные заказы</span>
+                    <span class="badge new" id="orders-count" style="margin-left: auto;">4</span>
+                </div>
+                
+                <div id="orders-list">
+                    <!-- Заказ 1 -->
+                    <div class="order-card" data-order-id="1001">
+                        <div class="order-header">
+                            <span class="order-id">#1001</span>
+                            <span class="badge new">🆕 НОВЫЙ</span>
+                            <span class="wait-time">⏱ 3 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Екатерина</span>
+                            <span class="client-phone">+7(903)***-**-33</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ул. Ленина 15, 3 подъезд</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Курский вокзал</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Подайте машину к третьему подъезду дома 15 по улице Ленина. Мне до Курского вокзала. Я с чемоданом."
+                            </div>
+                            <div class="audio-duration">⏱ 47 сек</div>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="assignDriver(1001)">
+                                🚕 Назначить
+                            </button>
+                            <button class="btn btn-warning" onclick="callClient(1001)">
+                                📞 Позвонить
+                            </button>
+                            <button class="btn btn-danger" onclick="refuseOrder(1001)">
+                                ⚠️ Отказ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Заказ 2 (с отказами) -->
+                    <div class="order-card" data-order-id="1002">
+                        <div class="order-header">
+                            <span class="order-id">#1002</span>
+                            <span class="badge new">🆕 НОВЫЙ</span>
+                            <span class="wait-time">⏱ 7 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Михаил</span>
+                            <span class="client-phone">+7(905)***-**-66</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ТЦ "Европа", центр. вход</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Аэропорт, терминал D</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Заберите меня от торгового центра Европа, центральный вход. Мне в аэропорт, терминал D, рейс в 18:30."
+                            </div>
+                            <div class="audio-duration">⏱ 32 сек</div>
+                        </div>
+                        
+                        <div class="refusals">
+                            <span>⚠️</span>
+                            <span>Отказались: Дмитрий</span>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="assignDriver(1002)">
+                                🚕 Назначить
+                            </button>
+                            <button class="btn btn-warning" onclick="callClient(1002)">
+                                📞 Позвонить
+                            </button>
+                            <button class="btn btn-danger" onclick="refuseOrder(1002)">
+                                ⚠️ Отказ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Заказ 3 (в работе) -->
+                    <div class="order-card" data-order-id="1003">
+                        <div class="order-header">
+                            <span class="order-id">#1003</span>
+                            <span class="badge assigned">🚕 ВЗЯЛ Алексей</span>
+                            <span class="wait-time">⏱ 12 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Анна</span>
+                            <span class="client-phone">+7(916)***-**-99</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ул. Советская 7, кв 45</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Поликлиника, ул. Правды 15</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Нужна машина на улицу Советскую, дом 7, квартира 45. Ребёнка маленького повезу, нужно детское кресло."
+                            </div>
+                            <div class="audio-duration">⏱ 28 сек</div>
+                        </div>
+                        
+                        <div class="refusals">
+                            <span>⚠️</span>
+                            <span>Отказались: Алексей, Сергей</span>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="showDriverInfo(1003)">
+                                👤 Детали
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Сайдбар с водителями -->
+            <div class="sidebar">
+                <div class="section-title">
+                    <span>👤</span>
+                    <span>Водители онлайн</span>
+                </div>
+                
+                <div class="drivers-list" id="drivers-list">
+                    <!-- Водитель 1 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Алексей</span>
+                        </div>
+                        <div class="driver-car">Hyundai Solaris A777AA</div>
+                        <div class="driver-stats">
+                            <span>✅ 15</span>
+                            <span class="refusal">👎 2</span>
+                            <span>⭐ 4.8</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(101)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 2 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Дмитрий</span>
+                        </div>
+                        <div class="driver-car">Kia Rio B888BB</div>
+                        <div class="driver-stats">
+                            <span>✅ 12</span>
+                            <span class="refusal">👎 5</span>
+                            <span>⭐ 4.2</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(102)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 3 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Сергей</span>
+                        </div>
+                        <div class="driver-car">Lada Vesta C333CC</div>
+                        <div class="driver-stats">
+                            <span>✅ 8</span>
+                            <span class="refusal">👎 8</span>
+                            <span>⭐ 3.9</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(103)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 4 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Елена</span>
+                        </div>
+                        <div class="driver-car">Renault Logan M123MM</div>
+                        <div class="driver-stats">
+                            <span>✅ 10</span>
+                            <span class="refusal">👎 1</span>
+                            <span>⭐ 4.9</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(104)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 20px;">
+                    <span>🗺</span>
+                    <span>Карта</span>
+                </div>
+                
+                <div class="map-placeholder">
+                    <div>🗺 Карта с водителями</div>
+                    <div style="font-size: 12px; color: #999;">(интеграция с картами)</div>
+                    <div style="margin-top: 10px;">
+                        <span class="dot"></span> 4 водителя онлайн
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Нижняя панель -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" onclick="refreshData()">
+            🔄 Обновить
+        </button>
+        <button class="btn btn-warning" onclick="showAllDrivers()">
+            👥 Все водители
+        </button>
+        <button class="btn" onclick="showStats()" style="background: #e3f2fd;">
+            📊 Статистика
+        </button>
+    </div>
+    
+    <script>
+        // Telegram Web App интеграция
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand(); // Разворачиваем на весь экран
+            tg.ready();
+            tg.MainButton.setText("ЗАКРЫТЬ").hide();
+        }
+        
+        // Функции для кнопок
+        function assignDriver(orderId) {
+            if (tg) {
+                tg.sendData(JSON.stringify({
+                    action: 'assign',
+                    order_id: orderId
+                }));
+            }
+            alert(`🚕 Назначение водителя на заказ #${orderId}`);
+        }
+        
+        function callClient(orderId) {
+            if (tg) {
+                tg.sendData(JSON.stringify({
+                    action: 'call',
+                    order_id: orderId
+                }));
+            }
+            alert(`📞 Звонок клиенту по заказу #${orderId}`);
+        }
+        
+        function refuseOrder(orderId) {
+            if (confirm(`Зарегистрировать отказ по заказу #${orderId}?`)) {
+                if (tg) {
+                    tg.sendData(JSON.stringify({
+                        action: 'refuse',
+                        order_id: orderId
+                    }));
+                }
+                alert(`⚠️ Отказ зарегистрирован`);
+            }
+        }
+        
+        function showDriverInfo(orderId) {
+            alert(`👤 Информация о водителе по заказу #${orderId}`);
+        }
+        
+        function showOnMap(driverId) {
+            alert(`🗺 Показать водителя на карте`);
+        }
+        
+        function refreshData() {
+            // Здесь будет запрос к серверу
+            alert("🔄 Данные обновлены");
+        }
+        
+        function showAllDrivers() {
+            alert("👥 Список всех водителей");
+        }
+        
+        function showStats() {
+            alert(
+                "📊 СТАТИСТИКА\n" +
+                "━━━━━━━━━━━━\n" +
+                "Всего заказов: 156\n" +
+                "Выполнено: 142\n" +
+                "Отменено: 14\n" +
+                "Средний рейтинг: 4.5"
+            );
+        }
+        
+        // Автообновление каждые 30 секунд
+        setInterval(() => {
+            refreshData();
+        }, 30000);
+        
+        // Обновление времени ожидания
+        function updateWaitTimes() {
+            const waitElements = document.querySelectorAll('.wait-time');
+            waitElements.forEach(el => {
+                let text = el.textContent;
+                let minutes = parseInt(text.replace(/\D/g, ''));
+                if (!isNaN(minutes)) {
+                    minutes++;
+                    el.textContent = `⏱ ${minutes} мин`;
+                }
+            });
+        }
+        
+        // Каждую минуту обновляем время
+        setInterval(updateWaitTimes, 60000);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Такси Диспетчерская</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Шапка */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0066CC;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .online-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 30px;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Основная сетка */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+        
+        /* Секция заказов */
+        .orders-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .order-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #0066CC;
+            transition: transform 0.2s;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .order-id {
+            font-weight: 700;
+            font-size: 16px;
+            color: #0066CC;
+            background: #e3f2fd;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge.new {
+            background: #ffeb3b;
+            color: #000;
+        }
+        
+        .badge.assigned {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .badge.completed {
+            background: #9e9e9e;
+            color: white;
+        }
+        
+        .wait-time {
+            color: #ff9800;
+            font-size: 13px;
+            background: #fff3e0;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .client-info {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .client-phone {
+            color: #666;
+            font-family: monospace;
+        }
+        
+        .addresses {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .address {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .address.to {
+            color: #666;
+        }
+        
+        .emoji {
+            font-size: 16px;
+            min-width: 24px;
+        }
+        
+        .recognized-text {
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-style: italic;
+            border: 1px dashed #0066CC;
+        }
+        
+        .text-label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #0066CC;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .text-content {
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .audio-duration {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+        
+        .refusals {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .btn-primary {
+            background: #0066CC;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0052a3;
+            transform: scale(1.02);
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            flex: none;
+        }
+        
+        /* Сайдбар */
+        .sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .drivers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .driver-card {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid #eee;
+        }
+        
+        .driver-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status.online {
+            background: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .status.offline {
+            background: #9e9e9e;
+        }
+        
+        .driver-car {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        
+        .driver-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .driver-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .driver-stats .refusal {
+            color: #f44336;
+        }
+        
+        .map-placeholder {
+            background: #e9ecef;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Анимация загрузки */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0066CC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Нижняя панель */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .bottom-bar .btn {
+            flex: 1;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="logo">
+                <span>🚕</span>
+                <span>ТАКСИ ДИСПЕТЧЕРСКАЯ</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="new-count">3</div>
+                    <div class="stat-label">Новых</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="active-count">2</div>
+                    <div class="stat-label">В работе</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="completed-count">15</div>
+                    <div class="stat-label">Выполнено</div>
+                </div>
+                <div class="online-indicator">
+                    <span class="dot"></span>
+                    <span id="online-count">4</span>
+                    <span>онлайн</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="main-grid">
+            <!-- Список заказов -->
+            <div class="orders-section">
+                <div class="section-title">
+                    <span>📋</span>
+                    <span>Активные заказы</span>
+                    <span class="badge new" id="orders-count" style="margin-left: auto;">4</span>
+                </div>
+                
+                <div id="orders-list">
+                    <!-- Заказ 1 -->
+                    <div class="order-card" data-order-id="1001">
+                        <div class="order-header">
+                            <span class="order-id">#1001</span>
+                            <span class="badge new">🆕 НОВЫЙ</span>
+                            <span class="wait-time">⏱ 3 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Екатерина</span>
+                            <span class="client-phone">+7(903)***-**-33</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ул. Ленина 15, 3 подъезд</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Курский вокзал</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Подайте машину к третьему подъезду дома 15 по улице Ленина. Мне до Курского вокзала. Я с чемоданом."
+                            </div>
+                            <div class="audio-duration">⏱ 47 сек</div>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="assignDriver(1001)">
+                                🚕 Назначить
+                            </button>
+                            <button class="btn btn-warning" onclick="callClient(1001)">
+                                📞 Позвонить
+                            </button>
+                            <button class="btn btn-danger" onclick="refuseOrder(1001)">
+                                ⚠️ Отказ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Заказ 2 (с отказами) -->
+                    <div class="order-card" data-order-id="1002">
+                        <div class="order-header">
+                            <span class="order-id">#1002</span>
+                            <span class="badge new">🆕 НОВЫЙ</span>
+                            <span class="wait-time">⏱ 7 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Михаил</span>
+                            <span class="client-phone">+7(905)***-**-66</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ТЦ "Европа", центр. вход</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Аэропорт, терминал D</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Заберите меня от торгового центра Европа, центральный вход. Мне в аэропорт, терминал D, рейс в 18:30."
+                            </div>
+                            <div class="audio-duration">⏱ 32 сек</div>
+                        </div>
+                        
+                        <div class="refusals">
+                            <span>⚠️</span>
+                            <span>Отказались: Дмитрий</span>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="assignDriver(1002)">
+                                🚕 Назначить
+                            </button>
+                            <button class="btn btn-warning" onclick="callClient(1002)">
+                                📞 Позвонить
+                            </button>
+                            <button class="btn btn-danger" onclick="refuseOrder(1002)">
+                                ⚠️ Отказ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Заказ 3 (в работе) -->
+                    <div class="order-card" data-order-id="1003">
+                        <div class="order-header">
+                            <span class="order-id">#1003</span>
+                            <span class="badge assigned">🚕 ВЗЯЛ Алексей</span>
+                            <span class="wait-time">⏱ 12 мин</span>
+                        </div>
+                        
+                        <div class="client-info">
+                            <span>👤 Анна</span>
+                            <span class="client-phone">+7(916)***-**-99</span>
+                        </div>
+                        
+                        <div class="addresses">
+                            <div class="address from">
+                                <span class="emoji">📍</span>
+                                <span>ул. Советская 7, кв 45</span>
+                            </div>
+                            <div class="address to">
+                                <span class="emoji">🏁</span>
+                                <span>Поликлиника, ул. Правды 15</span>
+                            </div>
+                        </div>
+                        
+                        <div class="recognized-text">
+                            <div class="text-label">
+                                <span>🎙</span>
+                                <span>Распознанный текст:</span>
+                            </div>
+                            <div class="text-content">
+                                "Нужна машина на улицу Советскую, дом 7, квартира 45. Ребёнка маленького повезу, нужно детское кресло."
+                            </div>
+                            <div class="audio-duration">⏱ 28 сек</div>
+                        </div>
+                        
+                        <div class="refusals">
+                            <span>⚠️</span>
+                            <span>Отказались: Алексей, Сергей</span>
+                        </div>
+                        
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="showDriverInfo(1003)">
+                                👤 Детали
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Сайдбар с водителями -->
+            <div class="sidebar">
+                <div class="section-title">
+                    <span>👤</span>
+                    <span>Водители онлайн</span>
+                </div>
+                
+                <div class="drivers-list" id="drivers-list">
+                    <!-- Водитель 1 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Алексей</span>
+                        </div>
+                        <div class="driver-car">Hyundai Solaris A777AA</div>
+                        <div class="driver-stats">
+                            <span>✅ 15</span>
+                            <span class="refusal">👎 2</span>
+                            <span>⭐ 4.8</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(101)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 2 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Дмитрий</span>
+                        </div>
+                        <div class="driver-car">Kia Rio B888BB</div>
+                        <div class="driver-stats">
+                            <span>✅ 12</span>
+                            <span class="refusal">👎 5</span>
+                            <span>⭐ 4.2</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(102)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 3 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Сергей</span>
+                        </div>
+                        <div class="driver-car">Lada Vesta C333CC</div>
+                        <div class="driver-stats">
+                            <span>✅ 8</span>
+                            <span class="refusal">👎 8</span>
+                            <span>⭐ 3.9</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(103)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                    
+                    <!-- Водитель 4 -->
+                    <div class="driver-card">
+                        <div class="driver-name">
+                            <span class="status online"></span>
+                            <span>Елена</span>
+                        </div>
+                        <div class="driver-car">Renault Logan M123MM</div>
+                        <div class="driver-stats">
+                            <span>✅ 10</span>
+                            <span class="refusal">👎 1</span>
+                            <span>⭐ 4.9</span>
+                        </div>
+                        <button class="btn btn-small" onclick="showOnMap(104)">
+                            🗺 На карте
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="section-title" style="margin-top: 20px;">
+                    <span>🗺</span>
+                    <span>Карта</span>
+                </div>
+                
+                <div class="map-placeholder">
+                    <div>🗺 Карта с водителями</div>
+                    <div style="font-size: 12px; color: #999;">(интеграция с картами)</div>
+                    <div style="margin-top: 10px;">
+                        <span class="dot"></span> 4 водителя онлайн
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Нижняя панель -->
+    <div class="bottom-bar">
+        <button class="btn btn-primary" onclick="refreshData()">
+            🔄 Обновить
+        </button>
+        <button class="btn btn-warning" onclick="showAllDrivers()">
+            👥 Все водители
+        </button>
+        <button class="btn" onclick="showStats()" style="background: #e3f2fd;">
+            📊 Статистика
+        </button>
+    </div>
+    
+    <script>
+        // Telegram Web App интеграция
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand(); // Разворачиваем на весь экран
+            tg.ready();
+            tg.MainButton.setText("ЗАКРЫТЬ").hide();
+        }
+        
+        // Функции для кнопок
+        function assignDriver(orderId) {
+            if (tg) {
+                tg.sendData(JSON.stringify({
+                    action: 'assign',
+                    order_id: orderId
+                }));
+            }
+            alert(`🚕 Назначение водителя на заказ #${orderId}`);
+        }
+        
+        function callClient(orderId) {
+            if (tg) {
+                tg.sendData(JSON.stringify({
+                    action: 'call',
+                    order_id: orderId
+                }));
+            }
+            alert(`📞 Звонок клиенту по заказу #${orderId}`);
+        }
+        
+        function refuseOrder(orderId) {
+            if (confirm(`Зарегистрировать отказ по заказу #${orderId}?`)) {
+                if (tg) {
+                    tg.sendData(JSON.stringify({
+                        action: 'refuse',
+                        order_id: orderId
+                    }));
+                }
+                alert(`⚠️ Отказ зарегистрирован`);
+            }
+        }
+        
+        function showDriverInfo(orderId) {
+            alert(`👤 Информация о водителе по заказу #${orderId}`);
+        }
+        
+        function showOnMap(driverId) {
+            alert(`🗺 Показать водителя на карте`);
+        }
+        
+        function refreshData() {
+            // Здесь будет запрос к серверу
+            alert("🔄 Данные обновлены");
+        }
+        
+        function showAllDrivers() {
+            alert("👥 Список всех водителей");
+        }
+        
+        function showStats() {
+            alert(
+                "📊 СТАТИСТИКА\n" +
+                "━━━━━━━━━━━━\n" +
+                "Всего заказов: 156\n" +
+                "Выполнено: 142\n" +
+                "Отменено: 14\n" +
+                "Средний рейтинг: 4.5"
+            );
+        }
+        
+        // Автообновление каждые 30 секунд
+        setInterval(() => {
+            refreshData();
+        }, 30000);
+        
+        // Обновление времени ожидания
+        function updateWaitTimes() {
+            const waitElements = document.querySelectorAll('.wait-time');
+            waitElements.forEach(el => {
+                let text = el.textContent;
+                let minutes = parseInt(text.replace(/\D/g, ''));
+                if (!isNaN(minutes)) {
+                    minutes++;
+                    el.textContent = `⏱ ${minutes} мин`;
+                }
+            });
+        }
+        
+        // Каждую минуту обновляем время
+        setInterval(updateWaitTimes, 60000);
+    </script>
+</body>
+</html>

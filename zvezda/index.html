@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Николай Шикин · Военные разработки</title>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --surface: rgba(255,255,255,0.04);
+      --surface2: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --orange: #f0821d;
+      --orange2: #ff5722;
+      --orange-glow: rgba(240,130,29,0.15);
+      --orange-glow2: rgba(240,130,29,0.3);
+      --text: #f0f0f0;
+      --muted: #8a8a9a;
+      --green: #22c55e;
+      --neon-blue: #2b6ef0;
+      --neon-purple: #a855f7;
+      --font: 'Golos Text', sans-serif;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 100px 0; }
+    .tag {
+      display: inline-block;
+      background: var(--orange-glow);
+      border: 1px solid rgba(240,130,29,0.3);
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 56px;
+    }
+    .center { text-align: center; }
+    .center .section-sub { margin: 0 auto 56px; }
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px; border-radius: 12px;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      cursor: pointer; border: none; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-orange {
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(240,130,29,0.35);
+    }
+    .btn-orange:hover { box-shadow: 0 6px 30px rgba(240,130,29,0.55); transform: translateY(-2px); }
+    .btn-lg { padding: 16px 40px; font-size: 16px; border-radius: 14px; }
+    .btn-block { width: 100%; justify-content: center; }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    a, a:visited { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--orange) !important; }
+    
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11,11,11,0.85);
+      backdrop-filter: blur(20px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; gap: 40px;
+      height: 70px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 22px; font-weight: 900; color: #fff;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px var(--orange-glow2);
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-btns { display: flex; gap: 12px; margin-left: auto; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 70px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 30%, rgba(240,130,29,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(168,85,247,0.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; opacity: 0.03;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center; position: relative; z-index: 1;
+    }
+    .hero-title {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--orange), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-stats {
+      display: flex; gap: 32px; margin: 32px 0 28px;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat-val {
+      font-size: 28px; font-weight: 900; color: var(--orange);
+    }
+    .hero-stat-label {
+      font-size: 13px; color: var(--muted);
+    }
+
+    /* PROJECT CARD */
+    .project-card {
+      background: linear-gradient(145deg, #121212, #0a0a0a);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .project-header {
+      padding: 24px 24px 0;
+    }
+    .project-tags {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .project-tag {
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .project-tag.red {
+      background: rgba(240,130,29,0.1);
+      color: var(--orange);
+      border-color: rgba(240,130,29,0.3);
+    }
+    .project-title {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .project-desc {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    /* MVP COMPARISON */
+    .mvp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 40px 0 30px;
+    }
+    .mvp-col {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .mvp-col-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mvp-col-title span {
+      color: var(--orange);
+    }
+    .mvp-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+    }
+    .mvp-label {
+      color: var(--muted);
+      font-size: 13px;
+      flex: 1;
+    }
+    .mvp-value {
+      font-weight: 600;
+      font-size: 13px;
+      max-width: 40%;
+      text-align: right;
+    }
+    .mvp-value.green { color: var(--green); }
+    .mvp-note {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(240,130,29,0.05);
+      border: 1px solid rgba(240,130,29,0.2);
+      border-radius: 16px;
+      font-size: 14px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* CONVERSATION */
+    .conversation {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin: 40px 0;
+    }
+    .conv-message {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .conv-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .conv-content {
+      flex: 1;
+    }
+    .conv-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    .conv-name .time {
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: 8px;
+      font-size: 12px;
+    }
+    .conv-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      background: rgba(255,255,255,0.03);
+      padding: 12px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    /* TECH STACK */
+    .tech-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 30px 0;
+    }
+    .tech-item {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tech-item:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* PRICE ROW */
+    .price-row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
+    .price-card {
+      flex: 1;
+      min-width: 180px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+    }
+    .price-stage {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .price-value {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--orange);
+    }
+    .price-value small {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .price-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* CONTACT CARD */
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      padding: 40px;
+      margin: 60px 0;
+    }
+    .contact-avatar {
+      width: 100px; height: 100px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+      flex-shrink: 0;
+    }
+    .contact-info { flex: 1; }
+    .contact-name { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+    .contact-role { color: var(--orange); font-weight: 600; margin-bottom: 16px; }
+    .contact-links {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .contact-links a {
+      color: var(--orange);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 32px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+    }
+    .footer-logo { font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .footer-desc { font-size: 13px; color: var(--muted); max-width: 260px; }
+    .footer-col-title { font-size: 13px; font-weight: 800; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.6); }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--orange); }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .mvp-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .contact-card { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">⚡</div>
+        Шикин Н.Н.
+      </a>
+      <div class="nav-links">
+        <a href="#project">Проект</a>
+        <a href="#mvp">MVP</a>
+        <a href="#tech">Технологии</a>
+        <a href="#price">Стоимость</a>
+        <a href="#contact">Контакты</a>
+      </div>
+      <div class="nav-btns">
+        <a href="#contact" class="btn btn-orange">Обсудить →</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="tag">🔴 Спецразработка</div>
+        <h1 class="hero-title">
+          Цифровой канал<br>видеопередачи <span>с ППРЧ</span>
+        </h1>
+        <p class="section-sub" style="margin-bottom: 20px;">
+          Защищённая связь для БПЛА. FLRC 2.6 Мбит, ESP32-P4, OpenIPC, Atheros. От концепта до серии.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hero-stat-val">1846</div><div class="hero-stat-label">рейтинг</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">111</div><div class="hero-stat-label">отзывов</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">109</div><div class="hero-stat-label">проектов</div></div>
+        </div>
+      </div>
+      <div style="background: linear-gradient(145deg, #1a1a2a, #0b0b0b); border-radius: 24px; border: 1px solid var(--border); padding: 30px;">
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Текущий статус:</div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <span class="tech-item">LR2021</span>
+          <span class="tech-item">FLRC</span>
+          <span class="tech-item">2.6 Мбит/с</span>
+          <span class="tech-item">ESP32-P4</span>
+          <span class="tech-item">OpenIPC</span>
+          <span class="tech-item">Atheros</span>
+        </div>
+        <div style="margin-top: 20px; color: var(--muted);">
+          <div style="margin-bottom: 8px;">🎯 Частоты: 1.8–2.9 ГГц, 2.3–2.7 ГГц, 4.9–6.2 ГГц</div>
+          <div>⚡ ППРЧ на RTC-часах · Задержка < 120 мс · 640×480 @ 60 fps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT CARD -->
+<section class="section" id="project">
+  <div class="container">
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-tags">
+          <span class="project-tag red">🔴 ТЗ получено</span>
+          <span class="project-tag">12.03.2026</span>
+          <span class="project-tag">Военная приёмка</span>
+        </div>
+        <div class="project-title">Цифровой канал видеопередачи на LR2021 с модуляцией FLRC</div>
+        <div class="project-desc">
+          Разработка ПО для чипа LR2021 (FLRC, 2.6 Мбит/с), настройка передатчика/приёмника через Wi-Fi, задержка ≤120 мс на ESP32-P4. Видео 640×480 @ 60 fps, частоты 1.8–2.9 ГГц. Второй вариант на OpenIPC + Atheros с ППРЧ на RTC и расширением диапазона до 2.3–2.7 / 4.9–6.2 ГГц.
+        </div>
+      </div>
+
+      <!-- MVP COMPARISON -->
+      <div style="padding: 0 24px;" id="mvp">
+        <div class="mvp-grid">
+          <!-- Было в ТЗ -->
+          <div class="mvp-col">
+            <div class="mvp-col-title">📋 <span>Было в ТЗ</span></div>
+            <div class="mvp-row"><span class="mvp-label">Чип / плата</span><span class="mvp-value">ESP32-P4, аппаратный H.265</span></div>
+            <div class="mvp-row"><span class="mvp-label">Частотный диапазон</span><span class="mvp-value">1.8–2.9 ГГц, Atheros</span></div>
+            <div class="mvp-row"><span class="mvp-label">Скорость / fps</span><span class="mvp-value">2.6 Мбит/с, 60 fps</span></div>
+            <div class="mvp-row"><span class="mvp-label">Трассировка плат</span><span class="mvp-value">50 Ом импеданс, кастом</span></div>
+            <div class="mvp-row"><span class="mvp-label">Помехоустойчивость</span><span class="mvp-value">FEC, сложные кодеки</span></div>
+          </div>
+          <!-- Стало в MVP -->
+          <div class="mvp-col">
+            <div class="mvp-col-title">⚡ <span>Стало в MVP</span></div>
+            <div class="mvp-row"><span class="mvp-label">Чип / плата</span><span class="mvp-value green">ESP32-CAM, MJPEG</span></div>
+            <div class="mvp-row"><span class="mvp-label">Частотный диапазон</span><span class="mvp-value green">868 МГц (одна несущая)</span></div>
+            <div class="mvp-row"><span class="mvp-label">Скорость / fps</span><span class="mvp-value green">250–300 кбит/с, 5–10 fps</span></div>
+            <div class="mvp-row"><span class="mvp-label">Трассировка плат</span><span class="mvp-value green">Макетка + провода</span></div>
+            <div class="mvp-row"><span class="mvp-label">Помехоустойчивость</span><span class="mvp-value green">Простые повторы (ARQ)</span></div>
+          </div>
+        </div>
+        <div class="mvp-note">
+          ✅ MVP проверяет логику ППРЧ и прохождение сигнала при прыжках по частоте. Всё лишнее отсекаем, оставляем только критическое. Если концепт взлетит — режем полноценную плату с RF-трассировкой и гостайной.
+        </div>
+      </div>
+
+      <!-- CONVERSATION -->
+      <div style="padding: 24px;">
+        <div class="conversation">
+          <div class="conv-message">
+            <div class="conv-avatar">📝</div>
+            <div class="conv-content">
+              <div class="conv-name">Клиент из TG <span class="time">18:09</span></div>
+              <div class="conv-text">Нам необходимо разработать ПО для цифрового канала видеопередачи, используя чип LR2021 с модуляцией FLRC и скоростью 2.6 Мбит. Система должна поддерживать настройку через Wi-Fi, задержка не более 120 мс, видео 640×480 @ 60 fps, частоты 1.8–2.9 ГГц. Также вариант на OpenIPC + Atheros с ППРЧ.</div>
+            </div>
+          </div>
+          <div class="conv-message">
+            <div class="conv-avatar">⚡</div>
+            <div class="conv-content">
+              <div class="conv-name">Николай Шикин <span class="time">18:25</span></div>
+              <div class="conv-text">Есть опыт. Задачу понял. Два варианта: ESP32 + LR2021 (сложнее, но стабильнее) и OpenIPC + Atheros (для экспериментов). Какой приоритет?</div>
+            </div>
+          </div>
+          <div class="conv-message">
+            <div class="conv-avatar">📝</div>
+            <div class="conv-content">
+              <div class="conv-name">Клиент из TG <span class="time">18:29</span></div>
+              <div class="conv-text">Первый вариант лучше. Второй — теоретически, но на практике непонятно. Первый сложнее — нужно разрабатывать схемотехнику и писать код с нуля. Никто раньше этого не делал. Возможно, это вы?</div>
+            </div>
+          </div>
+          <div class="conv-message">
+            <div class="conv-avatar">⚡</div>
+            <div class="conv-content">
+              <div class="conv-name">Николай Шикин <span class="time">18:49</span></div>
+              <div class="conv-text">1. Проверка концепта<br>2. Стек ППРЧ и защита от РЭБ<br>3. Схемотехника и финальное железо<br>Ориентир 100–150k USD с учётом материалов и плат. Срок — до года.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section" id="tech">
+  <div class="container">
+    <div class="center">
+      <div class="tag">Технологии</div>
+      <h2 class="section-title">Что под капотом</h2>
+    </div>
+    <div class="tech-cloud">
+      <span class="tech-item">LR2021</span>
+      <span class="tech-item">FLRC</span>
+      <span class="tech-item">ESP32-P4</span>
+      <span class="tech-item">ESP32-CAM</span>
+      <span class="tech-item">OpenIPC</span>
+      <span class="tech-item">Atheros</span>
+      <span class="tech-item">ППРЧ / FHSS</span>
+      <span class="tech-item">RTC-синхронизация</span>
+      <span class="tech-item">H.264 / H.265</span>
+      <span class="tech-item">MJPEG</span>
+      <span class="tech-item">Wi-Fi AP</span>
+      <span class="tech-item">L2-туннели</span>
+      <span class="tech-item">Mesh-сети</span>
+      <span class="tech-item">LoRa</span>
+      <span class="tech-item">Wintun</span>
+      <span class="tech-item">FastAPI</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section class="section" id="price">
+  <div class="container">
+    <div class="pricing-block" style="background: linear-gradient(145deg, rgba(240,130,29,0.05), rgba(168,85,247,0.03)); border-radius: 32px; padding: 48px 40px; text-align: center;">
+      <div class="tag">Инвестиции</div>
+      <h2 class="section-title" style="margin-bottom: 20px;">Этапы и стоимость</h2>
+      <div class="price-row">
+        <div class="price-card">
+          <div class="price-stage">MVP / прототип</div>
+          <div class="price-value">$2–3k</div>
+          <div class="price-desc">2–3 месяца, проверка концепта на макетках</div>
+        </div>
+        <div class="price-card">
+          <div class="price-stage">Опытный образец</div>
+          <div class="price-value">$30–50k</div>
+          <div class="price-desc">RF-плата, ППРЧ, протоколы, испытания</div>
+        </div>
+        <div class="price-card">
+          <div class="price-stage">Серия / гостайна</div>
+          <div class="price-value">$100–150k</div>
+          <div class="price-desc">Полный цикл, сертификация, ФСТЭК/ФСБ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="contact-card">
+      <div class="contact-avatar">👨‍💻</div>
+      <div class="contact-info">
+        <div class="contact-name">Николай Шикин</div>
+        <div class="contact-role">Архитектор IT-решений, 15 лет опыта</div>
+        <div class="contact-links">
+          <a href="tel:+79781248490">+7 (978) 124-84-90</a>
+          <a href="https://t.me/shikin" target="_blank">@snik550950</a>
+          <a href="https://shikinn.com" target="_blank">shikinn.com</a>
+          <a href="https://freelance.ru/guru_sun" target="_blank">freelance.ru (1846)</a>
+        </div>
+        <div style="margin-top: 16px; color: var(--muted); font-size: 14px;">
+          ✅ Паспорт верифицирован · 111 отзывов 10/10 · 109 проектов · Работаю по Безопасной сделке
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <div class="logo-icon" style="width:30px;height:30px;font-size:14px;">⚡</div>
+          Шикин Н.Н.
+        </div>
+        <div class="footer-desc">Военные и гражданские разработки. Сложные RF-системы, защищённая связь, встраиваемое ПО.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Проекты</div>
+        <ul class="footer-links">
+          <li><a href="#">Видеоканал с ППРЧ</a></li>
+          <li><a href="#">VPN-клиенты</a></li>
+          <li><a href="#">TunCore Engine</a></li>
+          <li><a href="#">Telegram-кабинеты</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Контакты</div>
+        <ul class="footer-links">
+          <li><a href="tel:+79781248490">+7 (978) 124-84-90</a></li>
+          <li><a href="https://t.me/shikin">@snik550950</a></li>
+          <li><a href="https://shikinn.com">shikinn.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Документы</div>
+        <ul class="footer-links">
+          <li><a href="#">Политика</a></li>
+          <li><a href="#">Оферта</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

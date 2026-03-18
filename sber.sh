@@ -1,1 +1,1 @@
-sudo sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && sudo sed -i 's/^#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && echo "PasswordAuthentication yes" | sudo tee -a /etc/ssh/sshd_config && sudo systemctl restart ssh && sudo sshd -T | grep passwordauthentication
+sudo grep -E "DenyUsers|DenyGroups" /etc/ssh/sshd_config

@@ -1,1 +1,1502 @@
-1
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>ShikinAvito · Админ</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050505;
+  --surface: #0d0d0d;
+  --card: rgba(22,22,22,0.85);
+  --card2: rgba(28,28,28,0.9);
+  --accent: #f0821d;
+  --accent-dim: rgba(240,130,29,0.12);
+  --accent-border: rgba(240,130,29,0.25);
+  --green: #00ff9f;
+  --green-dim: rgba(0,255,159,0.1);
+  --red: #ff4f6a;
+  --red-dim: rgba(255,79,106,0.1);
+  --yellow: #fbbf24;
+  --blue: #5b7fff;
+  --text: #ffffff;
+  --text2: #cccccc;
+  --muted: #666666;
+  --muted2: #999999;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --sheet-radius: 24px;
+  --nav-h: 72px;
+  --header-h: 60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Onest',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;flex-direction:column;
+  position:relative;
+  overscroll-behavior:none;
+}
+
+/* CANVAS BG */
+#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.2;}
+
+/* LAYOUT */
+.app-shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;}
+
+/* HEADER */
+.top-bar{
+  height:var(--header-h);
+  background:rgba(5,5,5,0.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  display:flex;align-items:center;
+  padding:0 16px;
+  gap:12px;
+  flex-shrink:0;
+  position:relative;z-index:50;
+}
+.menu-btn{
+  width:38px;height:38px;
+  border:1px solid var(--border2);
+  border-radius:10px;
+  background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:all 0.2s;
+}
+.menu-btn:active{transform:scale(0.92);}
+.logo{
+  font-family:'Unbounded',sans-serif;
+  font-size:15px;font-weight:700;
+  color:var(--accent);
+  text-shadow:0 0 24px rgba(240,130,29,0.45);
+  flex:1;
+}
+.logo span{color:rgba(255,255,255,0.35);font-size:11px;font-weight:400;display:block;margin-top:1px;font-family:'Onest',sans-serif;letter-spacing:0.05em;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.notif-btn{
+  width:38px;height:38px;
+  border:1px solid var(--border2);
+  border-radius:10px;
+  background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;
+  transition:all 0.2s;
+}
+.notif-btn:active{transform:scale(0.92);}
+.notif-dot{
+  position:absolute;top:7px;right:7px;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--red);
+  border:2px solid var(--bg);
+  animation:pulseDot 2s infinite;
+}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(255,79,106,0.4);}50%{box-shadow:0 0 0 4px rgba(255,79,106,0);}}
+.avatar{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),#ff6b00);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;
+  color:#fff;cursor:pointer;
+  box-shadow:0 0 16px rgba(240,130,29,0.3);
+}
+
+/* SCROLL AREA */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 16px);}
+.scroll-area::-webkit-scrollbar{display:none;}
+
+/* PAGE */
+.page{display:none;padding:16px;}
+.page.active{display:block;}
+
+/* SECTION TITLE */
+.sec-title{
+  font-size:11px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sec-title-action{
+  font-size:12px;font-weight:600;
+  color:var(--accent);text-transform:none;
+  letter-spacing:0;cursor:pointer;
+}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.kpi-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  backdrop-filter:blur(12px);
+  cursor:pointer;
+  transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  animation:fadeUp 0.4s both;
+  position:relative;overflow:hidden;
+}
+.kpi-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%, rgba(240,130,29,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.kpi-card:active{transform:scale(0.97);}
+.kpi-label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.kpi-val{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted2);margin-top:6px;display:flex;align-items:center;gap:4px;}
+.kpi-delta{font-size:11px;font-weight:600;padding:2px 6px;border-radius:50px;}
+.kpi-delta.up{color:var(--green);background:var(--green-dim);}
+.kpi-delta.down{color:var(--red);background:var(--red-dim);}
+.kpi-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;
+}
+.kpi-icon.orange{background:var(--accent-dim);}
+.kpi-icon.green{background:var(--green-dim);}
+.kpi-icon.red{background:var(--red-dim);}
+.kpi-icon.blue{background:rgba(91,127,255,0.12);}
+
+/* ACTIVITY FEED */
+.activity-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;margin-bottom:20px;
+  backdrop-filter:blur(12px);
+  animation:fadeUp 0.5s both;
+}
+.activity-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.activity-row:last-child{border-bottom:none;padding-bottom:0;}
+.activity-row:first-child{padding-top:0;}
+.act-icon{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.act-body{flex:1;min-width:0;}
+.act-title{font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.act-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.act-time{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+
+/* OPERATORS LIST */
+.operator-row{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;
+  transition:all 0.2s;
+  animation:fadeUp 0.4s both;
+  margin-bottom:8px;
+}
+.operator-row:active{transform:scale(0.98);}
+.op-avatar{
+  width:42px;height:42px;flex-shrink:0;
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;font-weight:700;color:#fff;
+  position:relative;
+}
+.op-status{
+  position:absolute;bottom:-2px;right:-2px;
+  width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--bg);
+}
+.op-status.online{background:var(--green);box-shadow:0 0 6px var(--green);}
+.op-status.busy{background:var(--yellow);}
+.op-status.offline{background:var(--muted);}
+.op-info{flex:1;min-width:0;}
+.op-name{font-size:14px;font-weight:600;color:var(--text);}
+.op-meta{font-size:11px;color:var(--muted2);margin-top:3px;display:flex;align-items:center;gap:8px;}
+.op-count{
+  font-family:'Unbounded',sans-serif;
+  font-size:16px;font-weight:700;
+  color:var(--accent);
+}
+.op-count-label{font-size:10px;color:var(--muted);margin-top:2px;text-align:right;}
+.chevron-right{opacity:0.3;flex-shrink:0;}
+
+/* LISTINGS PAGE */
+.toolbar{
+  display:flex;gap:8px;align-items:center;
+  margin-bottom:14px;
+}
+.search-box{
+  flex:1;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xs);
+  padding:10px 14px 10px 36px;
+  font-family:'Onest',sans-serif;
+  font-size:14px;color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+}
+.search-box::placeholder{color:var(--muted);}
+.search-box:focus{border-color:var(--accent-border);}
+.search-wrap{position:relative;flex:1;}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);opacity:0.35;pointer-events:none;}
+.filter-btn{
+  width:40px;height:40px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xs);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+  transition:all 0.2s;position:relative;
+}
+.filter-btn.has-filter{border-color:var(--accent-border);}
+.filter-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:16px;height:16px;
+  background:var(--accent);
+  border-radius:50%;
+  font-size:9px;font-weight:700;
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--bg);
+}
+.chips-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;}
+.chips-row::-webkit-scrollbar{display:none;}
+.chip{
+  padding:6px 14px;
+  border-radius:50px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted2);
+  font-family:'Onest',sans-serif;
+  font-size:12px;font-weight:500;
+  cursor:pointer;
+  transition:all 0.18s;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.chip.red.active{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.chip.green.active{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+
+/* LISTING CARD */
+.listing-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden;
+  animation:fadeUp 0.4s both;
+  backdrop-filter:blur(10px);
+}
+.listing-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
+  transition:opacity 0.2s;
+}
+.listing-card.kw::before{background:var(--green);opacity:1;}
+.listing-card.sw::before{background:var(--red);opacity:1;}
+.listing-card:active{transform:scale(0.985);}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.lc-title{font-size:14px;font-weight:600;line-height:1.3;flex:1;}
+.lc-title b{color:var(--accent);}
+.lc-price{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;
+  color:var(--accent);
+  text-shadow:0 0 12px rgba(240,130,29,0.3);
+  white-space:nowrap;
+}
+.lc-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+.lc-meta{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted2);}
+.lc-meta svg{opacity:0.5;}
+.lc-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.tag{padding:3px 9px;border-radius:50px;font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px;}
+.tag.kw{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,255,159,0.2);}
+.tag.sw{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,79,106,0.2);}
+.tag.hot{background:rgba(240,130,29,0.1);color:var(--accent);border:1px solid var(--accent-border);}
+.lc-footer{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.lc-dates{font-size:10px;color:var(--muted);line-height:1.6;}
+.lc-dates span{color:var(--muted2);}
+.action-row{display:flex;gap:6px;}
+.btn-sm{
+  padding:7px 12px;
+  border-radius:8px;
+  border:none;
+  font-family:'Onest',sans-serif;
+  font-size:11px;font-weight:600;
+  cursor:pointer;
+  transition:all 0.18s;
+  display:flex;align-items:center;gap:4px;
+}
+.btn-sm.primary{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border);}
+.btn-sm.primary:active{background:var(--accent);color:#fff;}
+.btn-sm.ghost{background:rgba(255,255,255,0.05);color:var(--muted2);border:1px solid var(--border);}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  height:var(--nav-h);
+  background:rgba(5,5,5,0.94);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  display:flex;align-items:center;
+  flex-shrink:0;
+  position:relative;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-items{display:flex;width:100%;justify-content:space-around;align-items:center;}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;gap:4px;
+  padding:8px 4px;
+  cursor:pointer;border:none;background:none;
+  color:var(--muted);
+  font-family:'Onest',sans-serif;
+  font-size:10px;font-weight:600;
+  letter-spacing:0.04em;
+  transition:all 0.2s;
+  position:relative;
+}
+.nav-item.active{color:var(--accent);}
+.nav-item.active svg{filter:drop-shadow(0 0 6px rgba(240,130,29,0.5));}
+.nav-indicator{
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  width:20px;height:2px;border-radius:2px;
+  background:var(--accent);
+  opacity:0;transition:opacity 0.2s;
+}
+.nav-item.active .nav-indicator{opacity:1;}
+.nav-badge{
+  position:absolute;top:6px;right:calc(50% - 16px);
+  min-width:16px;height:16px;
+  background:var(--red);border-radius:50px;
+  font-size:9px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;border:2px solid var(--bg);
+}
+
+/* FAB */
+.fab{
+  position:fixed;
+  bottom:calc(var(--nav-h) + 16px);
+  right:16px;
+  z-index:45;
+  width:52px;height:52px;
+  border-radius:16px;
+  background:var(--accent);
+  border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:0 4px 20px rgba(240,130,29,0.4),0 0 0 0 rgba(240,130,29,0.2);
+  animation:fabPulse 3s infinite;
+  transition:transform 0.2s;
+}
+.fab:active{transform:scale(0.92);}
+@keyframes fabPulse{0%,100%{box-shadow:0 4px 20px rgba(240,130,29,0.4),0 0 0 0 rgba(240,130,29,0.2);}50%{box-shadow:0 4px 20px rgba(240,130,29,0.4),0 0 0 8px rgba(240,130,29,0);}}
+
+/* OVERLAY */
+.overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background 0.3s;
+}
+.overlay.show{background:rgba(0,0,0,0.7);pointer-events:all;backdrop-filter:blur(4px);}
+
+/* BOTTOM SHEET */
+.sheet{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:210;
+  background:var(--surface);
+  border-radius:var(--sheet-radius) var(--sheet-radius) 0 0;
+  border:1px solid var(--border2);
+  border-bottom:none;
+  transform:translateY(100%);
+  transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);
+  max-height:92dvh;
+  display:flex;flex-direction:column;
+}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{
+  width:36px;height:4px;
+  background:rgba(255,255,255,0.15);
+  border-radius:2px;
+  margin:12px auto 0;
+  flex-shrink:0;
+}
+.sheet-header{
+  padding:16px 20px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sheet-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
+.sheet-close{
+  width:32px;height:32px;
+  border-radius:8px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted2);
+}
+.sheet-body{overflow-y:auto;padding:16px 20px;padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+.sheet-body::-webkit-scrollbar{display:none;}
+
+/* SIDEBAR / DRAWER */
+.drawer{
+  position:fixed;
+  top:0;left:0;bottom:0;
+  width:280px;
+  z-index:220;
+  background:var(--surface);
+  border-right:1px solid var(--border2);
+  transform:translateX(-100%);
+  transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
+  display:flex;flex-direction:column;
+}
+.drawer.open{transform:translateX(0);}
+.drawer-header{
+  padding:calc(20px + env(safe-area-inset-top)) 20px 20px;
+  border-bottom:1px solid var(--border);
+}
+.drawer-logo{
+  font-family:'Unbounded',sans-serif;
+  font-size:18px;font-weight:700;
+  color:var(--accent);
+  text-shadow:0 0 24px rgba(240,130,29,0.4);
+  margin-bottom:16px;
+}
+.drawer-user{
+  display:flex;align-items:center;gap:12px;
+}
+.drawer-avatar{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),#ff6b00);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;
+  font-size:16px;font-weight:700;color:#fff;
+  box-shadow:0 0 20px rgba(240,130,29,0.3);
+}
+.drawer-user-info .name{font-size:15px;font-weight:600;}
+.drawer-user-info .role{
+  font-size:11px;color:var(--accent);
+  background:var(--accent-dim);
+  border:1px solid var(--accent-border);
+  border-radius:50px;
+  padding:2px 8px;
+  display:inline-block;margin-top:4px;
+  font-weight:600;letter-spacing:0.04em;
+}
+.drawer-nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.drawer-nav::-webkit-scrollbar{display:none;}
+.drawer-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.18s;
+  margin-bottom:2px;
+  color:var(--muted2);font-size:14px;font-weight:500;
+}
+.drawer-item:active,.drawer-item.active{
+  background:var(--accent-dim);
+  color:var(--accent);
+  border:1px solid var(--accent-border);
+}
+.drawer-item svg{opacity:0.6;flex-shrink:0;}
+.drawer-item.active svg{opacity:1;}
+.drawer-divider{height:1px;background:var(--border);margin:8px 0;}
+.drawer-footer{padding:16px 20px;padding-bottom:calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--border);}
+.logout-btn{
+  width:100%;padding:12px;
+  border-radius:12px;border:1px solid var(--border2);
+  background:transparent;
+  color:var(--muted2);
+  font-family:'Onest',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.logout-btn:active{background:var(--red-dim);color:var(--red);border-color:rgba(255,79,106,0.3);}
+
+/* POPUP (modal) */
+.popup-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,0.8);
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+  padding:20px;
+}
+.popup-overlay.show{display:flex;}
+.popup{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  width:100%;max-width:360px;
+  animation:popIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
+.popup-header{padding:20px 20px 0;display:flex;align-items:flex-start;gap:12px;}
+.popup-icon{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.popup-icon.warn{background:rgba(251,191,36,0.12);}
+.popup-icon.info{background:var(--accent-dim);}
+.popup-icon.danger{background:var(--red-dim);}
+.popup-icon.success{background:var(--green-dim);}
+.popup-title{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;}
+.popup-desc{font-size:13px;color:var(--muted2);line-height:1.5;}
+.popup-body{padding:16px 20px;}
+.popup-actions{padding:0 20px 20px;display:flex;gap:8px;}
+.pop-btn{
+  flex:1;padding:13px;
+  border-radius:12px;border:none;
+  font-family:'Onest',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all 0.18s;
+}
+.pop-btn.cancel{background:rgba(255,255,255,0.07);color:var(--muted2);}
+.pop-btn.confirm{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(240,130,29,0.3);}
+.pop-btn.danger-btn{background:var(--red);color:#fff;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:14px;}
+.form-label{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.form-input{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xs);
+  padding:12px 14px;
+  font-family:'Onest',sans-serif;
+  font-size:14px;color:var(--text);
+  outline:none;transition:border-color 0.2s;
+}
+.form-input::placeholder{color:var(--muted);}
+.form-input:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px rgba(240,130,29,0.06);}
+.form-select{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xs);
+  padding:12px 14px;
+  font-family:'Onest',sans-serif;
+  font-size:14px;color:var(--text);
+  outline:none;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.toggle-info .toggle-name{font-size:14px;font-weight:500;}
+.toggle-info .toggle-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.toggle{
+  width:44px;height:26px;
+  border-radius:50px;
+  background:rgba(255,255,255,0.1);
+  border:none;cursor:pointer;
+  position:relative;transition:background 0.25s;
+  flex-shrink:0;
+}
+.toggle.on{background:var(--accent);}
+.toggle::after{
+  content:'';
+  position:absolute;
+  width:20px;height:20px;
+  border-radius:50%;background:#fff;
+  top:3px;left:3px;
+  transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 2px 4px rgba(0,0,0,0.3);
+}
+.toggle.on::after{transform:translateX(18px);}
+
+/* LIVE INDICATOR */
+.live-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;
+  border-radius:50px;
+  background:rgba(0,255,159,0.08);
+  border:1px solid rgba(0,255,159,0.2);
+  font-size:10px;font-weight:700;
+  color:var(--green);letter-spacing:0.08em;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulseDotGreen 1.5s infinite;}
+@keyframes pulseDotGreen{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* STATS INLINE */
+.mini-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.mini-stat{
+  flex:1;min-width:80px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px;text-align:center;
+  backdrop-filter:blur(10px);
+}
+.mini-stat-val{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;}
+.mini-stat-label{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+
+/* SYSTEM PAGE */
+.sys-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:12px;
+  backdrop-filter:blur(10px);
+  animation:fadeUp 0.4s both;
+}
+.sys-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.sys-row:last-child{border-bottom:none;padding-bottom:0;}
+.sys-row:first-child{padding-top:0;}
+.sys-key{font-size:13px;color:var(--muted2);}
+.sys-val{font-size:13px;font-weight:600;color:var(--text);}
+.progress-bar{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 1s ease;}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  top:calc(var(--header-h) + 12px);
+  left:50%;transform:translateX(-50%) translateY(-80px);
+  z-index:400;
+  background:rgba(30,30,30,0.95);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:12px 18px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:500;
+  white-space:nowrap;
+  backdrop-filter:blur(20px);
+  transition:transform 0.32s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
+  opacity:0;pointer-events:none;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.toast-icon{font-size:16px;}
+
+/* SWIPE ACTIONS (right side menu on card) */
+.card-swipe-wrap{position:relative;overflow:hidden;border-radius:var(--radius);margin-bottom:10px;}
+.card-actions-bg{
+  position:absolute;right:0;top:0;bottom:0;
+  display:flex;align-items:center;gap:2px;
+  padding-right:8px;
+}
+.swipe-action{
+  width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:0 4px;
+  border-radius:12px;height:calc(100% - 16px);
+  font-size:9px;font-weight:700;letter-spacing:0.04em;cursor:pointer;border:none;
+}
+.swipe-action.del{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,79,106,0.2);}
+.swipe-action.edit{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* NOTIF PANEL */
+.notif-sheet .notif-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.notif-sheet .notif-item:last-child{border-bottom:none;}
+.notif-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.notif-body{flex:1;}
+.notif-body .n-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.notif-body .n-desc{font-size:12px;color:var(--muted2);line-height:1.4;}
+.notif-body .n-time{font-size:11px;color:var(--muted);margin-top:4px;}
+.unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg">Готово</span></div>
+
+<!-- APP SHELL -->
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <div class="top-bar">
+    <div class="menu-btn" onclick="openDrawer()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    </div>
+    <div class="logo">
+      ShikinAvito
+      <span id="pageTitle">Дашборд</span>
+    </div>
+    <div class="header-actions">
+      <div class="notif-btn" onclick="openSheet('notifSheet')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="avatar" onclick="openSheet('profileSheet')">АД</div>
+    </div>
+  </div>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- PAGE: DASHBOARD -->
+    <div class="page active" id="page-dash">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-size:12px;color:var(--muted2);margin-bottom:4px;">Добро пожаловать</div>
+          <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;">Администратор</div>
+        </div>
+        <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="animation-delay:0s" onclick="showPage('listings')">
+          <div class="kpi-icon orange"><svg width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2"/></svg></div>
+          <div class="kpi-label">Объявлений</div>
+          <div class="kpi-val">1 284</div>
+          <div class="kpi-sub"><span class="kpi-delta up">+47</span> сегодня</div>
+        </div>
+        <div class="kpi-card" style="animation-delay:0.06s" onclick="showPage('operators')">
+          <div class="kpi-icon green"><svg width="16" height="16" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="kpi-label">Операторов</div>
+          <div class="kpi-val">12</div>
+          <div class="kpi-sub"><span class="kpi-delta up">8</span> онлайн</div>
+        </div>
+        <div class="kpi-card" style="animation-delay:0.12s">
+          <div class="kpi-icon red"><svg width="16" height="16" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+          <div class="kpi-label">Стоп-слова</div>
+          <div class="kpi-val">23</div>
+          <div class="kpi-sub"><span class="kpi-delta down">+3</span> за час</div>
+        </div>
+        <div class="kpi-card" style="animation-delay:0.18s">
+          <div class="kpi-icon blue"><svg width="16" height="16" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="kpi-label">Просмотры</div>
+          <div class="kpi-val">48К</div>
+          <div class="kpi-sub"><span class="kpi-delta up">+12%</span> неделя</div>
+        </div>
+      </div>
+
+      <!-- MINI STATS -->
+      <div class="sec-title">Сегодня <span class="sec-title-action" onclick="showPage('listings')">Все →</span></div>
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="mini-stat-val" style="color:var(--accent)">47</div><div class="mini-stat-label">Добавлено</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" style="color:var(--green)">31</div><div class="mini-stat-label">Ключевые</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" style="color:var(--red)">8</div><div class="mini-stat-label">Стоп</div></div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="sec-title">Последние события</div>
+      <div class="activity-card">
+        <div class="activity-row">
+          <div class="act-icon" style="background:var(--green-dim);font-size:16px;">📥</div>
+          <div class="act-body"><div class="act-title">Оператор #101 — 1-к квартира, 34 м²</div><div class="act-sub">Ключевые: студия, 1-к квартира</div></div>
+          <div class="act-time">2 мин</div>
+        </div>
+        <div class="activity-row">
+          <div class="act-icon" style="background:var(--red-dim);font-size:16px;">🚫</div>
+          <div class="act-body"><div class="act-title">Стоп-слово: 3-к квартира</div><div class="act-sub">Оператор #103 · 73 м², 3/22 эт.</div></div>
+          <div class="act-time">7 мин</div>
+        </div>
+        <div class="activity-row">
+          <div class="act-icon" style="background:var(--accent-dim);font-size:16px;">👤</div>
+          <div class="act-body"><div class="act-title">Оператор #108 вышел</div><div class="act-sub">Сессия: 3ч 42мин · 189 объявлений</div></div>
+          <div class="act-time">12 мин</div>
+        </div>
+        <div class="activity-row">
+          <div class="act-icon" style="background:rgba(91,127,255,0.1);font-size:16px;">🔥</div>
+          <div class="act-body"><div class="act-title">2235 просмотров · 1-к, 38 м²</div><div class="act-sub">Популярное объявление #7</div></div>
+          <div class="act-time">18 мин</div>
+        </div>
+      </div>
+
+      <!-- OPERATORS ONLINE -->
+      <div class="sec-title">Операторы онлайн <span class="sec-title-action" onclick="showPage('operators')">Все 12 →</span></div>
+      <div id="dash-operators"></div>
+    </div>
+
+    <!-- PAGE: LISTINGS -->
+    <div class="page" id="page-listings">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-ico" width="15" height="15" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="search-box" placeholder="Поиск..." id="listingSearch" oninput="renderListings()">
+        </div>
+        <div class="filter-btn has-filter" onclick="openSheet('filterSheet')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+          <div class="filter-badge">2</div>
+        </div>
+      </div>
+      <div class="chips-row" id="filterChips">
+        <div class="chip active" onclick="setChip(this,'all')">Все</div>
+        <div class="chip" onclick="setChip(this,'1k')">1-к</div>
+        <div class="chip" onclick="setChip(this,'2k')">2-к</div>
+        <div class="chip" onclick="setChip(this,'3k')">3-к</div>
+        <div class="chip green" onclick="setChip(this,'kw')">С ключевыми</div>
+        <div class="chip red" onclick="setChip(this,'sw')">Стоп-слова</div>
+        <div class="chip" onclick="setChip(this,'hot')">🔥 Горячие</div>
+      </div>
+      <div id="listingsList"></div>
+    </div>
+
+    <!-- PAGE: OPERATORS -->
+    <div class="page" id="page-operators">
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div class="mini-stat" style="flex:1"><div class="mini-stat-val" style="color:var(--green)">8</div><div class="mini-stat-label">Онлайн</div></div>
+        <div class="mini-stat" style="flex:1"><div class="mini-stat-val" style="color:var(--yellow)">2</div><div class="mini-stat-label">Занят</div></div>
+        <div class="mini-stat" style="flex:1"><div class="mini-stat-val" style="color:var(--muted)">2</div><div class="mini-stat-label">Офлайн</div></div>
+      </div>
+      <div id="operatorsList"></div>
+    </div>
+
+    <!-- PAGE: SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="sys-card">
+        <div class="sec-title" style="margin-bottom:0;padding-bottom:12px;border-bottom:1px solid var(--border)">Ключевые слова</div>
+        <div style="padding:12px 0">
+          <div class="form-group">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;" id="kwTagsWrap"></div>
+            <div style="display:flex;gap:8px;">
+              <input class="form-input" id="kwInput" placeholder="Добавить слово..." style="flex:1">
+              <button class="btn-sm primary" onclick="addKW()" style="padding:10px 16px;border-radius:var(--radius-xs);">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sys-card">
+        <div class="sec-title" style="margin-bottom:0;padding-bottom:12px;border-bottom:1px solid var(--border)">Стоп-слова</div>
+        <div style="padding:12px 0">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;" id="swTagsWrap"></div>
+          <div style="display:flex;gap:8px;">
+            <input class="form-input" id="swInput" placeholder="Добавить стоп-слово...">
+            <button class="btn-sm" onclick="addSW()" style="padding:10px 16px;border-radius:var(--radius-xs);background:var(--red-dim);color:var(--red);border:1px solid rgba(255,79,106,0.25);">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="sys-card">
+        <div class="sec-title" style="margin-bottom:12px">Уведомления</div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="toggle-name">Новые объявления</div><div class="toggle-desc">Push при каждом добавлении</div></div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div style="height:1px;background:var(--border);"></div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="toggle-name">Стоп-слова</div><div class="toggle-desc">Мгновенное уведомление</div></div>
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div style="height:1px;background:var(--border);"></div>
+        <div class="toggle-row">
+          <div class="toggle-info"><div class="toggle-name">Звук</div><div class="toggle-desc">Звуковые уведомления</div></div>
+          <button class="toggle" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+      <div class="sys-card">
+        <div class="sec-title" style="margin-bottom:12px">Система</div>
+        <div class="sys-row"><div class="sys-key">Версия</div><div class="sys-val">2.4.1</div></div>
+        <div class="sys-row"><div class="sys-key">Операторов</div><div class="sys-val">12 / 20</div></div>
+        <div class="sys-row">
+          <div class="sys-key">Нагрузка CPU</div>
+          <div style="flex:1;margin-left:16px;"><div class="progress-bar"><div class="progress-fill" style="width:34%"></div></div></div>
+          <div class="sys-val" style="margin-left:8px;">34%</div>
+        </div>
+        <div class="sys-row">
+          <div class="sys-key">RAM</div>
+          <div style="flex:1;margin-left:16px;"><div class="progress-bar"><div class="progress-fill" style="width:61%;background:var(--yellow)"></div></div></div>
+          <div class="sys-val" style="margin-left:8px;">61%</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-items">
+      <button class="nav-item active" onclick="showPage('dash')" id="nav-dash">
+        <div class="nav-indicator"></div>
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Дашборд
+      </button>
+      <button class="nav-item" onclick="showPage('listings')" id="nav-listings">
+        <div class="nav-indicator"></div>
+        <div class="nav-badge">47</div>
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2"/></svg>
+        Объявления
+      </button>
+      <button class="nav-item" onclick="showPage('operators')" id="nav-operators">
+        <div class="nav-indicator"></div>
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Операторы
+      </button>
+      <button class="nav-item" onclick="showPage('settings')" id="nav-settings">
+        <div class="nav-indicator"></div>
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        Настройки
+      </button>
+    </div>
+  </div>
+
+</div><!-- /app-shell -->
+
+<!-- FAB -->
+<button class="fab" onclick="openSheet('addSheet')" id="fab">
+  <svg width="22" height="22" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-logo">ShikinAvito</div>
+    <div class="drawer-user">
+      <div class="drawer-avatar">АД</div>
+      <div class="drawer-user-info">
+        <div class="name">Александр Д.</div>
+        <div class="role">Администратор</div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-nav">
+    <div class="drawer-item active" onclick="closeDrawer();showPage('dash')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Дашборд
+    </div>
+    <div class="drawer-item" onclick="closeDrawer();showPage('listings')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2"/></svg>
+      Объявления
+    </div>
+    <div class="drawer-item" onclick="closeDrawer();showPage('operators')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+      Операторы
+    </div>
+    <div class="drawer-divider"></div>
+    <div class="drawer-item" onclick="closeDrawer();showPage('settings')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>
+      Настройки
+    </div>
+    <div class="drawer-item" onclick="closeDrawer();showPopup('exportPopup')">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Экспорт данных
+    </div>
+    <div class="drawer-item" onclick="closeDrawer();showPopup('clearPopup')">
+      <svg width="18" height="18" fill="none" stroke="var(--red)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M8 6V4h8v2"/></svg>
+      <span style="color:var(--red)">Очистить базу</span>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="logout-btn" onclick="closeDrawer();showPopup('logoutPopup')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Выйти из системы
+    </button>
+  </div>
+</div>
+
+<!-- SHEET: FILTER -->
+<div class="sheet" id="filterSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Фильтры</div>
+    <div class="sheet-close" onclick="closeSheet('filterSheet')">✕</div>
+  </div>
+  <div class="sheet-body">
+    <div class="form-group"><label class="form-label">Тип квартиры</label>
+      <select class="form-select"><option>Все типы</option><option>1-к квартира</option><option>2-к квартира</option><option>3-к квартира</option><option>Студия</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Цена (₽/мес)</label>
+      <div style="display:flex;gap:8px;">
+        <input class="form-input" placeholder="От" style="flex:1">
+        <input class="form-input" placeholder="До" style="flex:1">
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Оператор</label>
+      <select class="form-select"><option>Все операторы</option><option>Оператор #101</option><option>Оператор #103</option><option>Оператор #107</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Период</label>
+      <select class="form-select"><option>Сегодня</option><option>Вчера</option><option>Последние 7 дней</option><option>Месяц</option></select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="pop-btn cancel" style="flex:1" onclick="closeSheet('filterSheet')">Сбросить</button>
+      <button class="pop-btn confirm" style="flex:1" onclick="closeSheet('filterSheet');showToast('✓','Фильтры применены')">Применить</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: ADD OPERATOR -->
+<div class="sheet" id="addSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Новый оператор</div>
+    <div class="sheet-close" onclick="closeSheet('addSheet')">✕</div>
+  </div>
+  <div class="sheet-body">
+    <div class="form-group"><label class="form-label">Логин</label><input class="form-input" placeholder="operator_login"></div>
+    <div class="form-group"><label class="form-label">Имя</label><input class="form-input" placeholder="Иван Иванов"></div>
+    <div class="form-group"><label class="form-label">Пароль</label><input class="form-input" type="password" placeholder="••••••••"></div>
+    <div class="form-group"><label class="form-label">Доступ</label>
+      <select class="form-select"><option>Оператор</option><option>Старший оператор</option><option>Администратор</option></select>
+    </div>
+    <div class="toggle-row" style="padding:8px 0;">
+      <div class="toggle-info"><div class="toggle-name">Активен сразу</div></div>
+      <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <button class="pop-btn confirm" style="width:100%;margin-top:12px;" onclick="closeSheet('addSheet');showToast('👤','Оператор добавлен')">Создать оператора</button>
+  </div>
+</div>
+
+<!-- SHEET: NOTIFICATION -->
+<div class="sheet notif-sheet" id="notifSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Уведомления</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;" onclick="showToast('✓','Всё прочитано')">Прочитать все</div>
+      <div class="sheet-close" onclick="closeSheet('notifSheet')">✕</div>
+    </div>
+  </div>
+  <div class="sheet-body">
+    <div class="notif-item">
+      <div class="notif-ic" style="background:var(--green-dim)">📥</div>
+      <div class="notif-body"><div class="n-title">47 объявлений за сегодня</div><div class="n-desc">Операторы добавили 47 объявлений с ключевыми словами</div><div class="n-time">2 минуты назад</div></div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ic" style="background:var(--red-dim)">🚫</div>
+      <div class="notif-body"><div class="n-title">Обнаружено стоп-слово</div><div class="n-desc">Оператор #103: «3-к квартира» · 2517 просмотров</div><div class="n-time">7 минут назад</div></div>
+      <div class="unread-dot"></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ic" style="background:rgba(91,127,255,0.1)">🔥</div>
+      <div class="notif-body"><div class="n-title">Популярное объявление</div><div class="n-desc">1-к, 38 м² · 2235 просмотров за 12 часов</div><div class="n-time">18 минут назад</div></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-ic" style="background:var(--accent-dim)">👤</div>
+      <div class="notif-body"><div class="n-title">Оператор #108 завершил смену</div><div class="n-desc">189 объявлений · сессия 3ч 42мин</div><div class="n-time">25 минут назад</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: OPERATOR DETAIL -->
+<div class="sheet" id="opDetailSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="opDetailTitle">Оператор</div>
+    <div class="sheet-close" onclick="closeSheet('opDetailSheet')">✕</div>
+  </div>
+  <div class="sheet-body" id="opDetailBody"></div>
+</div>
+
+<!-- SHEET: LISTING DETAIL -->
+<div class="sheet" id="listingDetailSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Объявление</div>
+    <div class="sheet-close" onclick="closeSheet('listingDetailSheet')">✕</div>
+  </div>
+  <div class="sheet-body" id="listingDetailBody"></div>
+</div>
+
+<!-- SHEET: PROFILE -->
+<div class="sheet" id="profileSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Профиль</div>
+    <div class="sheet-close" onclick="closeSheet('profileSheet')">✕</div>
+  </div>
+  <div class="sheet-body">
+    <div style="text-align:center;padding:20px 0 24px;">
+      <div style="width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#ff6b00);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:24px;font-weight:700;color:#fff;margin:0 auto 14px;box-shadow:0 0 30px rgba(240,130,29,0.3);">АД</div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px;">Александр Д.</div>
+      <div class="live-badge" style="display:inline-flex;"><div class="live-dot"></div>Администратор</div>
+    </div>
+    <div class="sys-card" style="margin-bottom:12px;">
+      <div class="sys-row"><div class="sys-key">Логин</div><div class="sys-val">admin_001</div></div>
+      <div class="sys-row"><div class="sys-key">Последний вход</div><div class="sys-val">Сегодня 09:14</div></div>
+      <div class="sys-row"><div class="sys-key">Сессия</div><div class="sys-val">2ч 47мин</div></div>
+    </div>
+    <button class="pop-btn cancel" style="width:100%;" onclick="closeSheet('profileSheet');showPopup('logoutPopup')">Выйти</button>
+  </div>
+</div>
+
+<!-- POPUP: LOGOUT -->
+<div class="popup-overlay" id="logoutPopup">
+  <div class="popup">
+    <div class="popup-header">
+      <div class="popup-icon warn">🔐</div>
+      <div><div class="popup-title">Выйти?</div><div class="popup-desc">Текущая сессия будет завершена. Все несохранённые изменения будут потеряны.</div></div>
+    </div>
+    <div class="popup-actions">
+      <button class="pop-btn cancel" onclick="closePopup('logoutPopup')">Отмена</button>
+      <button class="pop-btn confirm" onclick="closePopup('logoutPopup');showToast('👋','До свидания!')">Выйти</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP: CLEAR -->
+<div class="popup-overlay" id="clearPopup">
+  <div class="popup">
+    <div class="popup-header">
+      <div class="popup-icon danger">⚠️</div>
+      <div><div class="popup-title">Очистить базу?</div><div class="popup-desc">Это действие удалит все 1 284 объявления. Отменить невозможно.</div></div>
+    </div>
+    <div class="popup-actions">
+      <button class="pop-btn cancel" onclick="closePopup('clearPopup')">Отмена</button>
+      <button class="pop-btn danger-btn" onclick="closePopup('clearPopup');showToast('🗑️','База очищена')">Удалить всё</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP: EXPORT -->
+<div class="popup-overlay" id="exportPopup">
+  <div class="popup">
+    <div class="popup-header">
+      <div class="popup-icon info">📊</div>
+      <div><div class="popup-title">Экспорт данных</div><div class="popup-desc">Выберите формат для выгрузки 1 284 объявлений.</div></div>
+    </div>
+    <div class="popup-body">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn-sm primary" style="justify-content:center;padding:12px;" onclick="closePopup('exportPopup');showToast('📁','Экспорт CSV готов')">📄 CSV (Excel)</button>
+        <button class="btn-sm primary" style="justify-content:center;padding:12px;" onclick="closePopup('exportPopup');showToast('📁','Экспорт JSON готов')">🗂 JSON</button>
+        <button class="btn-sm ghost" style="justify-content:center;padding:12px;" onclick="closePopup('exportPopup')">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP: BAN OPERATOR -->
+<div class="popup-overlay" id="banPopup">
+  <div class="popup">
+    <div class="popup-header">
+      <div class="popup-icon danger">🚫</div>
+      <div><div class="popup-title" id="banPopupTitle">Заблокировать?</div><div class="popup-desc">Оператор потеряет доступ к системе немедленно.</div></div>
+    </div>
+    <div class="popup-actions">
+      <button class="pop-btn cancel" onclick="closePopup('banPopup')">Отмена</button>
+      <button class="pop-btn danger-btn" onclick="closePopup('banPopup');showToast('🚫','Оператор заблокирован')">Заблокировать</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// PARTICLES
+const canvas = document.getElementById('canvas-bg');
+const ctx2 = canvas.getContext('2d');
+let pts = [];
+function rcv(){canvas.width=innerWidth;canvas.height=innerHeight;}
+window.addEventListener('resize',rcv);rcv();
+class Pt{constructor(){this.r();}r(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.s=Math.random()*1.6+.3;this.a=Math.random()*.4+.1;}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.r();}}
+for(let i=0;i<55;i++)pts.push(new Pt());
+(function ab(){ctx2.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.u();ctx2.globalAlpha=p.a;ctx2.fillStyle='#f0821d';ctx2.beginPath();ctx2.arc(p.x,p.y,p.s,0,Math.PI*2);ctx2.fill();});ctx2.globalAlpha=1;requestAnimationFrame(ab);})();
+
+// DATA
+const operators = [
+  {id:101,name:'Иван Петров',login:'op_101',status:'online',count:189,today:47,avatar:'ИП',color:'#f0821d'},
+  {id:103,name:'Мария Сидорова',login:'op_103',status:'online',count:234,today:31,avatar:'МС',color:'#5b7fff'},
+  {id:107,name:'Алексей Козлов',login:'op_107',status:'busy',count:156,today:22,avatar:'АК',color:'#00ff9f'},
+  {id:108,name:'Ольга Новикова',login:'op_108',status:'offline',count:98,today:0,avatar:'ОН',color:'#a78bfa'},
+  {id:112,name:'Дмитрий Волков',login:'op_112',status:'online',count:301,today:55,avatar:'ДВ',color:'#fbbf24'},
+  {id:115,name:'Елена Морозова',login:'op_115',status:'online',count:178,today:28,avatar:'ЕМ',color:'#f0821d'},
+  {id:119,name:'Сергей Лебедев',login:'op_119',status:'busy',count:122,today:14,avatar:'СЛ',color:'#5b7fff'},
+  {id:122,name:'Анна Смирнова',login:'op_122',status:'online',count:267,today:41,avatar:'АС',color:'#00ff9f'},
+];
+
+const listings = [
+  {id:1,placed:'09 дек 11:57:55',dl:'09 дек 11:58:05',title:'2-к квартира',desc:'43 м², 9/9 эт.',price:'65 000 ₽/мес',phone:'79854998908',views:9,kw:[],sw:[],rooms:'2k',op:101},
+  {id:2,placed:'09 дек 11:54:26',dl:'09 дек 11:55:00',title:'1-к квартира',desc:'42.5 м², 2/16 эт.',price:'40 000 ₽/мес',phone:'79262283941',views:15,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:103},
+  {id:3,placed:'09 дек 11:50:03',dl:'09 дек 11:50:12',title:'1-к квартира',desc:'23 м², 41/47 эт.',price:'50 000 ₽/мес',phone:'79584723796',views:638,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:101},
+  {id:4,placed:'09 дек 11:38:36',dl:'09 дек 11:38:49',title:'2-к квартира',desc:'45 м², 4/12 эт.',price:'72 000 ₽/мес',phone:'79584727495',views:9,kw:[],sw:[],rooms:'2k',op:107},
+  {id:5,placed:'09 дек 11:35:31',dl:'09 дек 11:36:19',title:'3-к квартира',desc:'73 м², 3/22 эт.',price:'50 000 ₽/мес',phone:'79836605247',views:2517,kw:[],sw:['3-к квартира','4-к квартира'],rooms:'3k',op:103},
+  {id:6,placed:'09 дек 11:31:05',dl:'09 дек 11:31:28',title:'2-к квартира',desc:'55 м², 5/19 эт.',price:'36 000 ₽/мес',phone:'79193711709',views:19,kw:[],sw:[],rooms:'2k',op:112},
+  {id:7,placed:'09 дек 11:31:01',dl:'09 дек 11:31:28',title:'1-к квартира',desc:'38 м², 16/16 эт.',price:'30 000 ₽/мес',phone:'79011895774',views:2235,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:101},
+  {id:8,placed:'09 дек 11:20:31',dl:'09 дек 11:20:38',title:'1-к квартира',desc:'34 м², 4/5 эт.',price:'30 000 ₽/мес',phone:'79584870387',views:1210,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:115},
+  {id:9,placed:'09 дек 11:17:57',dl:'09 дек 11:18:08',title:'1-к квартира',desc:'34 м², 3/5 эт.',price:'32 000 ₽/мес',phone:'79584732628',views:10,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:122},
+  {id:10,placed:'09 дек 11:12:00',dl:'09 дек 11:12:31',title:'2-к квартира',desc:'48 м², 3/5 эт.',price:'42 000 ₽/мес',phone:'79854994751',views:19,kw:[],sw:[],rooms:'2k',op:107},
+  {id:11,placed:'09 дек 11:09:22',dl:'09 дек 11:09:45',title:'2-к квартира',desc:'40 м², 10/12 эт.',price:'36 000 ₽/мес',phone:'79996776156',views:15,kw:[],sw:[],rooms:'2k',op:103},
+  {id:12,placed:'09 дек 11:05:14',dl:'09 дек 11:05:28',title:'1-к квартира',desc:'28 м², 7/9 эт.',price:'28 000 ₽/мес',phone:'79261002541',views:422,kw:['студия','1-к квартира'],sw:[],rooms:'1k',op:112},
+];
+
+let kwList = ['студия','1-к квартира','аренда'];
+let swList = ['3-к квартира','4-к квартира','5-к'];
+let activeChip = 'all';
+let currentPage = 'dash';
+
+// NAV
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const navEl = document.getElementById('nav-'+p);
+  if(navEl) navEl.classList.add('active');
+  currentPage = p;
+  const titles = {dash:'Дашборд',listings:'Объявления',operators:'Операторы',settings:'Настройки'};
+  document.getElementById('pageTitle').textContent = titles[p]||'';
+  document.getElementById('scrollArea').scrollTop = 0;
+  const fab = document.getElementById('fab');
+  fab.style.display = (p==='operators'||p==='settings') ? 'flex' : (p==='listings'?'none':'none');
+  if(p==='listings')renderListings();
+  if(p==='operators')renderOperators();
+  if(p==='settings')renderWordTags();
+  if(p==='dash')renderDashOperators();
+  // Update drawer active
+  document.querySelectorAll('.drawer-item').forEach(el=>el.classList.remove('active'));
+}
+
+// OPERATORS RENDER
+function renderOperators(){
+  const wrap = document.getElementById('operatorsList');
+  wrap.innerHTML = operators.map((op,i)=>`
+  <div class="operator-row" style="animation-delay:${i*0.05}s" onclick="openOpDetail(${op.id})">
+    <div class="op-avatar" style="background:${op.color}26;color:${op.color}">
+      ${op.avatar}
+      <div class="op-status ${op.status}"></div>
+    </div>
+    <div class="op-info">
+      <div class="op-name">${op.name}</div>
+      <div class="op-meta">
+        <span>#${op.id}</span>
+        <span style="color:${op.status==='online'?'var(--green)':op.status==='busy'?'var(--yellow)':'var(--muted)'}">
+          ${op.status==='online'?'Онлайн':op.status==='busy'?'Занят':'Офлайн'}
+        </span>
+        ${op.status!=='offline'?`<span>${op.today} сегодня</span>`:''}
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="op-count">${op.count}</div>
+      <div class="op-count-label">объявл.</div>
+    </div>
+    <svg class="chevron-right" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+  </div>`).join('');
+}
+
+function renderDashOperators(){
+  const wrap = document.getElementById('dash-operators');
+  const online = operators.filter(o=>o.status!=='offline').slice(0,4);
+  wrap.innerHTML = online.map((op,i)=>`
+  <div class="operator-row" style="animation-delay:${i*0.05}s" onclick="openOpDetail(${op.id})">
+    <div class="op-avatar" style="background:${op.color}26;color:${op.color}">
+      ${op.avatar}
+      <div class="op-status ${op.status}"></div>
+    </div>
+    <div class="op-info">
+      <div class="op-name">${op.name}</div>
+      <div class="op-meta"><span>#${op.id}</span><span>${op.today} сегодня</span></div>
+    </div>
+    <div class="op-count">${op.count}</div>
+    <svg class="chevron-right" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+  </div>`).join('');
+}
+
+function openOpDetail(id){
+  const op = operators.find(o=>o.id===id);
+  if(!op)return;
+  document.getElementById('opDetailTitle').textContent = op.name;
+  document.getElementById('opDetailBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:16px;">
+      <div style="width:56px;height:56px;border-radius:16px;background:${op.color}26;color:${op.color};display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;position:relative;">
+        ${op.avatar}
+        <div class="op-status ${op.status}" style="bottom:-2px;right:-2px;"></div>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:700;">${op.name}</div>
+        <div style="font-size:12px;color:var(--muted2);margin-top:4px;">#${op.id} · @${op.login}</div>
+        <div style="margin-top:6px;font-size:11px;font-weight:700;color:${op.status==='online'?'var(--green)':op.status==='busy'?'var(--yellow)':'var(--muted)'};text-transform:uppercase;letter-spacing:0.06em;">${op.status==='online'?'Онлайн':op.status==='busy'?'Занят':'Офлайн'}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div class="mini-stat"><div class="mini-stat-val" style="color:var(--accent)">${op.count}</div><div class="mini-stat-label">Всего</div></div>
+      <div class="mini-stat"><div class="mini-stat-val" style="color:var(--green)">${op.today}</div><div class="mini-stat-label">Сегодня</div></div>
+      <div class="mini-stat"><div class="mini-stat-val">—</div><div class="mini-stat-label">Часов</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="pop-btn cancel" style="padding:13px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="closeSheet('opDetailSheet');showToast('📋','Объявления оператора')">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/></svg>
+        Объявления оператора
+      </button>
+      <button class="btn-sm primary" style="justify-content:center;padding:13px;font-size:13px;" onclick="closeSheet('opDetailSheet');showToast('✏️','Редактирование открыто')">Редактировать профиль</button>
+      <button class="btn-sm" style="justify-content:center;padding:13px;font-size:13px;background:var(--red-dim);color:var(--red);border:1px solid rgba(255,79,106,0.2);border-radius:var(--radius-xs);" onclick="closeSheet('opDetailSheet');document.getElementById('banPopupTitle').textContent='Заблокировать ${op.name}?';showPopup('banPopup')">Заблокировать</button>
+    </div>`;
+  openSheet('opDetailSheet');
+}
+
+// LISTINGS
+function fv(n){return n>=1000?(n/1000).toFixed(1).replace('.0','')+'k':n;}
+
+function setChip(el, val){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  activeChip = val;
+  renderListings();
+}
+
+function renderListings(){
+  const q = (document.getElementById('listingSearch')||{value:''}).value.toLowerCase();
+  const filtered = listings.filter(d=>{
+    const mf = activeChip==='all'
+      ||(activeChip==='1k'&&d.rooms==='1k')
+      ||(activeChip==='2k'&&d.rooms==='2k')
+      ||(activeChip==='3k'&&d.rooms==='3k')
+      ||(activeChip==='kw'&&d.kw.length>0)
+      ||(activeChip==='sw'&&d.sw.length>0)
+      ||(activeChip==='hot'&&d.views>=500);
+    const ms=!q||d.title.toLowerCase().includes(q)||d.desc.toLowerCase().includes(q)||d.phone.includes(q)||d.price.includes(q);
+    return mf&&ms;
+  });
+  const wrap = document.getElementById('listingsList');
+  if(!filtered.length){wrap.innerHTML='<div style="text-align:center;padding:50px 20px;color:var(--muted)"><div style="font-size:40px;margin-bottom:12px">🔍</div><div>Ничего не найдено</div></div>';return;}
+  wrap.innerHTML = filtered.map((d,i)=>{
+    const hasSw=d.sw.length>0,hasKw=d.kw.length>0;
+    const op = operators.find(o=>o.id===d.op);
+    return `<div class="listing-card ${hasSw?'sw':hasKw?'kw':''}" style="animation-delay:${Math.min(i*0.04,0.25)}s" onclick="openListingDetail(${d.id})">
+      <div class="lc-top">
+        <div class="lc-title"><b>${d.title}</b>, ${d.desc}</div>
+        <div class="lc-price">${d.price}</div>
+      </div>
+      <div class="lc-row">
+        <div class="lc-meta"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.88a16 16 0 0 0 6.16 6.16l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>${d.phone}</div>
+        <div class="lc-meta"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${fv(d.views)} просм.</div>
+        ${op?`<div class="lc-meta" style="font-size:11px;color:var(--muted)">↑ #${op.id}</div>`:''}
+      </div>
+      <div class="lc-tags">
+        ${d.kw.map(k=>`<span class="tag kw">✓ ${k}</span>`).join('')}
+        ${d.sw.map(s=>`<span class="tag sw">✗ ${s}</span>`).join('')}
+        ${d.views>=1000?`<span class="tag hot">🔥 Горячее</span>`:''}
+      </div>
+      <div class="lc-footer">
+        <div class="lc-dates"><div>${d.placed}</div><div style="color:var(--muted)">Скачано: <span>${d.dl.split(' ')[1]}</span></div></div>
+        <div class="action-row">
+          <button class="btn-sm ghost" onclick="event.stopPropagation();showToast('🔗','Ссылка скопирована')"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+          <button class="btn-sm primary" onclick="event.stopPropagation();openListingDetail(${d.id})">Открыть →</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openListingDetail(id){
+  const d = listings.find(l=>l.id===id);
+  if(!d)return;
+  const op = operators.find(o=>o.id===d.op);
+  document.getElementById('listingDetailBody').innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;">
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px;">${d.title}</div>
+      <div style="color:var(--muted2);font-size:14px;margin-bottom:14px;">${d.desc}</div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;color:var(--accent);margin-bottom:4px;text-shadow:0 0 16px rgba(240,130,29,0.3)">${d.price}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div class="mini-stat"><div class="mini-stat-val">${fv(d.views)}</div><div class="mini-stat-label">Просмотры</div></div>
+      <div class="mini-stat"><div class="mini-stat-val" style="color:${d.kw.length?'var(--green)':d.sw.length?'var(--red)':'var(--muted)'}">${d.kw.length?'КС':d.sw.length?'СС':'—'}</div><div class="mini-stat-label">${d.kw.length?'Ключевые':d.sw.length?'Стоп':d.rooms}</div></div>
+    </div>
+    <div class="sys-card" style="margin-bottom:14px;">
+      <div class="sys-row"><div class="sys-key">Телефон</div><div class="sys-val">${d.phone}</div></div>
+      <div class="sys-row"><div class="sys-key">Оператор</div><div class="sys-val">${op?`#${op.id} ${op.name}`:'—'}</div></div>
+      <div class="sys-row"><div class="sys-key">Размещено</div><div class="sys-val">${d.placed}</div></div>
+      <div class="sys-row"><div class="sys-key">Скачано</div><div class="sys-val">${d.dl}</div></div>
+    </div>
+    ${d.kw.length?`<div style="margin-bottom:10px;"><div class="form-label" style="margin-bottom:6px;">Ключевые слова</div><div style="display:flex;gap:6px;flex-wrap:wrap;">${d.kw.map(k=>`<span class="tag kw">✓ ${k}</span>`).join('')}</div></div>`:''}
+    ${d.sw.length?`<div style="margin-bottom:14px;"><div class="form-label" style="margin-bottom:6px;">Стоп-слова</div><div style="display:flex;gap:6px;flex-wrap:wrap;">${d.sw.map(s=>`<span class="tag sw">✗ ${s}</span>`).join('')}</div></div>`:''}
+    <div style="display:flex;gap:8px;">
+      <button class="pop-btn cancel" style="flex:1;" onclick="closeSheet('listingDetailSheet');showToast('🗑️','Удалено')">Удалить</button>
+      <button class="pop-btn confirm" style="flex:1;" onclick="closeSheet('listingDetailSheet');showToast('✓','Открыто на Avito')">Avito →</button>
+    </div>`;
+  openSheet('listingDetailSheet');
+}
+
+// WORDS
+function renderWordTags(){
+  const kw = document.getElementById('kwTagsWrap');
+  const sw = document.getElementById('swTagsWrap');
+  if(!kw)return;
+  kw.innerHTML = kwList.map(w=>`<span class="tag kw" style="cursor:pointer;font-size:12px;padding:5px 12px;" onclick="removeKW('${w}')">✓ ${w} ✕</span>`).join('');
+  sw.innerHTML = swList.map(w=>`<span class="tag sw" style="cursor:pointer;font-size:12px;padding:5px 12px;" onclick="removeSW('${w}')">✗ ${w} ✕</span>`).join('');
+}
+function addKW(){const v=document.getElementById('kwInput').value.trim();if(v){kwList.push(v);document.getElementById('kwInput').value='';renderWordTags();showToast('✓','Ключевое слово добавлено');}}
+function addSW(){const v=document.getElementById('swInput').value.trim();if(v){swList.push(v);document.getElementById('swInput').value='';renderWordTags();showToast('🚫','Стоп-слово добавлено');}}
+function removeKW(w){kwList=kwList.filter(k=>k!==w);renderWordTags();}
+function removeSW(w){swList=swList.filter(k=>k!==w);renderWordTags();}
+
+// SHEET
+function openSheet(id){
+  document.getElementById(id).classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSheet(id){
+  document.getElementById(id).classList.remove('open');
+  const anyOpen = document.querySelector('.sheet.open');
+  const anyPop = document.querySelector('.popup-overlay.show');
+  const drawerOpen = document.getElementById('drawer').classList.contains('open');
+  if(!anyOpen&&!anyPop&&!drawerOpen)document.getElementById('overlay').classList.remove('show');
+}
+
+// DRAWER
+function openDrawer(){
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  const anyOpen = document.querySelector('.sheet.open');
+  if(!anyOpen)document.getElementById('overlay').classList.remove('show');
+}
+
+// POPUP
+function showPopup(id){document.getElementById(id).classList.add('show');}
+function closePopup(id){document.getElementById(id).classList.remove('show');}
+
+// OVERLAY click
+document.getElementById('overlay').addEventListener('click',()=>{
+  document.querySelectorAll('.sheet.open').forEach(s=>s.classList.remove('open'));
+  closeDrawer();
+  document.querySelectorAll('.popup-overlay.show').forEach(p=>p.classList.remove('show'));
+  document.getElementById('overlay').classList.remove('show');
+});
+
+// TOAST
+let toastTimer;
+function showToast(icon,msg){
+  clearTimeout(toastTimer);
+  const t=document.getElementById('toast');
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// TOUCH SWIPE on sheets (pull down to close)
+document.querySelectorAll('.sheet').forEach(sheet=>{
+  let startY=0;
+  sheet.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;},{passive:true});
+  sheet.addEventListener('touchend',e=>{
+    const dy=e.changedTouches[0].clientY-startY;
+    if(dy>60){closeSheet(sheet.id);}
+  },{passive:true});
+});
+
+// INIT
+renderDashOperators();
+showPage('dash');
+</script>
+</body>
+</html>

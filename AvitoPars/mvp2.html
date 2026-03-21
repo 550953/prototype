@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AutoHunt · Армения</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040406;
+  --s1:#0d0d12;--s2:#131318;--s3:#1a1a22;
+  --accent:#f0821d;--a2:#ff6b00;
+  --purple:#a78bfa;--p2:#7c3aed;
+  --grad:linear-gradient(135deg,#f0821d,#a78bfa);
+  --adim:rgba(240,130,29,0.1);--aborder:rgba(240,130,29,0.2);
+  --pdim:rgba(167,139,250,0.1);--pborder:rgba(167,139,250,0.2);
+  --green:#00ff9f;--gdim:rgba(0,255,159,0.08);--gborder:rgba(0,255,159,0.18);
+  --red:#ff4f6a;--rdim:rgba(255,79,106,0.08);--rborder:rgba(255,79,106,0.2);
+  --yellow:#fbbf24;--blue:#5b7fff;
+  --text:#f0f0ff;--muted:#555;--muted2:#888;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --radius:20px;--radius-sm:12px;
+  --glass:rgba(255,255,255,0.03);
+  --shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Onest',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;overflow-x:hidden;}
+
+/* CANVAS */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* NOISE OVERLAY */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+.w{position:relative;z-index:1;}
+
+/* PLAN BAR */
+.plan-bar{
+  background:rgba(4,4,6,0.96);
+  border-bottom:1px solid var(--border);
+  padding:7px 14px;
+  height:40px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+}
+.plan-left{display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;}
+.plan-pill{
+  padding:3px 9px;border-radius:50px;
+  font-size:10px;font-weight:700;letter-spacing:0.04em;
+  display:flex;align-items:center;gap:4px;
+  white-space:nowrap;flex-shrink:0;
+  transition:all 0.3s;
+}
+.plan-pill.free{background:rgba(255,255,255,0.06);color:var(--muted2);border:1px solid var(--border2);}
+.plan-pill.pro{background:var(--adim);color:var(--accent);border:1px solid var(--aborder);}
+.plan-pill.ultra{background:var(--pdim);color:var(--purple);border:1px solid var(--pborder);}
+.plan-label{
+  font-size:11px;color:var(--muted2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* Скрываем label на очень узких экранах */
+@media(max-width:360px){.plan-label{display:none;}}
+.upg-btn{
+  padding:5px 12px;border-radius:8px;border:none;
+  background:var(--grad);
+  color:#fff;font-family:'Onest',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;letter-spacing:0.02em;
+  box-shadow:0 2px 12px rgba(240,130,29,0.28);
+  transition:all 0.2s;
+  white-space:nowrap;flex-shrink:0;
+}
+.upg-btn:active{transform:scale(0.93);}
+
+/* HDR */
+.hdr{
+  background:rgba(4,4,6,0.9);
+  border-bottom:1px solid var(--border);
+  padding:10px 14px;
+  position:sticky;
+  /* Точно под plan-bar высотой 40px */
+  top:40px;
+  z-index:99;
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.logo{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;
+}
+.logo small{display:block;font-size:9px;font-weight:400;color:var(--muted2);font-family:'Onest',sans-serif;margin-top:1px;-webkit-text-fill-color:var(--muted2);}
+.hdr-r{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.live{
+  display:flex;align-items:center;gap:4px;
+  background:var(--gdim);border:1px solid var(--gborder);
+  border-radius:50px;padding:4px 9px;
+  font-size:10px;font-weight:700;color:var(--green);
+  white-space:nowrap;
+}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:bl 1.4s infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hbtn{
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:1px solid;transition:all 0.2s;
+  flex-shrink:0;
+}
+.hbtn.o{background:var(--adim);border-color:var(--aborder);}
+.hbtn.p{background:var(--pdim);border-color:var(--pborder);}
+
+/* DEMO SWITCHER */
+.main{padding:12px 14px;}
+.dsw{
+  display:flex;gap:3px;margin-bottom:14px;
+  background:var(--s2);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);padding:3px;
+}
+.dsw-btn{
+  flex:1;padding:8px 4px;border-radius:8px;border:none;
+  font-family:'Onest',sans-serif;font-size:10px;font-weight:600;
+  cursor:pointer;transition:all 0.25s;background:transparent;color:var(--muted2);
+  line-height:1.2;text-align:center;
+  /* Не переносим текст */
+  white-space:nowrap;overflow:hidden;
+}
+.dsw-btn.free.act{background:rgba(255,255,255,0.07);color:var(--text);}
+.dsw-btn.pro.act{background:var(--adim);color:var(--accent);box-shadow:0 0 10px rgba(240,130,29,0.12);}
+.dsw-btn.ultra.act{background:var(--pdim);color:var(--purple);box-shadow:0 0 10px rgba(167,139,250,0.12);}
+
+/* SNIPER TOGGLE */
+.sniper-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--s2);border:1px solid var(--border2);
+  border-radius:var(--radius-sm);padding:11px 13px;
+  margin-bottom:12px;cursor:pointer;
+  transition:all 0.2s;gap:10px;
+}
+.sniper-row:active{transform:scale(0.99);}
+.sniper-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.sniper-icon{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--pdim);border:1px solid var(--pborder);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;
+}
+.sniper-info{min-width:0;}
+.sniper-info .sn-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sniper-info .sn-sub{font-size:10px;color:var(--muted2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sniper-toggle{
+  width:46px;height:27px;border-radius:50px;
+  background:rgba(255,255,255,0.08);
+  border:none;cursor:pointer;position:relative;
+  transition:background 0.25s;flex-shrink:0;
+}
+.sniper-toggle.on{background:var(--purple);}
+.sniper-toggle::after{
+  content:'';position:absolute;
+  width:21px;height:21px;border-radius:50%;background:#fff;
+  top:3px;left:3px;
+  transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 2px 4px rgba(0,0,0,0.3);
+}
+.sniper-toggle.on::after{transform:translateX(19px);}
+.sniper-badge{padding:3px 8px;border-radius:50px;font-size:9px;font-weight:700;background:var(--pdim);color:var(--purple);border:1px solid var(--pborder);}
+
+/* FILTER */
+.fc{
+  background:var(--glass);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  padding:16px;margin-bottom:14px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:var(--shadow);
+}
+.ft{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ft-note{font-size:10px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+.fg label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
+.fi,.fs{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border2);
+  border-radius:10px;padding:10px 12px;
+  font-family:'Onest',sans-serif;font-size:13px;color:var(--text);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+.fi::placeholder{color:var(--muted);}
+.fi:focus,.fs:focus{border-color:var(--aborder);box-shadow:0 0 0 3px rgba(240,130,29,0.06);}
+.fs option{background:#111;}
+.lf{position:relative;border-radius:10px;overflow:hidden;}
+.lf .fi,.lf .fs{opacity:0.25;pointer-events:none;}
+.lo{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-size:11px;font-weight:700;cursor:pointer;
+  border-radius:10px;transition:all 0.18s;
+}
+.lo:active{transform:scale(0.97);}
+.lo.p{background:var(--adim);color:var(--accent);border:1px solid var(--aborder);}
+.lo.u{background:var(--pdim);color:var(--purple);border:1px solid var(--pborder);}
+.tr{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.tr label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,0.08);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(240,130,29,0.4);cursor:pointer;}
+.tv{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:var(--accent);width:42px;text-align:right;}
+.pbtn{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:var(--grad);
+  color:#fff;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 24px rgba(240,130,29,0.35);
+  margin-top:12px;letter-spacing:0.03em;
+}
+.pbtn:active{transform:scale(0.97);}
+.pbtn.ld{background:var(--s3);color:var(--muted);box-shadow:none;}
+
+/* SKELETON */
+@keyframes shimmer{0%{background-position:-400px 0;}100%{background-position:400px 0;}}
+.skel{
+  background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);
+  background-size:800px 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:8px;
+}
+.skel-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;}
+.skel-line{height:12px;margin-bottom:8px;}
+.skel-line.w60{width:60%;}
+.skel-line.w80{width:80%;}
+.skel-line.w40{width:40%;}
+
+/* DELAY WARNING */
+.dw{
+  display:none;
+  background:rgba(251,191,36,0.06);
+  border:1px solid rgba(251,191,36,0.18);
+  border-radius:var(--radius-sm);
+  padding:11px 14px;margin-bottom:14px;
+  font-size:12px;color:var(--yellow);
+  align-items:center;gap:10px;
+  line-height:1.5;
+}
+.dw.show{display:flex;}
+.dw a{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
+
+/* PROGRESS */
+.pg{display:none;margin-bottom:14px;}
+.pg.show{display:block;}
+.pg-card{
+  background:var(--glass);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:18px;
+  backdrop-filter:blur(12px);text-align:center;
+}
+.pg-title{font-size:13px;font-weight:600;color:var(--muted2);margin-bottom:12px;}
+.pg-bar{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+.pg-fill{height:100%;border-radius:2px;background:var(--grad);width:0;transition:width 0.5s ease;}
+.pg-sub{font-size:11px;color:var(--muted);margin-top:8px;}
+.pg-steps{display:flex;justify-content:center;gap:6px;margin-top:10px;}
+.pg-step{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.3s;}
+.pg-step.done{background:var(--accent);}
+.pg-step.cur{background:var(--accent);box-shadow:0 0 8px var(--accent);}
+
+/* KPI */
+.kg{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-bottom:12px;
+}
+/* На очень узких — 2x2 */
+@media(max-width:320px){.kg{grid-template-columns:repeat(2,1fr);}}
+.kc{
+  background:var(--glass);border:1px solid var(--border2);
+  border-radius:12px;
+  padding:10px 6px;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  position:relative;overflow:hidden;
+  transition:all 0.2s;
+  min-width:0;
+}
+.kc::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(240,130,29,0.04),transparent);pointer-events:none;}
+.kv{
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;font-weight:700;
+  /* Не выходим за пределы ячейки */
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.kl{
+  font-size:7px;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--muted);margin-top:4px;
+  /* Перенос если не влезает */
+  line-height:1.3;
+}
+.kc-lock{
+  position:absolute;inset:0;
+  background:rgba(4,4,6,0.82);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;cursor:pointer;
+  transition:all 0.2s;
+}
+.kc-lock:hover{background:rgba(4,4,6,0.6);}
+
+/* BUDGET */
+.bcard{
+  background:var(--glass);border:1px solid var(--gborder);
+  border-radius:var(--radius);padding:16px;margin-bottom:14px;
+  backdrop-filter:blur(12px);
+}
+.bt{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.bl{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);}
+.bv{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:var(--green);}
+.bb{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.bfi{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),#00c97a);transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1);}
+.bh{font-size:11px;color:var(--muted2);margin-top:8px;line-height:1.6;}
+
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:7px 13px;border-radius:50px;border:1px solid var(--border2);background:var(--s2);color:var(--muted2);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.18s;}
+.tab.active{border-color:var(--aborder);color:var(--accent);background:var(--adim);}
+.lhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.lt{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.lu{font-size:10px;color:var(--muted);}
+
+/* DEAL CARD */
+.dc{
+  background:var(--glass);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);padding:13px 12px;
+  margin-bottom:10px;
+  position:relative;overflow:hidden;
+  animation:fu 0.4s both;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 4px 16px rgba(0,0,0,0.25);
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.dc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.dc.fire{border-color:rgba(0,255,159,0.12);box-shadow:0 4px 20px rgba(0,255,159,0.05);}
+.dc.fire::before{background:var(--green);}
+.dc.mid::before{background:var(--yellow);}
+.dc.norm::before{background:var(--muted);}
+.dc::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.025) 0%,transparent 50%);pointer-events:none;border-radius:var(--radius);}
+@keyframes fu{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.dct{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:7px;margin-bottom:7px;
+}
+.dcn{
+  font-size:13px;font-weight:700;flex:1;line-height:1.3;color:var(--text);
+  min-width:0;word-break:break-word;
+}
+.sbdg{
+  padding:3px 8px;border-radius:50px;
+  font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;
+  flex-shrink:0;white-space:nowrap;
+}
+.sbdg.sf{background:rgba(0,255,159,0.1);color:var(--green);border:1px solid var(--gborder);}
+.sbdg.sm{background:rgba(251,191,36,0.08);color:var(--yellow);border:1px solid rgba(251,191,36,0.18);}
+.sbdg.sn{background:rgba(255,255,255,0.04);color:var(--muted2);border:1px solid var(--border);}
+.dcp{display:flex;align-items:baseline;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
+.dcpr{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
+.dcav{font-size:11px;color:var(--muted);text-decoration:line-through;}
+.dcsv{padding:2px 7px;border-radius:50px;font-size:10px;font-weight:700;}
+.dcsv.g{background:var(--gdim);color:var(--green);}
+.dcsv.y{background:rgba(251,191,36,0.08);color:var(--yellow);}
+
+/* PRICE BLUR */
+.pblur{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;color:var(--accent);filter:blur(7px);cursor:pointer;user-select:none;}
+.punlock{
+  padding:3px 10px;border-radius:50px;
+  background:var(--adim);color:var(--accent);
+  border:1px solid var(--aborder);
+  font-size:10px;font-weight:700;cursor:pointer;
+  white-space:nowrap;transition:all 0.2s;
+}
+.punlock:active{background:var(--accent);color:#fff;}
+
+/* SCORE */
+.sc-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.sc-l{font-size:10px;color:var(--muted);width:44px;font-weight:600;}
+.sc-b{flex:1;height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+.sc-f{height:100%;border-radius:2px;transition:width 1.2s ease;}
+.sc-n{font-size:11px;font-weight:700;width:26px;text-align:right;}
+
+/* SCORE LOCKED — shake animation */
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-3px);}40%{transform:translateX(3px);}60%{transform:translateX(-2px);}80%{transform:translateX(2px);}}
+.score-locked{
+  background:rgba(255,255,255,0.02);
+  border:1px solid var(--border2);
+  border-radius:10px;padding:9px 11px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;cursor:pointer;transition:all 0.2s;gap:8px;
+}
+.score-locked:hover{animation:shake 0.4s ease;}
+.score-locked:active{transform:scale(0.98);}
+.sl-left{display:flex;align-items:center;gap:7px;flex:1;min-width:0;}
+.sl-bar{width:60px;height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.sl-fill{height:100%;border-radius:2px;background:rgba(240,130,29,0.25);}
+.sl-label{font-size:11px;color:var(--muted2);white-space:nowrap;}
+.sl-badge{padding:3px 8px;border-radius:50px;font-size:10px;font-weight:700;background:var(--adim);color:var(--accent);border:1px solid var(--aborder);white-space:nowrap;flex-shrink:0;}
+
+/* FOOTER */
+.dcft{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:9px;border-top:1px solid var(--border);gap:6px;
+}
+.dca{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.abtn{
+  padding:6px 11px;border-radius:8px;border:none;
+  font-family:'Onest',sans-serif;font-size:11px;font-weight:600;
+  cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.abtn.p{background:var(--adim);color:var(--accent);border:1px solid var(--aborder);}
+.abtn.p:active{background:var(--accent);color:#fff;}
+.abtn.s{background:rgba(255,255,255,0.04);color:var(--muted2);border:1px solid var(--border2);}
+.ssel{
+  padding:5px 8px;border-radius:8px;
+  border:1px solid var(--border2);
+  background:rgba(255,255,255,0.03);
+  color:var(--muted2);
+  font-family:'Onest',sans-serif;font-size:11px;font-weight:600;
+  cursor:pointer;outline:none;-webkit-appearance:none;
+  max-width:110px;overflow:hidden;text-overflow:ellipsis;
+}
+.ssel.new{border-color:var(--aborder);color:var(--accent);}
+.ssel.called{border-color:rgba(251,191,36,0.3);color:var(--yellow);}
+.ssel.checked{border-color:var(--gborder);color:var(--green);}
+
+/* AI TEASER */
+.ai-teaser{
+  background:rgba(255,79,106,0.05);
+  border:1px solid rgba(255,79,106,0.2);
+  border-radius:10px;padding:9px 11px;
+  margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;cursor:pointer;
+  transition:all 0.2s;
+}
+.ai-teaser:active{transform:scale(0.98);}
+.ai-teaser-left{display:flex;align-items:flex-start;gap:7px;flex:1;min-width:0;}
+
+.ai-teaser-ico{font-size:14px;flex-shrink:0;margin-top:1px;}
+.ai-teaser-txt{font-size:11px;color:var(--muted2);line-height:1.5;}
+.ai-teaser-txt strong{color:var(--red);}
+.ai-unlock{padding:4px 10px;border-radius:50px;font-size:10px;font-weight:700;background:rgba(255,79,106,0.1);color:var(--red);border:1px solid var(--rborder);white-space:nowrap;flex-shrink:0;}
+
+/* AI VISIBLE */
+.ai-v{
+  background:rgba(167,139,250,0.05);
+  border:1px solid var(--pborder);
+  border-radius:10px;padding:10px 12px;
+  margin-bottom:9px;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.ai-ico{font-size:14px;flex-shrink:0;margin-top:1px;}
+.ai-txt{font-size:11px;line-height:1.5;color:var(--muted2);}
+.ai-txt strong{color:var(--text);}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+.pill{padding:3px 10px;border-radius:50px;font-size:10px;font-weight:500;background:rgba(255,255,255,0.03);border:1px solid var(--border2);color:var(--muted2);}
+.pill.g{background:var(--gdim);color:var(--green);border-color:var(--gborder);}
+.pill.r{background:var(--rdim);color:var(--red);border-color:var(--rborder);}
+.pill.o{background:var(--adim);color:var(--accent);border-color:var(--aborder);}
+.pill.p{background:var(--pdim);color:var(--purple);border-color:var(--pborder);}
+
+.dcft{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);}
+.dca{display:flex;gap:6px;align-items:center;}
+.abtn{padding:7px 13px;border-radius:9px;border:none;font-family:'Onest',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+.abtn.p{background:var(--adim);color:var(--accent);border:1px solid var(--aborder);}
+.abtn.p:active{background:var(--accent);color:#fff;}
+.abtn.s{background:rgba(255,255,255,0.04);color:var(--muted2);border:1px solid var(--border2);}
+.ssel{padding:6px 10px;border-radius:9px;border:1px solid var(--border2);background:rgba(255,255,255,0.03);color:var(--muted2);font-family:'Onest',sans-serif;font-size:11px;font-weight:600;cursor:pointer;outline:none;-webkit-appearance:none;}
+.ssel.new{border-color:var(--aborder);color:var(--accent);}
+.ssel.called{border-color:rgba(251,191,36,0.3);color:var(--yellow);}
+.ssel.checked{border-color:var(--gborder);color:var(--green);}
+
+/* SUPER BLUR CARD */
+.sbc{
+  position:relative;
+  border-radius:var(--radius);
+  margin-bottom:10px;
+  /* Фиксированная минимальная высота чтобы оверлей не обрезался */
+  min-height:140px;
+}
+.sbc .dc{
+  filter:blur(5px);
+  pointer-events:none;
+  margin-bottom:0;
+  user-select:none;
+  /* Убираем border-radius снизу чтобы не было зазора */
+  border-radius:var(--radius);
+  /* Чуть уменьшаем контент чтобы он не торчал */
+  overflow:hidden;
+}
+.sbo{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(160deg,rgba(4,4,6,0.78),rgba(0,20,10,0.85));
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:16px 20px;
+  border-radius:var(--radius);
+  border:1px solid var(--gborder);
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.sbo-icon{
+  font-size:22px;
+  line-height:1;
+}
+.sbo-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  color:var(--green);
+  text-align:center;
+  line-height:1.3;
+  /* Не даём тексту растягиваться */
+  max-width:100%;
+}
+.sbo-sub{
+  font-size:10px;
+  color:var(--muted2);
+  text-align:center;
+  line-height:1.5;
+  max-width:100%;
+  /* Обрезаем если не влезает */
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.sbo-btn{
+  /* Кнопка не шире контейнера */
+  width:100%;
+  max-width:240px;
+  padding:10px 16px;
+  border-radius:10px;
+  background:var(--grad);
+  color:#fff;
+  font-family:'Onest',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(240,130,29,0.3);
+  transition:all 0.2s;
+  text-align:center;
+  white-space:nowrap;
+}
+.sbo-btn:active{transform:scale(0.96);}
+
+/* MISSED DEALS */
+.missed-section{margin-bottom:16px;}
+.missed-title{
+  font-size:10px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--red);
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.missed-card{
+  position:relative;
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:8px;
+  opacity:0.7;
+  min-height:90px;
+}
+.missed-card .dc{
+  filter:blur(3px);
+  pointer-events:none;
+  margin-bottom:0;
+  user-select:none;
+  border-color:rgba(255,79,106,0.15);
+}
+.missed-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,79,106,0.12),rgba(4,4,6,0.82));
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  border-radius:var(--radius);
+}
+.sold-badge{
+  padding:6px 14px;border-radius:50px;
+  background:rgba(255,79,106,0.15);
+  border:1px solid var(--rborder);
+  font-size:12px;font-weight:700;color:var(--red);
+  display:flex;align-items:center;gap:6px;
+}
+.sold-time{font-size:10px;color:var(--muted2);font-weight:500;}
+
+/* HISTORY (ultra) */
+.hist-card{
+  background:rgba(251,191,36,0.04);
+  border:1px solid rgba(251,191,36,0.15);
+  border-radius:12px;padding:12px 14px;
+  margin-bottom:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  transition:all 0.2s;
+}
+.hist-card:active{transform:scale(0.98);}
+.hist-locked-card{
+  background:rgba(251,191,36,0.03);
+  border:1px dashed rgba(251,191,36,0.15);
+  border-radius:12px;padding:12px 14px;
+  margin-bottom:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.hb{padding:4px 10px;border-radius:50px;font-size:10px;font-weight:700;background:rgba(251,191,36,0.08);color:var(--yellow);border:1px solid rgba(251,191,36,0.18);white-space:nowrap;}
+
+/* TG BANNER */
+.tg-banner{
+  background:rgba(91,127,255,0.05);
+  border:1px dashed rgba(91,127,255,0.2);
+  border-radius:var(--radius-sm);padding:14px;
+  margin-bottom:14px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:all 0.2s;
+}
+.tg-banner:active{transform:scale(0.99);}
+.tg-ico{font-size:24px;flex-shrink:0;}
+.tg-info .tg-title{font-size:13px;font-weight:700;color:var(--blue);}
+.tg-info .tg-sub{font-size:11px;color:var(--muted2);margin-top:3px;line-height:1.4;}
+.tg-badge{padding:5px 12px;border-radius:8px;background:rgba(91,127,255,0.1);color:var(--blue);border:1px solid rgba(91,127,255,0.2);font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;}
+
+/* TOAST */
+.toast{
+  position:fixed;top:14px;left:50%;
+  transform:translateX(-50%) translateY(-80px);
+  z-index:600;background:rgba(13,13,18,0.98);
+  border:1px solid var(--border2);border-radius:12px;
+  padding:12px 20px;font-size:12px;font-weight:500;
+  backdrop-filter:blur(20px);
+  transition:transform 0.32s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
+  opacity:0;pointer-events:none;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* SHEET */
+.sho{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.85);display:none;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.sho.show{display:block;}
+.sh{
+  position:fixed;bottom:0;left:0;right:0;z-index:410;
+  background:#0a0a10;
+  border-radius:24px 24px 0 0;
+  border:1px solid var(--border2);border-bottom:none;
+  transform:translateY(100%);
+  transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);
+  max-height:92dvh;display:flex;flex-direction:column;
+  box-shadow:0 -10px 60px rgba(0,0,0,0.5);
+}
+.sh.open{transform:translateY(0);}
+.sh-h{width:40px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.sh-hdr{padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sh-t{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sh-x{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);}
+.sh-b{overflow-y:auto;padding:18px;padding-bottom:calc(24px + env(safe-area-inset-bottom));}
+.sh-b::-webkit-scrollbar{display:none;}
+
+/* PRICING CARDS */
+.pcards{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.pc{border-radius:18px;padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.pc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,transparent 60%);pointer-events:none;border-radius:18px;}
+.pc.fr{background:var(--s2);border:1px solid var(--border2);}
+.pc.pr{background:linear-gradient(135deg,rgba(240,130,29,0.08),rgba(167,139,250,0.05));border:2px solid var(--accent);box-shadow:0 0 30px rgba(240,130,29,0.12);}
+.pc.ul{background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(91,127,255,0.05));border:1px solid var(--pborder);}
+.pc.hot::after{content:'ХИТ';position:absolute;top:14px;right:14px;background:var(--grad);color:#fff;font-size:9px;font-weight:800;padding:3px 9px;border-radius:50px;letter-spacing:0.06em;}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.pc-name{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;}
+.pc-amount{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:800;text-align:right;}
+.pc-per{font-size:10px;color:var(--muted2);text-align:right;margin-top:2px;}
+.pc-features{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.pf{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted2);}
+.pf.on{color:var(--text);}
+.pf-ic{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.pf-ic.y{background:var(--gdim);color:var(--green);}
+.pf-ic.n{background:rgba(255,255,255,0.04);color:var(--muted);}
+.pc-btn{
+  width:100%;padding:13px;border-radius:11px;border:none;
+  font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:0.03em;transition:all 0.2s;
+}
+.pc-btn.fb{background:rgba(255,255,255,0.06);color:var(--muted2);}
+.pc-btn.pb{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(240,130,29,0.3);}
+.pc-btn.ub{background:linear-gradient(135deg,var(--pdim),rgba(91,127,255,0.1));color:var(--purple);border:1px solid var(--pborder);}
+.pc-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:7px;}
+
+/* SNIPER MODAL */
+.sniper-modal{
+  background:linear-gradient(135deg,rgba(167,139,250,0.08),rgba(91,127,255,0.05));
+  border:1px solid var(--pborder);border-radius:20px;
+  padding:24px 20px;text-align:center;
+}
+.sm-icon{font-size:48px;margin-bottom:12px;}
+.sm-title{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.sm-desc{font-size:13px;color:var(--muted2);line-height:1.6;margin-bottom:18px;}
+.sm-features{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left;}
+.sm-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text);}
+.sm-feat span{font-size:18px;flex-shrink:0;}
+
+.empty{text-align:center;padding:50px 20px;color:var(--muted);}
+
+/* ROI BLOCK */
+.roi-card{
+  background:linear-gradient(135deg,rgba(0,255,159,0.06),rgba(91,127,255,0.04));
+  border:1px solid var(--gborder);
+  border-radius:var(--radius);padding:16px;margin-bottom:12px;
+}
+.roi-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:12px;font-weight:700;color:var(--green);
+  margin-bottom:12px;display:flex;align-items:center;gap:7px;
+  line-height:1.3;
+}
+.roi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;margin-bottom:12px;
+}
+.roi-item{
+  background:rgba(0,0,0,0.3);border-radius:11px;
+  padding:11px 6px;text-align:center;
+  min-width:0;
+}
+.roi-val{
+  font-family:'Unbounded',sans-serif;
+  font-size:15px;font-weight:700;margin-bottom:3px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.roi-lbl{font-size:8px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);line-height:1.3;}
+.roi-arrow{
+  padding:11px;background:rgba(0,255,159,0.05);border-radius:10px;
+  font-size:11px;color:var(--muted2);line-height:1.5;
+  /* Текстовый блок — не flex */
+}
+.roi-arrow strong{color:var(--green);}
+
+/* LOSS COUNTER */
+.loss-ticker{
+  background:rgba(255,79,106,0.06);
+  border:1px solid var(--rborder);
+  border-radius:var(--radius-sm);padding:11px 12px;
+  margin-bottom:12px;
+  display:none;
+  align-items:center;gap:8px;
+}
+.loss-ticker.show{display:flex;}
+.loss-ticker-ico{font-size:18px;flex-shrink:0;animation:shake 1s infinite;}
+.loss-ticker-body{flex:1;min-width:0;}
+.loss-ticker-title{font-size:11px;font-weight:700;color:var(--red);}
+.loss-ticker-val{
+  font-family:'Unbounded',sans-serif;
+  font-size:18px;font-weight:800;color:var(--red);
+  margin-top:2px;transition:all 0.3s;
+  /* Не выходим за пределы */
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.loss-ticker-sub{font-size:10px;color:var(--muted2);margin-top:2px;}
+.loss-ticker-btn{
+  padding:7px 11px;border-radius:8px;
+  background:var(--red);color:#fff;
+  font-family:'Onest',sans-serif;font-size:11px;font-weight:700;
+  border:none;cursor:pointer;white-space:nowrap;
+  box-shadow:0 0 12px rgba(255,79,106,0.25);
+  flex-shrink:0;
+}
+
+/* TEST DRIVE BANNER */
+.td-banner{
+  background:linear-gradient(135deg,rgba(240,130,29,0.08),rgba(167,139,250,0.06));
+  border:1px solid var(--aborder);
+  border-radius:var(--radius);padding:18px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.td-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(240,130,29,0.12),transparent);border-radius:50%;pointer-events:none;}
+.td-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.td-sub{font-size:12px;color:var(--muted2);line-height:1.6;margin-bottom:14px;}
+.td-perks{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.td-perk{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);}
+.td-perk span{font-size:15px;}
+.td-form{display:flex;flex-direction:column;gap:8px;}
+.td-input{
+  width:100%;background:rgba(255,255,255,0.05);
+  border:1px solid var(--border2);border-radius:10px;
+  padding:11px 14px;
+  font-family:'Onest',sans-serif;font-size:13px;color:var(--text);
+  outline:none;transition:border-color 0.2s;
+}
+.td-input::placeholder{color:var(--muted);}
+.td-input:focus{border-color:var(--aborder);}
+.td-submit{
+  width:100%;padding:13px;border-radius:11px;border:none;
+  background:var(--grad);color:#fff;
+  font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:0.03em;
+  box-shadow:0 4px 20px rgba(240,130,29,0.3);
+  transition:all 0.2s;
+}
+.td-submit:active{transform:scale(0.97);}
+.td-note{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;}
+
+/* FEATURE VALUE POPUP */
+.fval-popup{
+  position:fixed;bottom:20px;left:50%;
+  transform:translateX(-50%) translateY(100px);
+  z-index:700;width:calc(100% - 32px);max-width:360px;
+  background:#0f0f16;border:1px solid var(--border2);
+  border-radius:18px;padding:18px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.6);
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;
+}
+.fval-popup.show{transform:translateX(-50%) translateY(0);pointer-events:all;}
+.fvp-close{position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:12px;}
+.fvp-icon{font-size:28px;margin-bottom:8px;}
+.fvp-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;}
+.fvp-stats{display:flex;gap:8px;margin:10px 0;}
+.fvp-stat{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:10px;padding:10px;text-align:center;}
+.fvp-stat-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;color:var(--green);}
+.fvp-stat-lbl{font-size:9px;color:var(--muted);margin-top:3px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.fvp-desc{font-size:12px;color:var(--muted2);line-height:1.5;margin-bottom:12px;}
+.fvp-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.03em;}
+
+/* LEAD CAPTURE */
+.lead-form{
+  background:var(--s1);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:20px;
+  margin:16px 0 0;
+  position:relative;overflow:hidden;
+}
+.lead-form::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,130,29,0.04),rgba(167,139,250,0.03));pointer-events:none;}
+.lead-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.lead-sub{font-size:12px;color:var(--muted2);line-height:1.5;margin-bottom:14px;}
+.lead-social{display:flex;gap:8px;margin-bottom:10px;}
+.lead-s-btn{
+  flex:1;padding:11px;border-radius:10px;border:none;
+  font-family:'Onest',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.lead-s-btn.tg{background:rgba(91,127,255,0.12);color:var(--blue);border:1px solid rgba(91,127,255,0.25);}
+.lead-s-btn.tg:active{background:var(--blue);color:#fff;}
+.lead-divider{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:11px;color:var(--muted);}
+.lead-divider::before,.lead-divider::after{content:'';flex:1;height:1px;background:var(--border2);}
+.lead-success{display:none;text-align:center;padding:16px 0;}
+.lead-success.show{display:block;}
+.lead-success-icon{font-size:36px;margin-bottom:8px;}
+.lead-success-text{font-size:13px;color:var(--text);font-weight:600;}
+.lead-success-sub{font-size:11px;color:var(--muted2);margin-top:4px;}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div class="toast" id="toast"></div>
+<div class="sho" id="sho" onclick="closeSh()"></div>
+<div class="sh" id="sh">
+  <div class="sh-h"></div>
+  <div class="sh-hdr"><div class="sh-t" id="shT">Тарифы</div><div class="sh-x" onclick="closeSh()">✕</div></div>
+  <div class="sh-b" id="shB"></div>
+</div>
+
+<div class="w">
+
+<!-- PLAN BAR -->
+<div class="plan-bar">
+  <div class="plan-left">
+    <div class="plan-pill free" id="pp">⚡ БЕСПЛАТНЫЙ</div>
+    <div class="plan-label" id="pl">Демо-режим</div>
+  </div>
+  <button class="upg-btn" id="ub" onclick="showPlans()">Улучшить →</button>
+</div>
+
+<!-- HDR -->
+<div class="hdr">
+  <div class="logo">AutoHunt<small>list.am · Армения 🇦🇲</small></div>
+  <div class="hdr-r">
+    <div class="live"><div class="ldot"></div>LIVE</div>
+    <div class="hbtn p" onclick="showSniperInfo()" title="Снайперский режим">🎯</div>
+    <div class="hbtn o" onclick="showPlans()" title="Тарифы">
+      <svg width="13" height="13" fill="none" stroke="var(--accent)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- DEMO SWITCHER -->
+<div class="dsw">
+  <button class="dsw-btn free act" id="sw0" onclick="setPlan('free')">🆓 Бесплатно</button>
+  <button class="dsw-btn pro" id="sw1" onclick="setPlan('pro')">⚡ PRO $30</button>
+  <button class="dsw-btn ultra" id="sw2" onclick="setPlan('ultra')">👑 ULTRA $100</button>
+</div>
+
+<!-- SNIPER TOGGLE -->
+<div class="sniper-row" id="sniperRow" onclick="toggleSniper()">
+  <div class="sniper-left">
+    <div class="sniper-icon">🎯</div>
+    <div class="sniper-info">
+      <div class="sn-title">Режим Снайпера</div>
+      <div class="sn-sub">Авто-уведомление через 10 сек · <span id="sniperPlanLabel" style="color:var(--purple);">👑 ULTRA</span></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="sniper-badge" id="sniperBadge">ULTRA</div>
+    <button class="sniper-toggle" id="sniperToggle" onclick="event.stopPropagation();toggleSniper()"></button>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="fc">
+  <div class="ft">
+    🔍 Параметры поиска
+    <span class="ft-note" id="fNote">⏱ Обновление: 60 мин</span>
+  </div>
+  <div class="g2">
+    <div class="fg"><label>Марка</label>
+      <select class="fs" id="fMk">
+        <option value="">Все</option>
+        <option value="Renault" selected>Renault</option>
+        <option value="Toyota">Toyota</option>
+        <option value="BMW">BMW</option>
+        <option value="Mercedes">Mercedes</option>
+        <option value="Hyundai">Hyundai</option>
+        <option value="Kia">Kia</option>
+        <option value="Opel">Opel</option>
+        <option value="Lada">Lada</option>
+        <option value="Lexus">Lexus</option>
+      </select>
+    </div>
+    <div class="fg"><label>Модель</label><input class="fi" id="fMd" placeholder="Logan, Camry..." value="Logan"></div>
+  </div>
+  <div class="g3">
+    <div class="fg"><label>Год от</label><input class="fi" id="fYF" type="number" value="1996"></div>
+    <div class="fg"><label>Год до</label><input class="fi" id="fYT" type="number" value="2012"></div>
+    <div class="fg"><label>Бюджет $</label><input class="fi" id="fBd" type="number" value="3500"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label>Цена от $</label><input class="fi" id="fPF" type="number" placeholder="0"></div>
+    <div class="fg"><label>Цена до $</label><input class="fi" id="fPT" type="number" value="9999"></div>
+  </div>
+  <div class="g2" style="margin-top:8px;" id="lockedFilters">
+    <div class="fg"><label>Только частники</label>
+      <div class="lf" id="lf1"><select class="fs"><option>Все</option></select><div class="lo p" onclick="showFval('private')">🔒 PRO</div></div>
+    </div>
+    <div class="fg"><label>Без ДТП (AI)</label>
+      <div class="lf" id="lf2"><select class="fs"><option>Все</option></select><div class="lo p" onclick="showFval('nocrash')">🔒 PRO</div></div>
+    </div>
+  </div>
+  <div class="g2" style="margin-top:8px;">
+    <div class="fg"><label>Проверка VIN</label>
+      <div class="lf" id="lf3"><select class="fs"><option>Выкл</option></select><div class="lo u" id="lfVIN" onclick="showFval('vin')">👑 ULTRA</div></div>
+    </div>
+    <div class="fg"><label>История цены</label>
+      <div class="lf" id="lf4"><select class="fs"><option>Выкл</option></select><div class="lo u" id="lfHist" onclick="showFval('hist')">👑 ULTRA</div></div>
+    </div>
+  </div>
+  <div class="tr">
+    <label>Ниже рынка</label>
+    <input type="range" id="thr" min="5" max="50" value="20" oninput="document.getElementById('thrV').textContent=this.value+'%'">
+    <div class="tv" id="thrV">20%</div>
+  </div>
+  <button class="pbtn" id="pb" onclick="go()">
+    <svg width="15" height="15" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    Найти выгодные предложения
+  </button>
+
+  <!-- DEMO + FORCE UPDATE BUTTONS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+    <button onclick="loadDemoData()" style="
+      padding:11px 8px;border-radius:10px;border:1px solid var(--gborder);
+      background:rgba(0,255,159,0.07);color:var(--green);
+      font-family:'Onest',sans-serif;font-size:11px;font-weight:600;
+      cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;">
+      📊 Демо-данные
+    </button>
+    <button id="forceBtn" onclick="forceUpdate()" style="
+      padding:11px 8px;border-radius:10px;border:1px solid var(--border2);
+      background:rgba(255,255,255,0.04);color:var(--muted2);
+      font-family:'Onest',sans-serif;font-size:11px;font-weight:600;
+      cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;">
+      ⚡ Обновить сейчас
+    </button>
+  </div>
+
+  <!-- LAST UPDATE STATUS -->
+  <div id="updateStatus" style="
+    display:none;margin-top:8px;
+    padding:9px 12px;border-radius:9px;
+    background:rgba(255,255,255,0.03);border:1px solid var(--border2);
+    font-size:11px;color:var(--muted2);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <span id="updateStatusText">🕐 Ещё не обновлялось</span>
+    <span id="updateStatusBadge" style="
+      padding:2px 8px;border-radius:50px;font-size:10px;font-weight:600;
+      background:var(--adim);color:var(--accent);border:1px solid var(--aborder);">
+      Кэш
+    </span>
+  </div>
+</div>
+
+<!-- DELAY WARNING -->
+<div class="dw show" id="dw">
+  ⏰ <span><strong>Бесплатно: данные с задержкой 60 мин.</strong> Лучшие авто уходят за 10–20 минут. <a onclick="showPlans('pro')">PRO = каждые 2 мин →</a></span>
+</div>
+
+<!-- PROGRESS / SKELETON -->
+<div class="pg" id="pg">
+  <div class="pg-card">
+    <div class="pg-title" id="pgt">Подключаемся...</div>
+    <div class="pg-bar"><div class="pg-fill" id="pgf"></div></div>
+    <div class="pg-sub" id="pgs">Загружаем данные</div>
+    <div class="pg-steps" id="pgSteps">
+      <div class="pg-step" id="ps0"></div>
+      <div class="pg-step" id="ps1"></div>
+      <div class="pg-step" id="ps2"></div>
+      <div class="pg-step" id="ps3"></div>
+      <div class="pg-step" id="ps4"></div>
+    </div>
+  </div>
+  <!-- SKELETON CARDS -->
+  <div id="skeletons" style="margin-top:12px;display:none;">
+    <div class="skel-card"><div class="skel skel-line w80"></div><div class="skel skel-line w40" style="margin-top:6px;"></div><div class="skel skel-line w60" style="margin-top:6px;"></div></div>
+    <div class="skel-card"><div class="skel skel-line w60"></div><div class="skel skel-line w80" style="margin-top:6px;"></div><div class="skel skel-line w40" style="margin-top:6px;"></div></div>
+  </div>
+</div>
+
+<div id="res" style="display:none;">
+
+<!-- TG BANNER -->
+<div class="tg-banner" id="tgBanner" onclick="showFval('tg')">
+  <div class="tg-ico">📱</div>
+  <div class="tg-info">
+    <div class="tg-title">Telegram-пуши в реальном времени</div>
+    <div class="tg-sub">Уведомление через 10 сек после появления. Ты звонишь первым.</div>
+  </div>
+  <div class="tg-badge">👑 ULTRA</div>
+</div>
+
+<!-- LOSS TICKER (free only) -->
+<div class="loss-ticker" id="lossTicker">
+  <div class="loss-ticker-ico">💸</div>
+  <div class="loss-ticker-body">
+    <div class="loss-ticker-title">Вы теряете прямо сейчас:</div>
+    <div class="loss-ticker-val" id="lossVal">0 ֏</div>
+    <div class="loss-ticker-sub">Пока вы на бесплатном — мимо идут выгодные авто</div>
+  </div>
+  <button class="loss-ticker-btn" onclick="showPlans('pro')">Стоп →</button>
+</div>
+
+<!-- ROI BLOCK -->
+<div class="roi-card" id="roiBlock">
+  <div class="roi-title">
+    <span>📊</span> Окупаемость за 1 сделку
+  </div>
+  <div class="roi-grid">
+    <div class="roi-item">
+      <div class="roi-val" style="color:var(--red)">$30</div>
+      <div class="roi-lbl">Стоимость PRO</div>
+    </div>
+    <div class="roi-item">
+      <div class="roi-val" style="color:var(--green)" id="roiSaving">$420</div>
+      <div class="roi-lbl">Экономия на авто</div>
+    </div>
+    <div class="roi-item">
+      <div class="roi-val" style="color:var(--accent)" id="roiX">14×</div>
+      <div class="roi-lbl">Окупаемость</div>
+    </div>
+  </div>
+  <div class="roi-arrow">
+    💡 При средней выборке: купить авто <strong>на $420 дешевле рынка</strong> = подписка окупается <strong id="roiDesc">в 14 раз за одну покупку</strong>. Даже если сэкономишь $50 — уже в плюсе.
+  </div>
+</div>
+
+<!-- TEST DRIVE BANNER (shown before search) -->
+<div class="td-banner" id="tdBanner" style="display:none;">
+  <div class="td-title">🚀 Тест-драйв PRO — 3 дня бесплатно</div>
+  <div class="td-sub">Попробуй полный доступ без оплаты. Отмена в один клик.</div>
+  <div class="td-perks">
+    <div class="td-perk"><span>⚡</span>Данные каждые 2 минуты — не 60</div>
+    <div class="td-perk"><span>🔓</span>Точные цены и SCORE всех авто</div>
+    <div class="td-perk"><span>🤖</span>AI-вердикт: такси? дилер? ДТП?</div>
+  </div>
+  <div class="td-form" id="tdForm">
+    <input class="td-input" id="tdContact" placeholder="Telegram @username или email" type="text">
+    <button class="td-submit" onclick="submitTrial()">Получить 3 дня PRO бесплатно →</button>
+    <div class="td-note">Без карты. Без автопродления. Просто попробуй.</div>
+  </div>
+  <div id="tdSuccess" style="display:none;text-align:center;padding:8px 0;">
+    <div style="font-size:28px;margin-bottom:8px;">🎉</div>
+    <div style="font-size:14px;font-weight:700;color:var(--green);">Тест-драйв активирован!</div>
+    <div style="font-size:11px;color:var(--muted2);margin-top:4px;">Напишем в течение 15 минут</div>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div class="bcard">
+  <div class="bt"><div class="bl">💰 Ваш бюджет</div><div class="bv" id="bv">$3 500</div></div>
+  <div class="bb"><div class="bfi" id="bf"></div></div>
+  <div class="bh" id="bh">...</div>
+</div>
+
+<!-- KPI -->
+<div class="kg">
+  <div class="kc"><div class="kv" id="kA" style="color:var(--accent)">—</div><div class="kl">Средняя</div></div>
+  <div class="kc"><div class="kv" id="kF" style="color:var(--green)">0</div><div class="kl">🔥 Огонь</div></div>
+  <div class="kc" id="kScW"><div class="kv" id="kSc" style="color:var(--purple)">—</div><div class="kl">Топ SCORE</div><div class="kc-lock" id="kScLock" onclick="showFval('score')"><span style="font-size:18px">🔒</span></div></div>
+  <div class="kc"><div class="kv" id="kT" style="color:var(--muted2)">0</div><div class="kl">Всего</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('all',this)">Все <span id="cA"></span></div>
+  <div class="tab" onclick="setTab('fire',this)">🔥 Огонь <span id="cF"></span></div>
+  <div class="tab" onclick="setTab('budget',this)">💰 В бюджете <span id="cB"></span></div>
+  <div class="tab" onclick="setTab('mid',this)">💛 Норм <span id="cM"></span></div>
+</div>
+<div class="lhdr"><div class="lt" id="ll">Объявления</div><div class="lu" id="lu"></div></div>
+<div id="list"></div>
+
+<!-- LEAD CAPTURE -->
+<div class="lead-form" id="leadForm">
+  <div class="lead-title">Хочешь первым узнавать о выгодных авто?</div>
+  <div class="lead-sub">Подпишись — пришлём 3 самых горящих предложения по твоим фильтрам прямо сегодня. Бесплатно.</div>
+  <div class="lead-social">
+    <button class="lead-s-btn tg" onclick="submitLead('tg')">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.28 13.925l-2.95-.924c-.64-.203-.654-.64.136-.954l11.526-4.443c.534-.194 1.002.13.57 1.644z"/></svg>
+      Подписаться в Telegram
+    </button>
+  </div>
+  <div class="lead-divider">или</div>
+  <input class="td-input" id="leadEmail" placeholder="Ваш email" type="email" style="margin-bottom:8px;">
+  <button class="td-submit" onclick="submitLead('email')" style="margin-bottom:4px;">Получить 3 горящих предложения →</button>
+  <div class="td-note">Без спама. Отписка в 1 клик.</div>
+  <div class="lead-success" id="leadSuccess">
+    <div class="lead-success-icon">✅</div>
+    <div class="lead-success-text">Отлично! Отправим сегодня</div>
+    <div class="lead-success-sub">Проверьте Telegram или email в течение часа</div>
+  </div>
+</div>
+
+</div><!-- /res -->
+</div><!-- /main -->
+</div><!-- /w -->
+
+<!-- FEATURE VALUE POPUP -->
+<div class="fval-popup" id="fvalPopup">
+  <div class="fvp-close" onclick="closeFval()">✕</div>
+  <div class="fvp-icon" id="fvpIcon">🔒</div>
+  <div class="fvp-title" id="fvpTitle">Эта функция в PRO</div>
+  <div class="fvp-stats" id="fvpStats"></div>
+  <div class="fvp-desc" id="fvpDesc">Описание ценности</div>
+  <button class="fvp-btn" id="fvpBtn" onclick="closeFval();showPlans()">Разблокировать →</button>
+</div>
+
+<script>
+// CANVAS
+var cv=document.getElementById('cv'),cx=cv.getContext('2d'),pp=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;}
+window.addEventListener('resize',rs);rs();
+function Pt(){this.r();}
+Pt.prototype.r=function(){this.x=Math.random()*cv.width;this.y=Math.random()*cv.height;this.vx=(Math.random()-.5)*.28;this.vy=(Math.random()-.5)*.28;this.s=Math.random()*1.3+.2;this.a=Math.random()*.22+.06;};
+Pt.prototype.u=function(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>cv.width||this.y<0||this.y>cv.height)this.r();};
+for(var i=0;i<60;i++)pp.push(new Pt());
+(function ab(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(function(p){p.u();cx.globalAlpha=p.a;cx.fillStyle='#f0821d';cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});cx.globalAlpha=1;requestAnimationFrame(ab);})();
+
+var API='https://script.google.com/macros/s/AKfycbxchBhs2KNyhgvzkrl06K7IZnk2MwnM5L1Ws0bO-AYZmPYJ_uQ5zo2pQkWF3RB2MZc1/exec';
+// ↑ Замени на свой URL после деплоя Apps Script
+
+var allDeals=[],avg=0,tab='all',plan='free',sniperOn=false;
+var statusMap=JSON.parse(localStorage.getItem('ah_s')||'{}');
+
+var cfg={
+  free:{name:'Бесплатный',pill:'⚡ БЕСПЛАТНЫЙ',cls:'free',note:'⏱ Обновление: 60 мин',price:true,score:false,ai:false,blur:true,hist:false,vin:false,tg:true,upd:60},
+  pro: {name:'PRO · $30/мес',pill:'⚡ PRO',cls:'pro',note:'⚡ Обновление: 2 мин',price:true,score:true,ai:true,blur:false,hist:false,vin:false,tg:true,upd:2},
+  ultra:{name:'ULTRA · $100/мес',pill:'👑 ULTRA',cls:'ultra',note:'🚀 Реальное время',price:true,score:true,ai:true,blur:false,hist:true,vin:true,tg:false,upd:0},
+};
+
+var missedDeals=[
+  {title:'Toyota Camry 2018',price:12500,pct:22,soldMins:14},
+  {title:'BMW 3 Series 2016',price:8900,pct:31,soldMins:7},
+  {title:'Kia Sportage 2019',price:14200,pct:18,soldMins:23},
+];
+
+// ── UPDATE STATUS HELPERS ───────────────────────────────
+function showApiError(msg){
+  // Показываем пользователю понятное сообщение об ошибке
+  var el=document.getElementById('updateStatus');
+  var txt=document.getElementById('updateStatusText');
+  var badge=document.getElementById('updateStatusBadge');
+  if(!el)return;
+  el.style.display='flex';
+
+  // Человекочитаемые сообщения об ошибках
+  var friendly=msg;
+  if(msg.indexOf('Failed to fetch')!==-1||msg.indexOf('NetworkError')!==-1){
+    friendly='Нет соединения с API (CORS или сеть)';
+  } else if(msg.indexOf('403')!==-1){
+    friendly='API недоступен (403) — проверь деплой скрипта';
+  } else if(msg.indexOf('404')!==-1){
+    friendly='Неверный URL скрипта (404)';
+  } else if(msg.indexOf('JSON')!==-1){
+    friendly='Скрипт вернул не JSON — проверь doGet()';
+  } else if(msg.indexOf('пустой')!==-1||msg.indexOf('empty')!==-1){
+    friendly='API вернул пустой ответ';
+  }
+
+  txt.textContent='⚠️ '+friendly;
+  badge.textContent='ОШИБКА';
+  badge.style.background='var(--rdim)';
+  badge.style.color='var(--red)';
+  badge.style.borderColor='var(--rborder)';
+  console.error('[AutoHunt API Error]', msg);
+}
+
+function setUpdateStatus(source, isLive){
+  var el=document.getElementById('updateStatus');
+  var txt=document.getElementById('updateStatusText');
+  var badge=document.getElementById('updateStatusBadge');
+  if(!el)return;
+  el.style.display='flex';
+  var now=new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+  txt.textContent='🕐 '+now+' · '+source;
+  if(isLive){
+    badge.textContent='LIVE';
+    badge.style.background='var(--gdim)';
+    badge.style.color='var(--green)';
+    badge.style.borderColor='var(--gborder)';
+  } else {
+    badge.textContent='Кэш';
+    badge.style.background='var(--adim)';
+    badge.style.color='var(--accent)';
+    badge.style.borderColor='var(--aborder)';
+  }
+  localStorage.setItem('ah_lastUpdate', Date.now().toString());
+  localStorage.setItem('ah_lastUpdateSrc', source);
+}
+
+// ── FORCE UPDATE ───────────────────────────────────────
+function forceUpdate(){
+  if(plan==='free'){
+    showFval('score');
+    toast('⚡ Принудительное обновление доступно в PRO');
+    return;
+  }
+  localStorage.removeItem('ah_lastUpdate');
+  toast('🔄 Принудительное обновление...');
+  console.log('[AutoHunt] forceUpdate() — сбрасываем кэш и перезапрашиваем');
+  go(true);
+}
+
+// ── CONNECTIVITY TEST (вызови из консоли браузера для отладки) ──
+window.testAPI = async function(){
+  console.log('=== AutoHunt API Debug ===');
+  console.log('URL:', API);
+  try {
+    var resp = await fetch(API+'?limit=3', {redirect:'follow'});
+    console.log('HTTP:', resp.status, resp.statusText);
+    console.log('Headers:', [...resp.headers.entries()].map(function(h){return h[0]+': '+h[1];}).join('\n'));
+    var txt = await resp.text();
+    console.log('Raw (300 chars):', txt.substring(0,300));
+    try{
+      var j=JSON.parse(txt);
+      console.log('Parsed OK. Keys:', Object.keys(j));
+      var arr=Array.isArray(j)?j:(j.listings||[]);
+      console.log('Records:', arr.length);
+      if(arr[0]) console.log('First record:', arr[0]);
+    }catch(e){ console.error('JSON parse fail:', e.message); }
+  } catch(e) {
+    console.error('Fetch failed:', e.message);
+    console.log('Hint: Если "Failed to fetch" — скорее всего CORS.');
+    console.log('Проверь: скрипт опубликован с доступом "Все"?');
+  }
+  console.log('=== Конец теста ===');
+};
+console.log('💡 Для отладки API вызови: testAPI() в консоли браузера');
+
+// ── DEMO DATA ──────────────────────────────────────────
+function loadDemoData(){
+  var mk=document.getElementById('fMk').value;
+  var md=document.getElementById('fMd').value;
+  var yf=parseInt(document.getElementById('fYF').value)||0;
+  var yt=parseInt(document.getElementById('fYT').value)||9999;
+  var pt=parseInt(document.getElementById('fPT').value)||999999;
+  var bd=parseInt(document.getElementById('fBd').value)||3500;
+  var thr=parseInt(document.getElementById('thr').value)/100;
+
+  var listings=demo(mk,md,yf,yt,pt);
+  processListings(listings, bd, thr);
+  document.getElementById('res').style.display='block';
+  setUpdateStatus('Демо-данные (8 объявлений)', false);
+  toast('📊 Загружено '+listings.length+' демо-объявлений');
+}
+
+// ── PROCESS LISTINGS (общая логика) ───────────────────
+function processListings(listings, bd, thr){
+  var wp=listings.filter(function(l){return l.price>0;});
+  avg=wp.reduce(function(a,b){return a+b.price;},0)/(wp.length||1);
+
+  allDeals=listings.map(function(l){
+    var pct=l.price>0?Math.round((1-l.price/avg)*100):0;
+    var mS=l.mileage>0?Math.max(0,100-Math.round(l.mileage/3000)):50;
+    var aS=l.year>0?Math.max(0,100-(2026-l.year)*4):50;
+    var pS=Math.min(100,Math.max(0,pct*2+50));
+    var score=Math.round(pS*0.5+mS*0.3+aS*0.2);
+    var taxi=l.year>0&&l.mileage>0&&(l.mileage/(2026-l.year))>30000;
+    return Object.assign({},l,{pct:pct,score:score,
+      grade:pct>=thr*100?'fire':pct>=thr*50?'mid':'norm',
+      inB:l.price>0&&l.price<=bd,mS:mS,aS:aS,pS:pS,taxi:taxi});
+  }).sort(function(a,b){return b.score-a.score;});
+
+  var fire=allDeals.filter(function(d){return d.grade==='fire';});
+  var inB =allDeals.filter(function(d){return d.inB;});
+  var mid =allDeals.filter(function(d){return d.grade==='mid';});
+  var best=allDeals[0];
+  var mn  =wp.length?Math.min.apply(null,wp.map(function(l){return l.price;})):0;
+
+  document.getElementById('kA').textContent='$'+Math.round(avg).toLocaleString('ru');
+  document.getElementById('kF').textContent=fire.length;
+  document.getElementById('kSc').textContent=best?best.score:'—';
+  document.getElementById('kT').textContent=allDeals.length;
+  document.getElementById('cA').textContent='('+allDeals.length+')';
+  document.getElementById('cF').textContent='('+fire.length+')';
+  document.getElementById('cB').textContent='('+inB.length+')';
+  document.getElementById('cM').textContent='('+mid.length+')';
+  document.getElementById('lu').textContent='🕐 '+new Date().toLocaleTimeString('ru');
+  document.getElementById('bv').textContent='$'+bd.toLocaleString('ru');
+
+  var bpct=Math.min(100,Math.round(bd/avg*100));
+  setTimeout(function(){document.getElementById('bf').style.width=bpct+'%';},300);
+  document.getElementById('bh').textContent=inB.length>0
+    ?'✅ В бюджете '+inB.length+' авто. Лучший SCORE: '+(inB.sort(function(a,b){return b.score-a.score;})[0]||{}).score+'/100 · Мин: $'+Math.min.apply(null,inB.map(function(l){return l.price;})).toLocaleString('ru')
+    :'⚠️ В бюджете $'+bd+' нет вариантов. Нужно $'+(mn-bd>0?mn-bd:0).toLocaleString('ru')+' больше';
+
+  renderList();
+  updateROI();
+  if(plan==='free'){startLossTicker();showTdBanner();}
+}
+
+// ── MAIN SEARCH ────────────────────────────────────────
+async function go(forceRefresh){
+  var btn=document.getElementById('pb');
+  btn.classList.add('ld');btn.textContent='⏳ Анализируем...';
+  document.getElementById('pg').classList.add('show');
+  document.getElementById('res').style.display='none';
+
+  // Проверяем кэш (только для бесплатного и если не force)
+  if(!forceRefresh){
+    var lastUpd=localStorage.getItem('ah_lastUpdate');
+    var updMin=cfg[plan].upd||60;
+    var cacheOk=lastUpd&&(Date.now()-parseInt(lastUpd))<updMin*60*1000;
+    if(cacheOk&&allDeals.length>0){
+      document.getElementById('pg').classList.remove('show');
+      document.getElementById('res').style.display='block';
+      btn.classList.remove('ld');
+      btn.innerHTML='🔄 Обновить';
+      var src=localStorage.getItem('ah_lastUpdateSrc')||'кэш';
+      setUpdateStatus(src+' (из кэша)', false);
+      toast('📦 Данные актуальны · следующее обновление через '+(Math.round(updMin-(Date.now()-parseInt(lastUpd))/60000))+' мин');
+      renderList();
+      return;
+    }
+  }
+
+  var stepDefs=[
+    {w:'15%',t:'Подключаемся к Google Sheets...',s:'Загружаем данные с list.am',sk:false},
+    {w:'35%',t:'Получаем объявления...',s:'Сканируем карточки авто',sk:true},
+    {w:'58%',t:'Считаем среднюю цену...',s:'Анализируем рыночные данные',sk:true},
+    {w:'78%',t:'Рассчитываем SCORE...',s:'Цена × Пробег × Возраст',sk:false},
+    {w:'95%',t:'Проверяем стоп-факторы...',s:'Такси? ДТП? Дилер?',sk:false},
+    {w:'100%',t:'Готово!',s:'',sk:false},
+  ];
+  for(var s=0;s<stepDefs.length;s++){
+    document.getElementById('pgf').style.width=stepDefs[s].w;
+    document.getElementById('pgt').textContent=stepDefs[s].t;
+    document.getElementById('pgs').textContent=stepDefs[s].s;
+    if(s<5){document.getElementById('ps'+s).className='pg-step cur';}
+    if(s>0){document.getElementById('ps'+(s-1)).className='pg-step done';}
+    document.getElementById('skeletons').style.display=stepDefs[s].sk?'block':'none';
+    await sl(480+Math.random()*260);
+  }
+
+  var mk=document.getElementById('fMk').value;
+  var md=document.getElementById('fMd').value;
+  var yf=parseInt(document.getElementById('fYF').value)||0;
+  var yt=parseInt(document.getElementById('fYT').value)||9999;
+  var pt=parseInt(document.getElementById('fPT').value)||999999;
+  var bd=parseInt(document.getElementById('fBd').value)||3500;
+  var thr=parseInt(document.getElementById('thr').value)/100;
+
+  var listings=[];
+  var isLive=false;
+  var srcLabel='';
+
+  // ── DEBUG HELPER ───────────────────────────────────────
+  function dbg(msg,data){
+    var ts=new Date().toISOString().substr(11,8);
+    console.log('[AutoHunt '+ts+'] '+msg, data||'');
+  }
+
+  // ── API CALL WITH FULL DEBUG ───────────────────────────
+  dbg('Начинаем запрос к API');
+  dbg('URL:', API);
+
+  var u = API
+    + '?make='      + encodeURIComponent((mk||'').toLowerCase())
+    + '&model='     + encodeURIComponent((md||'').toLowerCase())
+    + '&year_from=' + (yf||0)
+    + '&year_to='   + (yt||9999)
+    + '&price_to='  + (pt||999999);
+
+  dbg('Полный URL запроса:', u);
+
+  try {
+    // Google Apps Script требует следование редиректам.
+    // fetch по умолчанию следует им, но нужен режим cors.
+    // Если хост — GitHub Pages, заголовки Origin будут отправлены.
+    var resp = await fetch(u, {
+      method: 'GET',
+      redirect: 'follow',  // ВАЖНО: Apps Script делает 302 редирект
+      // mode: 'cors' — по умолчанию, оставляем
+    });
+
+    dbg('HTTP статус:', resp.status + ' ' + resp.statusText);
+    dbg('Content-Type:', resp.headers.get('content-type'));
+
+    if (!resp.ok) {
+      throw new Error('HTTP ' + resp.status + ': ' + resp.statusText);
+    }
+
+    // Читаем как текст сначала для отладки
+    var rawText = await resp.text();
+    dbg('Ответ (первые 300 символов):', rawText.substring(0, 300));
+
+    if (!rawText || rawText.trim() === '') {
+      throw new Error('Пустой ответ от API');
+    }
+
+    var j;
+    try {
+      j = JSON.parse(rawText);
+    } catch(parseErr) {
+      dbg('Ошибка парсинга JSON:', parseErr.message);
+      dbg('Сырой ответ:', rawText.substring(0, 500));
+      throw new Error('Невалидный JSON: ' + parseErr.message);
+    }
+
+    dbg('JSON структура — ключи:', Object.keys(j||{}).join(', '));
+
+    // Поддерживаем оба формата: [] и {listings:[]}
+    if (Array.isArray(j)) {
+      listings = j;
+      dbg('Формат: массив объявлений, кол-во:', listings.length);
+    } else if (j && Array.isArray(j.listings)) {
+      listings = j.listings;
+      dbg('Формат: объект с listings[], кол-во:', listings.length);
+      if (j.meta) dbg('Meta:', JSON.stringify(j.meta));
+    } else if (j && j.error) {
+      throw new Error('API вернул ошибку: ' + j.error);
+    } else {
+      dbg('Неизвестный формат ответа:', JSON.stringify(j).substring(0, 200));
+      throw new Error('Неизвестный формат ответа API');
+    }
+
+    if (listings.length > 0) {
+      // Нормализуем поля — Apps Script может вернуть разные имена
+      listings = listings.map(function(item) {
+        return {
+          id:        String(item.id || item.ID || ''),
+          title:     item.title || item.Заголовок || item.name || 'Авто',
+          price:     parseInt(item.price || item['Цена USD'] || item.priceUsd || 0),
+          priceAmd:  parseInt(item.priceAmd || item['Цена AMD'] || 0),
+          year:      parseInt(item.year || item.Год || 0),
+          mileage:   parseInt(item.mileage || item['Пробег км'] || 0),
+          city:      item.city || item.Город || 'Армения',
+          url:       item.url || item.URL || 'https://www.list.am/category/23',
+          posted_at: item.posted_at || item.Добавлено || '',
+        };
+      }).filter(function(item) {
+        return item.price > 0 || item.title !== 'Авто';
+      });
+
+      dbg('После нормализации:', listings.length + ' объявлений');
+      dbg('Пример первого:', JSON.stringify(listings[0]));
+
+      isLive = true;
+      srcLabel = 'Google Sheets · list.am (' + listings.length + ' шт.)';
+    } else {
+      dbg('API вернул 0 объявлений по фильтрам');
+      srcLabel = 'API ответил · 0 по фильтрам';
+    }
+
+  } catch(e) {
+    dbg('❌ Ошибка запроса:', e.message);
+    srcLabel = 'Ошибка: ' + e.message;
+    showApiError(e.message);
+  }
+
+  // Fallback на демо если данных нет
+  if (!listings.length) {
+    dbg('Загружаем демо-данные как fallback');
+    listings = demo(mk, md, yf, yt, pt);
+    if (!isLive) srcLabel = 'Демо-данные · API недоступен';
+  }
+
+  dbg('Итого для обработки:', listings.length + ' объявлений');
+
+  document.getElementById('pg').classList.remove('show');
+  document.getElementById('res').style.display='block';
+  btn.classList.remove('ld');
+  btn.innerHTML='🔄 Обновить';
+
+  processListings(listings, bd, thr);
+  setUpdateStatus(srcLabel, isLive);
+
+  var best=allDeals[0];
+  var fire=allDeals.filter(function(d){return d.grade==='fire';});
+  toast('🔥 '+fire.length+' горящих · Лучший SCORE '+(best?best.score:0)+(isLive?' · LIVE данные':''));
+}
+  plan=p;
+  var c=cfg[p];
+  var pill=document.getElementById('pp');
+  pill.textContent=c.pill;pill.className='plan-pill '+c.cls;
+  document.getElementById('pl').textContent=c.name;
+  document.getElementById('ub').style.display=p==='ultra'?'none':'block';
+  document.getElementById('fNote').textContent=c.note;
+  document.getElementById('dw').classList.toggle('show',p==='free');
+  document.getElementById('tgBanner').style.display=c.tg?'flex':'none';
+
+  // Locked filters
+  if(p!=='free'){
+    document.getElementById('lf1').innerHTML='<select class="fs"><option>Частники</option><option>Дилеры</option><option>Все</option></select>';
+    document.getElementById('lf2').innerHTML='<select class="fs"><option>Без ДТП</option><option>Все</option></select>';
+  } else {
+    document.getElementById('lf1').innerHTML='<select class="fs"><option>Все</option></select><div class="lo p" onclick="showFval(\'private\')">🔒 PRO</div>';
+    document.getElementById('lf2').innerHTML='<select class="fs"><option>Все</option></select><div class="lo p" onclick="showFval(\'nocrash\')">🔒 PRO</div>';
+  }
+  document.getElementById('lfVIN').style.display=p==='ultra'?'none':'flex';
+  document.getElementById('lfHist').style.display=p==='ultra'?'none':'flex';
+  document.getElementById('kScLock').style.display=c.score?'none':'flex';
+  document.getElementById('kSc').style.filter=c.score?'none':'blur(5px)';
+
+  // Loss ticker
+  if(p==='free'){if(allDeals.length)startLossTicker();}
+  else{stopLossTicker();}
+
+  // ROI block — always show
+  updateROI();
+
+  // Test drive banner
+  var tdb=document.getElementById('tdBanner');
+  if(tdb)tdb.style.display=(p==='free'&&allDeals.length)?'block':'none';
+
+  // Sniper
+  document.getElementById('sniperBadge').textContent=p==='ultra'?'ACTIVE':'ULTRA';
+  document.getElementById('sniperBadge').style.background=p==='ultra'?'var(--gdim)':'var(--pdim)';
+  document.getElementById('sniperBadge').style.color=p==='ultra'?'var(--green)':'var(--purple)';
+  document.getElementById('sniperPlanLabel').textContent=p==='ultra'?'⚡ Доступен':'👑 ULTRA';
+  document.getElementById('sniperPlanLabel').style.color=p==='ultra'?'var(--green)':'var(--purple)';
+
+  ['sw0','sw1','sw2'].forEach(function(id,i){
+    var b=document.getElementById(id);
+    b.classList.remove('act');
+    if(['free','pro','ultra'][i]===p)b.classList.add('act');
+  });
+  if(allDeals.length)renderList();
+  toast({free:'🆓 Демо бесплатного тарифа',pro:'⚡ Демо PRO — цены и SCORE открыты',ultra:'👑 Демо ULTRA — всё открыто'}[p]);
+}
+
+function toggleSniper(){
+  if(plan!=='ultra'){showSniperInfo();return;}
+  sniperOn=!sniperOn;
+  document.getElementById('sniperToggle').classList.toggle('on',sniperOn);
+  toast(sniperOn?'🎯 Снайперский режим ВКЛЮЧЁН':'🎯 Снайперский режим выключен');
+}
+
+function showSniperInfo(){
+  var html='<div class="sniper-modal">'
+    +'<div class="sm-icon">🎯</div>'
+    +'<div class="sm-title">Режим Снайпера</div>'
+    +'<div class="sm-desc">Система автоматически отслеживает list.am и присылает тебе уведомление через <strong>10 секунд</strong> после появления нового объявления по твоим фильтрам. Ты звонишь первым.</div>'
+    +'<div class="sm-features">'
+      +'<div class="sm-feat"><span>⚡</span>Уведомление в Telegram мгновенно</div>'
+      +'<div class="sm-feat"><span>📊</span>SCORE уже посчитан — брать или нет</div>'
+      +'<div class="sm-feat"><span>📞</span>Один тап — звонок продавцу</div>'
+      +'<div class="sm-feat"><span>🌙</span>Работает 24/7, пока ты спишь</div>'
+    +'</div>';
+  if(plan!=='ultra'){
+    html+='<button class="pbtn" onclick="closeSh();setPlan(\'ultra\')">👑 Активировать ULTRA →</button>'
+      +'<div style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px;">$100/мес · ≈ 9 500 ₽ · 40 000 драм</div>';
+  } else {
+    html+='<button class="pbtn" onclick="closeSh();toggleSniper();">'+(sniperOn?'Выключить снайпера':'🎯 Включить снайпера')+'</button>';
+  }
+  html+='</div>';
+  openSh('🎯 Режим Снайпера',html);
+}
+
+async function go(){
+  var btn=document.getElementById('pb');
+  btn.classList.add('ld');btn.textContent='⏳ Анализируем...';
+  document.getElementById('pg').classList.add('show');
+  document.getElementById('res').style.display='none';
+
+  var stepDefs=[
+    {w:'15%',t:'Подключаемся к list.am...',s:'ScrapingAnt → обход Cloudflare',sk:false},
+    {w:'35%',t:'Загружаем объявления...',s:'Сканируем карточки авто',sk:true},
+    {w:'58%',t:'Считаем среднюю цену...',s:'Анализируем рыночные данные',sk:true},
+    {w:'78%',t:'Рассчитываем SCORE...',s:'Цена × Пробег × Возраст',sk:false},
+    {w:'95%',t:'Проверяем на стоп-факторы...',s:'Такси? ДТП? Дилер?',sk:false},
+    {w:'100%',t:'Готово!',s:'',sk:false},
+  ];
+  for(var s=0;s<stepDefs.length;s++){
+    document.getElementById('pgf').style.width=stepDefs[s].w;
+    document.getElementById('pgt').textContent=stepDefs[s].t;
+    document.getElementById('pgs').textContent=stepDefs[s].s;
+    if(s<5){document.getElementById('ps'+s).className='pg-step cur';}
+    if(s>0){document.getElementById('ps'+(s-1)).className='pg-step done';}
+    document.getElementById('skeletons').style.display=stepDefs[s].sk?'block':'none';
+    await sl(500+Math.random()*280);
+  }
+
+  var mk=document.getElementById('fMk').value;
+  var md=document.getElementById('fMd').value;
+  var yf=parseInt(document.getElementById('fYF').value)||0;
+  var yt=parseInt(document.getElementById('fYT').value)||9999;
+  var pt=parseInt(document.getElementById('fPT').value)||999999;
+  var bd=parseInt(document.getElementById('fBd').value)||3500;
+  var thr=parseInt(document.getElementById('thr').value)/100;
+
+  var listings=[];
+  try{
+    var u=API+'?make='+encodeURIComponent(mk.toLowerCase())+'&model='+encodeURIComponent(md.toLowerCase())+'&year_from='+yf+'&year_to='+yt+'&price_to='+pt;
+    var r=await fetch(u);
+    var j=await r.json();
+    listings=Array.isArray(j)?j:(j.listings||[]);
+  }catch(e){}
+  if(!listings.length)listings=demo(mk,md,yf,yt,pt);
+
+  var wp=listings.filter(function(l){return l.price>0;});
+  avg=wp.reduce(function(a,b){return a+b.price;},0)/(wp.length||1);
+
+  allDeals=listings.map(function(l){
+    var pct=l.price>0?Math.round((1-l.price/avg)*100):0;
+    var mS=l.mileage>0?Math.max(0,100-Math.round(l.mileage/3000)):50;
+    var aS=l.year>0?Math.max(0,100-(2026-l.year)*4):50;
+    var pS=Math.min(100,Math.max(0,pct*2+50));
+    var score=Math.round(pS*0.5+mS*0.3+aS*0.2);
+    var taxi=l.year>0&&l.mileage>0&&(l.mileage/(2026-l.year))>30000;
+    return Object.assign({},l,{pct:pct,score:score,
+      grade:pct>=thr*100?'fire':pct>=thr*50?'mid':'norm',
+      inB:l.price>0&&l.price<=bd,mS:mS,aS:aS,pS:pS,taxi:taxi});
+  }).sort(function(a,b){return b.score-a.score;});
+
+  var fire=allDeals.filter(function(d){return d.grade==='fire';});
+  var inB=allDeals.filter(function(d){return d.inB;});
+  var mid=allDeals.filter(function(d){return d.grade==='mid';});
+  var best=allDeals[0];
+
+  document.getElementById('kA').textContent='$'+Math.round(avg).toLocaleString('ru');
+  document.getElementById('kF').textContent=fire.length;
+  document.getElementById('kSc').textContent=best?best.score:'—';
+  document.getElementById('kT').textContent=allDeals.length;
+  document.getElementById('cA').textContent='('+allDeals.length+')';
+  document.getElementById('cF').textContent='('+fire.length+')';
+  document.getElementById('cB').textContent='('+inB.length+')';
+  document.getElementById('cM').textContent='('+mid.length+')';
+  document.getElementById('lu').textContent='🕐 '+new Date().toLocaleTimeString('ru');
+  document.getElementById('bv').textContent='$'+bd.toLocaleString('ru');
+  var bpct=Math.min(100,Math.round(bd/avg*100));
+  setTimeout(function(){document.getElementById('bf').style.width=bpct+'%';},300);
+  var mn=wp.length?Math.min.apply(null,wp.map(function(l){return l.price;})):0;
+  document.getElementById('bh').textContent=inB.length>0
+    ?'✅ В бюджете '+inB.length+' авто. Лучший SCORE: '+(inB.sort(function(a,b){return b.score-a.score;})[0]||{}).score+'/100 · Мин: $'+Math.min.apply(null,inB.map(function(l){return l.price;})).toLocaleString('ru')
+    :'⚠️ В бюджете $'+bd+' нет вариантов. Нужно $'+(mn-bd>0?mn-bd:0).toLocaleString('ru')+' больше';
+
+function setTab(t,el){
+  tab=t;document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');renderList();
+}
+
+function renderList(){
+  var c=cfg[plan];
+  var items=allDeals.slice();
+  if(tab==='fire')  items=items.filter(function(d){return d.grade==='fire';});
+  if(tab==='budget')items=items.filter(function(d){return d.inB;});
+  if(tab==='mid')   items=items.filter(function(d){return d.grade==='mid';});
+  document.getElementById('ll').textContent=items.length+' объявлений';
+
+  var html='';
+
+  // MISSED DEALS — только для бесплатных (психологический триггер)
+  if(plan==='free'){
+    html+='<div class="missed-section">'
+      +'<div class="missed-title">🚫 Пока вы ждали обновления — ушли:</div>';
+    missedDeals.forEach(function(m){
+      html+='<div class="missed-card">'
+        +'<div class="dc fire">'
+          +'<div class="dct"><div class="dcn">'+m.title+'</div><div class="sbdg sf">🔥 −'+m.pct+'%</div></div>'
+          +'<div class="dcp"><div class="dcpr">$'+m.price.toLocaleString('ru')+'</div></div>'
+          +'<div class="pills"><span class="pill g">✅ В бюджете</span></div>'
+        +'</div>'
+        +'<div class="missed-overlay">'
+          +'<div style="text-align:center;">'
+            +'<div class="sold-badge">⛔ ПРОДАНО</div>'
+            +'<div class="sold-time" style="margin-top:6px;">'+m.soldMins+' мин. назад</div>'
+          +'</div>'
+        +'</div>'
+      +'</div>';
+    });
+    html+='<div style="text-align:center;padding:10px 0 4px;font-size:11px;color:var(--red);">В PRO данные обновляются каждые 2 мин — успеешь первым. <span style="color:var(--accent);cursor:pointer;font-weight:700;" onclick="showPlans(\'pro\')">Попробовать →</span></div>';
+    html+='</div>';
+  }
+
+  // ИСТОРИЯ ЦЕН
+  if(c.hist&&items.length){
+    html+='<div class="hist-card">'
+      +'<div><div style="font-size:12px;font-weight:700;color:var(--yellow);">📈 '+items[0].title+'</div>'
+      +'<div style="font-size:11px;color:var(--muted2);margin-top:3px;">7д назад: <b>$'+(Math.round(avg*1.12)).toLocaleString('ru')+'</b> → 3д: <b>$'+(Math.round(avg*1.06)).toLocaleString('ru')+'</b> → сейчас: <b style="color:var(--yellow)">$'+items[0].price.toLocaleString('ru')+'</b></div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:3px;">📉 Продавец снижает цену — нервничает</div></div>'
+      +'<div class="hb">ЖИВОЙ</div>'
+    +'</div>';
+  } else if(!c.hist){
+    html+='<div class="hist-locked-card" onclick="showPlans(\'ultra\')">'
+      +'<div style="font-size:12px;color:var(--muted2);">📈 История изменений цены</div>'
+      +'<div class="hb">👑 ULTRA</div>'
+    +'</div>';
+  }
+
+  if(!items.length){
+    html+='<div class="empty"><div style="font-size:40px;margin-bottom:10px">🔍</div><div style="color:var(--muted2)">Нет объявлений по фильтру</div></div>';
+    document.getElementById('list').innerHTML=html;
+    return;
+  }
+
+  items.forEach(function(d,i){
+    var sav=Math.round(avg-d.price);
+    var st=statusMap[d.id]||'new';
+    var isFire=d.grade==='fire';
+    var bc=d.grade==='fire'?'sf':d.grade==='mid'?'sm':'sn';
+    var bt=d.grade==='fire'?'🔥 −'+d.pct+'%':d.grade==='mid'?'💛 −'+d.pct+'%':'· −'+d.pct+'%';
+    var sc=d.score>=70?'var(--green)':d.score>=45?'var(--yellow)':'var(--muted2)';
+    var sf=d.score>=70?'var(--green)':d.score>=45?'var(--yellow)':'var(--muted)';
+    var opts=['new','called','checked'].map(function(s){
+      var lb={new:'🆕 Новый',called:'📞 Звонил',checked:'✅ Осмотрел'};
+      return '<option value="'+s+'"'+(st===s?' selected':'')+'>'+lb[s]+'</option>';
+    }).join('');
+    var aiT=getAi(d);
+
+    // SUPER BLUR для топ-горящих на бесплатном
+    if(c.blur&&isFire&&i<2){
+      html+='<div class="sbc">'
+        +'<div class="dc fire">'
+          +'<div class="dct"><div class="dcn">'+d.title+'</div><div class="sbdg sf">🔥 −'+d.pct+'%</div></div>'
+          +'<div class="dcp"><div class="dcpr">$'+d.price.toLocaleString('ru')+'</div></div>'
+          +'<div class="pills"><span class="pill g">✅ В бюджете</span><span class="pill">📅 '+d.year+'</span></div>'
+        +'</div>'
+        +'<div class="sbo" onclick="showPlans(\'pro\')">'
+          +'<div class="sbo-icon">🔥</div>'
+          +'<div class="sbo-title">Найдено идеальное авто!</div>'
+          +'<div class="sbo-sub">SCORE '+d.score+'/100 · Экономия $'+sav.toLocaleString('ru')+'<br>Разблокируй PRO чтобы увидеть</div>'
+          +'<button class="sbo-btn">Разблокировать PRO →</button>'
+        +'</div>'
+      +'</div>';
+      return;
+    }
+
+    var card='<div class="dc '+d.grade+'" style="animation-delay:'+Math.min(i*0.03,0.2)+'s">';
+
+    // TOP
+    card+='<div class="dct"><div class="dcn">'+d.title+'</div><div class="sbdg '+bc+'">'+bt+'</div></div>';
+
+    // PRICE
+    card+='<div class="dcp">';
+    if(c.price){
+      card+='<div class="dcpr">'+fm(d.price)+'</div>'
+        +(avg?'<div class="dcav">'+fm(Math.round(avg))+'</div>':'')
+        +(sav>0?'<span class="dcsv '+(isFire?'g':'y')+'">−'+fm(sav)+'</span>':'');
+    } else {
+      card+='<div class="pblur" onclick="showPlans(\'pro\')">$2 400</div>'
+        +'<span class="punlock" onclick="showPlans(\'pro\')">🔒 PRO</span>';
+    }
+    card+='</div>';
+
+    // SCORE
+    if(c.score){
+      card+='<div class="sc-row"><div class="sc-l">SCORE</div><div class="sc-b"><div class="sc-f" style="width:'+d.score+'%;background:'+sf+'"></div></div><div class="sc-n" style="color:'+sc+'">'+d.score+'</div></div>';
+    } else {
+      card+='<div class="score-locked" onclick="showFval(\'score\')">'
+        +'<div class="sl-left"><div class="sl-bar"><div class="sl-fill" style="width:'+d.score+'%"></div></div><div class="sl-label">SCORE скрыт</div></div>'
+        +'<div class="sl-badge">🔒 PRO</div>'
+      +'</div>';
+    }
+
+    // AI
+    if(c.ai){
+      card+='<div class="ai-v"><div class="ai-ico">🤖</div><div class="ai-txt">'+aiT+'</div></div>';
+    } else {
+      // Психологический триггер тревоги — намёк на проблему
+      var aiHints=['⚠️ Обнаружены признаки коммерческой эксплуатации. Полный отчёт в PRO.','⚠️ Косвенные признаки участия в ДТП. AI-анализ доступен в PRO.','⚠️ Характеристики объявления совпадают с шаблонами перекупщиков. Подробнее в PRO.'];
+      var hint=aiHints[d.id%3]||aiHints[0];
+      card+='<div class="ai-teaser" onclick="showFval(\'ai\')">'
+        +'<div class="ai-teaser-left"><div class="ai-teaser-ico">🤖</div><div class="ai-teaser-txt"><strong>'+hint.split('.')[0]+'.</strong> '+hint.split('. ').slice(1).join('. ')+'</div></div>'
+        +'<div class="ai-unlock">Узнать</div>'
+      +'</div>';
+    }
+
+    // VIN (ultra)
+    if(plan==='ultra'){
+      var vins=['Чисто · 2 владельца','⚠️ 1 ДТП · смотри историю','Чисто · 1 владелец · без ДТП'];
+      var vinC=vins[d.id%3];
+      var vinColor=vinC.includes('⚠️')?'var(--red)':'var(--green)';
+      card+='<div style="background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:10px;padding:9px 12px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;">'
+        +'<span style="font-size:11px;color:var(--muted2);">🔍 VIN-проверка</span>'
+        +'<span style="font-size:11px;font-weight:700;color:'+vinColor+'">'+vinC+'</span>'
+      +'</div>';
+    }
+
+    // PILLS
+    card+='<div class="pills">'
+      +(d.year?'<span class="pill">📅 '+d.year+'</span>':'')
+      +(d.mileage?'<span class="pill">🛣 '+d.mileage.toLocaleString('ru')+' км</span>':'')
+      +'<span class="pill">📍 '+d.city+'</span>'
+      +(d.inB?'<span class="pill g">✅ В бюджете</span>':'<span class="pill r">❌ Дороже</span>')
+      +(d.taxi?'<span class="pill r">🚕 Такси?</span>':'')
+      +(plan==='ultra'&&sniperOn?'<span class="pill p">🎯 Снайпер</span>':'')
+    +'</div>';
+
+    // FOOTER
+    card+='<div class="dcft">'
+      +'<select class="ssel '+st+'" onchange="setSt(\''+d.id+'\',this)">'+opts+'</select>'
+      +'<div class="dca">';
+    if(c.price){
+      card+='<a class="abtn p" href="'+d.url+'" target="_blank">list.am →</a>';
+    } else {
+      card+='<button class="abtn p" onclick="showPlans(\'pro\')">🔒 Открыть</button>';
+    }
+    card+='</div></div></div>';
+    html+=card;
+  });
+
+  document.getElementById('list').innerHTML=html;
+}
+
+function getAi(d){
+  var f=[];
+  if(d.pct>=25)f.push('<strong>Цена очень выгодная</strong> — на '+d.pct+'% ниже рынка, действуй быстро.');
+  else if(d.pct>=12)f.push('<strong>Хорошая цена</strong>, экономия '+fm(Math.round(avg-d.price))+'.');
+  else if(d.pct<0)f.push('Цена <strong>выше рынка</strong> на '+Math.abs(d.pct)+'%.');
+  else f.push('Цена <strong>около рынка</strong>.');
+  if(d.taxi)f.push('⚠️ <strong>Признаки такси</strong> — пробег >30к/год, осмотри подвеску.');
+  else if(d.mileage>200000)f.push('Пробег высокий — запроси историю ТО.');
+  else if(d.mileage>0&&d.mileage<80000)f.push('✅ <strong>Пробег отличный</strong> для года.');
+  if(d.inB)f.push('✅ Укладывается в бюджет.');
+  return f.join(' ');
+}
+
+function setSt(id,sel){
+  statusMap[id]=sel.value;localStorage.setItem('ah_s',JSON.stringify(statusMap));
+  sel.className='ssel '+sel.value;
+  toast({new:'🆕 Новый',called:'📞 Звонил',checked:'✅ Осмотрел'}[sel.value]||'💾 OK');
+}
+
+function showPlans(focus){
+  var h='<div style="text-align:center;margin-bottom:20px;">'
+    +'<div style="font-size:32px;margin-bottom:10px;">🚗</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:15px;font-weight:800;background:linear-gradient(135deg,#f0821d,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:7px;">Выбери свой план</div>'
+    +'<div style="font-size:12px;color:var(--muted2);line-height:1.6;">Чем выше план — тем раньше ты звонишь,<br>тем выгоднее покупаешь.</div>'
+  +'</div>'
+  +'<div class="pcards">'
+
+  // FREE
+  +'<div class="pc fr" onclick="setPlan(\'free\');closeSh();">'
+    +'<div class="pc-top"><div><div class="pc-name" style="color:var(--muted2)">🆓 Бесплатный</div><div style="font-size:11px;color:var(--muted);margin-top:3px;">Посмотреть возможности</div></div><div><div class="pc-amount" style="color:var(--muted2)">$0</div><div class="pc-per">/месяц</div></div></div>'
+    +'<div class="pc-features">'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Список объявлений</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Средняя цена по рынку</div>'
+      +'<div class="pf"><div class="pf-ic n">✗</div>Точные цены скрыты</div>'
+      +'<div class="pf"><div class="pf-ic n">✗</div>SCORE и AI-анализ закрыты</div>'
+      +'<div class="pf"><div class="pf-ic n">✗</div>Задержка данных 60 минут</div>'
+    +'</div>'
+    +'<button class="pc-btn fb" onclick="event.stopPropagation();setPlan(\'free\');closeSh()">Остаться бесплатным</button>'
+  +'</div>'
+
+  // PRO
+  +'<div class="pc pr hot" onclick="setPlan(\'pro\');closeSh();" style="'+(focus==='pro'?'box-shadow:0 0 40px rgba(240,130,29,0.25);':'')+'">'
+    +'<div class="pc-top"><div><div class="pc-name" style="color:var(--accent)">⚡ ПЕРЕКУП PRO</div><div style="font-size:11px;color:var(--muted2);margin-top:3px;">Основной инструмент</div></div><div><div class="pc-amount" style="color:var(--accent)">$30</div><div class="pc-per">/месяц · ≈2 800 ₽</div></div></div>'
+    +'<div class="pc-features">'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>Точная цена</strong> каждого авто</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>SCORE 0–100</strong> — брать или нет</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>AI-вердикт</strong> — такси? дилер? ДТП?</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Обновление <strong>каждые 2 минуты</strong></div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Фильтры: частники / без ДТП</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>CRM: звонил / осмотрел</div>'
+    +'</div>'
+    +'<button class="pc-btn pb" onclick="event.stopPropagation();setPlan(\'pro\');closeSh();toast(\'⚡ PRO активирован! Это демо.\')">Активировать PRO →</button>'
+    +'<div class="pc-hint">≈ 12 000 армянских драм / мес</div>'
+  +'</div>'
+
+  // ULTRA
+  +'<div class="pc ul" onclick="setPlan(\'ultra\');closeSh();" style="'+(focus==='ultra'?'border-color:var(--purple);box-shadow:0 0 30px rgba(167,139,250,0.15);':'')+'">'
+    +'<div class="pc-top"><div><div class="pc-name" style="color:var(--purple)">👑 АВТОВЫКУП ULTRA</div><div style="font-size:11px;color:var(--muted2);margin-top:3px;">Для серьёзных перекупщиков</div></div><div><div class="pc-amount" style="color:var(--purple)">$100</div><div class="pc-per">/месяц · ≈9 500 ₽</div></div></div>'
+    +'<div class="pc-features">'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Всё из PRO</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>Telegram-пуши</strong> через 10 сек</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>🎯 Режим Снайпера</strong></div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>История цены</strong> — видишь нервозность</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div><strong>VIN-проверка</strong> (Copart / IAAI)</div>'
+      +'<div class="pf on"><div class="pf-ic y">✓</div>Обновление <strong>в реальном времени</strong></div>'
+    +'</div>'
+    +'<button class="pc-btn ub" onclick="event.stopPropagation();setPlan(\'ultra\');closeSh();toast(\'👑 ULTRA активирован! Это демо.\')">Активировать ULTRA →</button>'
+    +'<div class="pc-hint">≈ 40 000 армянских драм / мес</div>'
+  +'</div>'
+
+  +'</div>'
+  +'<div style="text-align:center;font-size:12px;color:var(--muted2);margin-top:4px;">Вопросы? <a href="https://t.me/shikinn" style="color:var(--accent);font-weight:600;" onclick="event.stopPropagation()">Написать в Telegram @shikinn</a></div>';
+
+  openSh('💎 Тарифные планы',h);
+}
+
+function fm(n){return n>0?'$'+Math.round(n).toLocaleString('ru'):'—';}
+function sl(ms){return new Promise(function(r){setTimeout(r,ms);});}
+var tt;
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2600);}
+function openSh(title,html){document.getElementById('shT').textContent=title;document.getElementById('shB').innerHTML=html;document.getElementById('sh').classList.add('open');document.getElementById('sho').classList.add('show');}
+function closeSh(){document.getElementById('sh').classList.remove('open');document.getElementById('sho').classList.remove('show');}
+var shEl=document.getElementById('sh'),sy=0;
+shEl.addEventListener('touchstart',function(e){sy=e.touches[0].clientY;},{passive:true});
+shEl.addEventListener('touchend',function(e){if(e.changedTouches[0].clientY-sy>70)closeSh();},{passive:true});
+
+// FEATURE VALUE POPUP DATA
+var fvalData={
+  score:{
+    icon:'📊',title:'SCORE — рейтинг каждого авто',
+    stats:[{val:'40%',lbl:'Меньше времени'},{val:'3×',lbl:'Быстрее решение'},{val:'$420',lbl:'Средняя экономия'}],
+    desc:'SCORE считает за тебя: цена vs рынок, пробег, возраст. Вместо 2 часов анализа — один взгляд. 40% пользователей PRO находят авто в первый день.',
+    plan:'pro'
+  },
+  ai:{
+    icon:'🤖',title:'AI-вердикт по каждому авто',
+    stats:[{val:'68%',lbl:'Меньше плохих осмотров'},{val:'1 мин',lbl:'Вместо 30 мин анализа'},{val:'0',lbl:'Купленных такси'}],
+    desc:'AI читает объявление как опытный перекупщик: находит признаки такси, дилеров, скрытых ДТП. Сэкономит минимум 1 пустую поездку на осмотр (≈ 2 000 драм + время).',
+    plan:'pro'
+  },
+  tg:{
+    icon:'📱',title:'Telegram-пуши за 10 секунд',
+    stats:[{val:'10 сек',lbl:'Ты первый'},{val:'73%',lbl:'Горящих уходят <20мин'},{val:'×3',lbl:'Больше сделок'}],
+    desc:'73% авто с SCORE >80 продаются в первые 20 минут. Пока конкуренты обновляют страницу вручную — ты уже едешь на осмотр.',
+    plan:'ultra'
+  },
+  hist:{
+    icon:'📈',title:'История изменений цены',
+    stats:[{val:'-12%',lbl:'Средний торг'},{val:'3 дня',lbl:'Средний срок снижения'},{val:'$380',lbl:'Доп. экономия'}],
+    desc:'Видишь: 7 дней назад $4 000, сегодня $3 500. Продавец нервничает — можно торговаться смелее. Пользователи Ultra экономят в среднем ещё $380 на торге.',
+    plan:'ultra'
+  },
+  vin:{
+    icon:'🔍',title:'VIN-проверка (Copart / IAAI)',
+    stats:[{val:'1 клик',lbl:'Проверка истории'},{val:'23%',lbl:'Авто с историей ДТП'},{val:'$0',lbl:'Скрытых сюрпризов'}],
+    desc:'Каждый 4-й автомобиль из Армении имеет историю аукционного ДТП. Платная VIN-проверка стоит $15-30, у нас — включена в подписку. Окупается с первой же проверки.',
+    plan:'ultra'
+  },
+  private:{
+    icon:'👤',title:'Фильтр: только частники',
+    stats:[{val:'-18%',lbl:'Дешевле чем у дилеров'},{val:'60%',lbl:'Объявлений — дилеры'},{val:'2×',lbl:'Быстрее найти частника'}],
+    desc:'60% объявлений — это дилеры и перекупщики с накрученной ценой. Фильтр оставляет только реальных владельцев. Средняя разница в цене — 18%.',
+    plan:'pro'
+  },
+  nocrash:{
+    icon:'🛡️',title:'Фильтр: без ДТП (AI)',
+    stats:[{val:'23%',lbl:'Авто с историей ДТП'},{val:'0 сек',lbl:'На проверку вручную'},{val:'+$800',lbl:'Скрытый ущерб от ДТП'}],
+    desc:'AI анализирует текст объявления на слова-маркеры: «после ДТП», «не бита не крашена» (часто ложь), косвенные признаки. Экономит время и нервы.',
+    plan:'pro'
+  },
+};
+
+function showFval(key){
+  var d=fvalData[key];
+  if(!d){showPlans();return;}
+  var p=d.plan;
+  // Если фича уже доступна на текущем плане
+  var planOrder={free:0,pro:1,ultra:2};
+  if(planOrder[plan]>=(p==='pro'?1:2)){showPlans();return;}
+
+  document.getElementById('fvpIcon').textContent=d.icon;
+  document.getElementById('fvpTitle').textContent=d.title;
+  document.getElementById('fvpDesc').textContent=d.desc;
+  document.getElementById('fvpBtn').textContent='Разблокировать '+(p==='pro'?'PRO':'ULTRA')+' →';
+  document.getElementById('fvpBtn').onclick=function(){closeFval();showPlans(p);};
+  var statsHtml=d.stats.map(function(s){
+    return '<div class="fvp-stat"><div class="fvp-stat-val">'+s.val+'</div><div class="fvp-stat-lbl">'+s.lbl+'</div></div>';
+  }).join('');
+  document.getElementById('fvpStats').innerHTML=statsHtml;
+  document.getElementById('fvalPopup').classList.add('show');
+  setTimeout(function(){document.getElementById('fvalPopup').classList.remove('show');},8000);
+}
+function closeFval(){document.getElementById('fvalPopup').classList.remove('show');}
+
+// ROI CALCULATOR
+function updateROI(){
+  if(!avg||avg===0)return;
+  var saving=Math.round(avg*0.18); // средние 18% экономии
+  var x=Math.round(saving/30);
+  var el=document.getElementById('roiSaving');
+  var elX=document.getElementById('roiX');
+  var elD=document.getElementById('roiDesc');
+  if(el)el.textContent='$'+saving.toLocaleString('ru');
+  if(elX)elX.textContent=x+'×';
+  if(elD)elD.textContent='в '+x+' раз за одну покупку';
+}
+
+// LOSS TICKER
+var lossStart=null,lossInterval=null;
+function startLossTicker(){
+  if(plan!=='free')return;
+  var el=document.getElementById('lossTicker');
+  if(!el)return;
+  el.classList.add('show');
+  lossStart=lossStart||Date.now();
+  if(lossInterval)return;
+  // ~500 драм в минуту теряет бесплатный пользователь (условно)
+  lossInterval=setInterval(function(){
+    if(plan!=='free'){clearInterval(lossInterval);lossInterval=null;el.classList.remove('show');return;}
+    var mins=(Date.now()-lossStart)/60000;
+    var lost=Math.round(mins*500);
+    var el2=document.getElementById('lossVal');
+    if(el2)el2.textContent=lost.toLocaleString('ru')+' ֏';
+  },1000);
+}
+function stopLossTicker(){
+  if(lossInterval){clearInterval(lossInterval);lossInterval=null;}
+  var el=document.getElementById('lossTicker');
+  if(el)el.classList.remove('show');
+}
+
+// TRIAL FORM
+function submitTrial(){
+  var val=document.getElementById('tdContact').value.trim();
+  if(!val){toast('⚠️ Введи Telegram или email');return;}
+  document.getElementById('tdForm').style.display='none';
+  document.getElementById('tdSuccess').style.display='block';
+  setPlan('pro');
+  toast('🎉 Тест-драйв активирован! Пишем в течение 15 мин.');
+}
+
+// LEAD CAPTURE
+function submitLead(type){
+  var val=type==='tg'?'tg_click':document.getElementById('leadEmail').value.trim();
+  if(type==='email'&&!val){toast('⚠️ Введи email');return;}
+  document.getElementById('leadForm').style.opacity='0.5';
+  setTimeout(function(){
+    document.getElementById('leadForm').style.opacity='1';
+    var succ=document.getElementById('leadSuccess');
+    succ.classList.add('show');
+    document.getElementById('leadEmail').style.display='none';
+    document.querySelector('.lead-social').style.display='none';
+    document.querySelector('.lead-divider').style.display='none';
+    document.querySelector('#leadForm .td-submit').style.display='none';
+    document.querySelector('#leadForm .td-note').style.display='none';
+    toast('✅ Отлично! Пришлём 3 лучших предложения сегодня');
+  },800);
+}
+
+// SHOW TEST DRIVE BANNER after results load
+function showTdBanner(){
+  var b=document.getElementById('tdBanner');
+  if(b&&plan==='free')b.style.display='block';
+}
+
+function demo(mk,md,yf,yt,pt){
+  return [
+    {id:1,title:(mk||'Renault')+' '+(md||'Logan')+' 2004',price:1650,year:2004,mileage:142000,city:'Ереван',url:'https://www.list.am/category/23'},
+    {id:2,title:(mk||'Renault')+' '+(md||'Logan')+' 2002',price:900, year:2002,mileage:234000,city:'Гюмри',url:'https://www.list.am/category/23'},
+    {id:3,title:(mk||'Renault')+' '+(md||'Logan')+' 2006',price:2300,year:2006,mileage:94000, city:'Ереван',url:'https://www.list.am/category/23'},
+    {id:4,title:(mk||'Renault')+' '+(md||'Logan')+' 2001',price:750, year:2001,mileage:271000,city:'Ванадзор',url:'https://www.list.am/category/23'},
+    {id:5,title:(mk||'Renault')+' '+(md||'Logan')+' 2005',price:1950,year:2005,mileage:168000,city:'Абовян',url:'https://www.list.am/category/23'},
+    {id:6,title:(mk||'Renault')+' '+(md||'Logan')+' 2003',price:1150,year:2003,mileage:203000,city:'Ереван',url:'https://www.list.am/category/23'},
+    {id:7,title:(mk||'Renault')+' '+(md||'Logan')+' 2007',price:2650,year:2007,mileage:82000, city:'Ереван',url:'https://www.list.am/category/23'},
+    {id:8,title:(mk||'Renault')+' '+(md||'Logan')+' 2008',price:3100,year:2008,mileage:71000, city:'Ереван',url:'https://www.list.am/category/23'},
+  ].filter(function(c){return c.year>=yf&&c.year<=yt&&c.price<=pt;});
+}
+</script>
+</body>
+</html>

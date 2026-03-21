@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AutoHunt · list.am</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050505;
+  --card: rgba(22,22,22,0.9);
+  --accent: #f0821d;
+  --green: #00ff9f;
+  --red: #ff4f6a;
+  --yellow: #fbbf24;
+  --blue: #5b7fff;
+  --text: #fff;
+  --muted: #888;
+  --muted2: #aaa;
+  --border: rgba(255,255,255,0.07);
+  --radius: 18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Onest',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:30px;}
+
+/* HEADER */
+.header{
+  background:rgba(5,5,5,0.95);
+  border-bottom:1px solid var(--border);
+  padding:14px 16px;
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:var(--accent);text-shadow:0 0 20px rgba(240,130,29,0.4);}
+.logo span{display:block;font-size:10px;font-weight:400;color:var(--muted);font-family:'Onest',sans-serif;margin-top:1px;letter-spacing:0.05em;}
+.live-pill{display:flex;align-items:center;gap:6px;background:rgba(0,255,159,0.08);border:1px solid rgba(0,255,159,0.2);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--green);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* MAIN */
+.main{padding:16px;}
+
+/* FILTER CARD */
+.filter-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:16px;
+  backdrop-filter:blur(10px);
+}
+.filter-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.filter-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.filter-row.three{grid-template-columns:1fr 1fr 1fr;}
+.filter-row.one{grid-template-columns:1fr;}
+.f-group{}
+.f-label{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block;}
+.f-input,.f-select{
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  font-family:'Onest',sans-serif;
+  font-size:13px;color:var(--text);
+  outline:none;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+.f-input::placeholder{color:var(--muted);}
+.f-input:focus,.f-select:focus{border-color:rgba(240,130,29,0.4);}
+.f-select option{background:#111;color:#fff;}
+
+.threshold-row{display:flex;align-items:center;gap:10px;padding:10px 0;}
+.threshold-label{font-size:13px;color:var(--muted2);flex:1;}
+.threshold-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;color:var(--accent);width:48px;text-align:right;}
+input[type=range]{
+  flex:1;-webkit-appearance:none;
+  height:4px;border-radius:2px;
+  background:rgba(255,255,255,0.1);
+  outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 10px rgba(240,130,29,0.4);
+  cursor:pointer;
+}
+
+.parse-btn{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 20px rgba(240,130,29,0.3);
+  margin-top:12px;
+}
+.parse-btn:active{transform:scale(0.97);}
+.parse-btn.loading{background:#333;color:#888;}
+
+/* AVG CARD */
+.avg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.avg-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  backdrop-filter:blur(10px);
+  animation:fadeUp 0.4s both;
+}
+.avg-label{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.avg-val{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.5px;}
+.avg-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+
+/* SECTION */
+.sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.sec-count{font-size:12px;font-weight:600;color:var(--accent);}
+
+/* DEAL CARD */
+.deal-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  backdrop-filter:blur(10px);
+  animation:fadeUp 0.4s both;
+  position:relative;overflow:hidden;
+}
+.deal-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
+  background:var(--green);
+}
+.deal-card.mid::before{background:var(--yellow);}
+.deal-card.norm::before{background:var(--muted);}
+.deal-card:active{transform:scale(0.985);}
+
+.dc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.dc-name{font-size:14px;font-weight:700;flex:1;line-height:1.3;}
+.dc-badge{
+  padding:4px 10px;border-radius:50px;
+  font-size:11px;font-weight:700;
+  white-space:nowrap;flex-shrink:0;
+}
+.dc-badge.fire{background:rgba(0,255,159,0.1);color:var(--green);border:1px solid rgba(0,255,159,0.2);}
+.dc-badge.mid{background:rgba(251,191,36,0.1);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
+.dc-badge.norm{background:rgba(255,255,255,0.05);color:var(--muted2);border:1px solid var(--border);}
+
+.dc-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;}
+.dc-price{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;color:var(--accent);text-shadow:0 0 14px rgba(240,130,29,0.3);}
+.dc-avg-price{font-size:12px;color:var(--muted);text-decoration:line-through;}
+
+.dc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.dc-pill{
+  padding:4px 10px;border-radius:50px;
+  font-size:11px;font-weight:500;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  color:var(--muted2);
+}
+
+.dc-footer{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:10px;border-top:1px solid var(--border);
+}
+.dc-time{font-size:11px;color:var(--muted);}
+.dc-link{
+  padding:7px 14px;border-radius:8px;
+  background:rgba(240,130,29,0.1);
+  border:1px solid rgba(240,130,29,0.2);
+  color:var(--accent);
+  font-size:12px;font-weight:600;
+  text-decoration:none;
+  transition:all 0.18s;
+}
+.dc-link:active{background:var(--accent);color:#fff;}
+
+/* SAVINGS PILL */
+.savings{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:50px;
+  font-size:11px;font-weight:700;
+}
+.savings.good{background:var(--green-dim,rgba(0,255,159,0.1));color:var(--green);}
+.savings.mid{background:rgba(251,191,36,0.1);color:var(--yellow);}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-icon{font-size:44px;margin-bottom:12px;}
+
+/* BUDGET BAR */
+.budget-card{
+  background:var(--card);
+  border:1px solid rgba(0,255,159,0.15);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:16px;
+  backdrop-filter:blur(10px);
+}
+.budget-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.budget-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);}
+.budget-val{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;color:var(--green);}
+.budget-bar{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+.budget-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),#00c97a);transition:width 1s ease;}
+.budget-hint{font-size:11px;color:var(--muted);margin-top:8px;}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  padding:7px 16px;border-radius:50px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted2);
+  font-size:12px;font-weight:600;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all 0.18s;
+}
+.tab.active{border-color:rgba(240,130,29,0.4);color:var(--accent);background:rgba(240,130,29,0.08);}
+
+/* TOAST */
+.toast{
+  position:fixed;top:16px;left:50%;
+  transform:translateX(-50%) translateY(-80px);
+  z-index:500;
+  background:rgba(20,20,20,0.97);
+  border:1px solid var(--border);
+  border-radius:12px;padding:12px 20px;
+  font-size:13px;font-weight:500;
+  backdrop-filter:blur(20px);
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;
+  opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* LAST UPDATE */
+.last-update{text-align:center;font-size:11px;color:var(--muted);padding:8px 0 4px;}
+
+/* PROGRESS */
+.parse-progress{
+  display:none;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;
+  margin-bottom:16px;text-align:center;
+}
+.parse-progress.show{display:block;}
+.progress-title{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted2);}
+.progress-bar{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.progress-fill-anim{height:100%;border-radius:2px;background:var(--accent);width:0;transition:width 0.5s ease;}
+.progress-sub{font-size:11px;color:var(--muted);margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">✓ Готово</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    AutoHunt
+    <span>list.am · Армения</span>
+  </div>
+  <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+</div>
+
+<div class="main">
+
+  <!-- FILTER -->
+  <div class="filter-card">
+    <div class="filter-title">🔍 Параметры поиска</div>
+
+    <div class="filter-row">
+      <div class="f-group">
+        <label class="f-label">Марка</label>
+        <select class="f-select" id="fMake">
+          <option value="">Все марки</option>
+          <option value="Renault" selected>Renault</option>
+          <option value="Toyota">Toyota</option>
+          <option value="BMW">BMW</option>
+          <option value="Mercedes">Mercedes</option>
+          <option value="Hyundai">Hyundai</option>
+          <option value="Kia">Kia</option>
+          <option value="Volkswagen">Volkswagen</option>
+          <option value="Ford">Ford</option>
+          <option value="Opel">Opel</option>
+          <option value="Nissan">Nissan</option>
+          <option value="Honda">Honda</option>
+          <option value="Mazda">Mazda</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Модель</label>
+        <input class="f-input" id="fModel" placeholder="Logan, Duster..." value="Logan">
+      </div>
+    </div>
+
+    <div class="filter-row three">
+      <div class="f-group">
+        <label class="f-label">Год от</label>
+        <input class="f-input" id="fYearFrom" placeholder="1996" value="1996" type="number">
+      </div>
+      <div class="f-group">
+        <label class="f-label">Год до</label>
+        <input class="f-input" id="fYearTo" placeholder="2004" value="2004" type="number">
+      </div>
+      <div class="f-group">
+        <label class="f-label">Бюджет $</label>
+        <input class="f-input" id="fBudget" placeholder="3500" value="3500" type="number">
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="f-group">
+        <label class="f-label">Цена от $</label>
+        <input class="f-input" id="fPriceFrom" placeholder="500" type="number">
+      </div>
+      <div class="f-group">
+        <label class="f-label">Цена до $</label>
+        <input class="f-input" id="fPriceTo" placeholder="5000" value="5000" type="number">
+      </div>
+    </div>
+
+    <!-- THRESHOLD SLIDER -->
+    <div style="margin-top:4px;">
+      <div class="f-label">Показывать ниже рынка на</div>
+      <div class="threshold-row">
+        <input type="range" id="thresholdRange" min="5" max="50" value="20" oninput="updateThreshold(this.value)">
+        <div class="threshold-val" id="thresholdVal">20%</div>
+      </div>
+    </div>
+
+    <button class="parse-btn" id="parseBtn" onclick="runParse()">
+      <svg width="16" height="16" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+      Найти выгодные предложения
+    </button>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="parse-progress" id="parseProgress">
+    <div class="progress-title" id="progressTitle">Загружаем объявления...</div>
+    <div class="progress-bar"><div class="progress-fill-anim" id="progressFill"></div></div>
+    <div class="progress-sub" id="progressSub">Подождите несколько секунд</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" style="display:none;">
+
+    <!-- BUDGET INDICATOR -->
+    <div class="budget-card" id="budgetCard">
+      <div class="budget-top">
+        <div class="budget-label">💰 Ваш бюджет</div>
+        <div class="budget-val" id="budgetVal">$3 500</div>
+      </div>
+      <div class="budget-bar">
+        <div class="budget-fill" id="budgetFill" style="width:0%"></div>
+      </div>
+      <div class="budget-hint" id="budgetHint">Загружаем...</div>
+    </div>
+
+    <!-- AVG STATS -->
+    <div class="avg-grid">
+      <div class="avg-card">
+        <div class="avg-label">📊 Средняя цена</div>
+        <div class="avg-val" id="avgPrice" style="color:var(--accent)">—</div>
+        <div class="avg-sub" id="avgSub">по выборке</div>
+      </div>
+      <div class="avg-card">
+        <div class="avg-label">🔥 Лучшее предл.</div>
+        <div class="avg-val" id="bestPrice" style="color:var(--green)">—</div>
+        <div class="avg-sub" id="bestSub">ниже рынка</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="setTab('all',this)">Все (<span id="cntAll">0</span>)</div>
+      <div class="tab" onclick="setTab('fire',this)">🔥 Горящие (<span id="cntFire">0</span>)</div>
+      <div class="tab" onclick="setTab('mid',this)">💛 Норм (<span id="cntMid">0</span>)</div>
+    </div>
+
+    <!-- DEALS -->
+    <div class="sec-hdr">
+      <div class="sec-title">Объявления</div>
+      <div class="sec-count" id="dealsCount">0 найдено</div>
+    </div>
+
+    <div id="dealsList"></div>
+    <div class="last-update" id="lastUpdate"></div>
+
+  </div><!-- /results -->
+
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+// Для реального парсера: замените MOCK_DATA на fetch('/api/listings?make=...&model=...&year_from=...')
+// API должно вернуть массив объектов: [{id, title, price, year, mileage, city, url, posted_at}, ...]
+// ─────────────────────────────────────────────────────────
+
+let currentTab = 'all';
+let allDeals = [];
+let avgPrice = 0;
+
+function updateThreshold(v) {
+  document.getElementById('thresholdVal').textContent = v + '%';
+}
+
+function fmtMoney(n) {
+  return '$' + Math.round(n).toLocaleString('ru');
+}
+
+function diffPct(price, avg) {
+  return Math.round((1 - price / avg) * 100);
+}
+
+function setTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderDeals();
+}
+
+// ─── MOCK DATA (замените на реальный fetch) ──────────────
+function getMockListings(make, model, yearFrom, yearTo, priceTo) {
+  const base = [
+    {id:1, title:`${make} ${model} 2002`, price:2100, year:2002, mileage:187000, city:'Ереван', url:'https://www.list.am/item/1', posted_at:'2ч назад'},
+    {id:2, title:`${make} ${model} 1999`, price:1400, year:1999, mileage:220000, city:'Гюмри', url:'https://www.list.am/item/2', posted_at:'5ч назад'},
+    {id:3, title:`${make} ${model} 2003`, price:2800, year:2003, mileage:145000, city:'Ереван', url:'https://www.list.am/item/3', posted_at:'1д назад'},
+    {id:4, title:`${make} ${model} 2001`, price:1900, year:2001, mileage:198000, city:'Ереван', url:'https://www.list.am/item/4', posted_at:'3ч назад'},
+    {id:5, title:`${make} ${model} 2004`, price:3100, year:2004, mileage:130000, city:'Абовян', url:'https://www.list.am/item/5', posted_at:'12ч назад'},
+    {id:6, title:`${make} ${model} 1997`, price:900,  year:1997, mileage:260000, city:'Ванадзор', url:'https://www.list.am/item/6', posted_at:'2д назад'},
+    {id:7, title:`${make} ${model} 2000`, price:1650, year:2000, mileage:205000, city:'Ереван', url:'https://www.list.am/item/7', posted_at:'6ч назад'},
+    {id:8, title:`${make} ${model} 2003`, price:2950, year:2003, mileage:138000, city:'Ереван', url:'https://www.list.am/item/8', posted_at:'30мин назад'},
+    {id:9, title:`${make} ${model} 1996`, price:700,  year:1996, mileage:290000, city:'Степанаван', url:'https://www.list.am/item/9', posted_at:'1д назад'},
+    {id:10,title:`${make} ${model} 2002`, price:2250, year:2002, mileage:175000, city:'Ереван', url:'https://www.list.am/item/10', posted_at:'4ч назад'},
+    {id:11,title:`${make} ${model} 2001`, price:1100, year:2001, mileage:235000, city:'Ереван', url:'https://www.list.am/item/11', posted_at:'1ч назад'},
+    {id:12,title:`${make} ${model} 2004`, price:3300, year:2004, mileage:120000, city:'Капан', url:'https://www.list.am/item/12', posted_at:'8ч назад'},
+  ].filter(c => c.year >= yearFrom && c.year <= yearTo && c.price <= (priceTo||99999));
+
+  // Небольшой рандом для реалистичности
+  return base.map(c => ({...c, price: Math.round(c.price * (0.93 + Math.random() * 0.14))}));
+}
+// ─────────────────────────────────────────────────────────
+
+async function runParse() {
+  const btn = document.getElementById('parseBtn');
+  const prog = document.getElementById('parseProgress');
+  const fill = document.getElementById('progressFill');
+  const progressTitle = document.getElementById('progressTitle');
+  const progressSub = document.getElementById('progressSub');
+
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Анализируем...';
+  prog.classList.add('show');
+  document.getElementById('results').style.display = 'none';
+
+  // Анимация прогресса
+  const steps = [
+    {w:'15%', title:'Подключаемся к list.am...', sub:'Получаем список объявлений'},
+    {w:'40%', title:'Загружаем объявления...', sub:'Найдено 47 страниц результатов'},
+    {w:'65%', title:'Считаем среднюю цену...', sub:'Анализируем 156 объявлений'},
+    {w:'85%', title:'Фильтруем выгодные...', sub:'Применяем ваш порог'},
+    {w:'100%', title:'Готово!', sub:'Результаты отсортированы'},
+  ];
+
+  for (const step of steps) {
+    fill.style.width = step.w;
+    progressTitle.textContent = step.title;
+    progressSub.textContent = step.sub;
+    await sleep(600 + Math.random() * 400);
+  }
+
+  await sleep(300);
+
+  // Получаем данные (MOCK — замените на реальный API)
+  const make = document.getElementById('fMake').value || 'Renault';
+  const model = document.getElementById('fModel').value || 'Logan';
+  const yearFrom = parseInt(document.getElementById('fYearFrom').value) || 1996;
+  const yearTo = parseInt(document.getElementById('fYearTo').value) || 2004;
+  const priceTo = parseInt(document.getElementById('fPriceTo').value) || 9999;
+  const budget = parseInt(document.getElementById('fBudget').value) || 3500;
+  const threshold = parseInt(document.getElementById('thresholdRange').value) / 100;
+
+  /*
+  // ── РЕАЛЬНЫЙ API (раскомментировать когда парсер готов) ──
+  const resp = await fetch(`/api/listings?make=${make}&model=${model}&year_from=${yearFrom}&year_to=${yearTo}&price_to=${priceTo}`);
+  const listings = await resp.json();
+  */
+  const listings = getMockListings(make, model, yearFrom, yearTo, priceTo);
+
+  // Считаем среднюю
+  const prices = listings.map(l => l.price);
+  avgPrice = prices.reduce((a,b) => a+b, 0) / prices.length;
+
+  // Размечаем сделки
+  allDeals = listings.map(l => {
+    const pct = diffPct(l.price, avgPrice);
+    let grade = 'norm';
+    if (pct >= threshold * 100) grade = 'fire';
+    else if (pct >= (threshold * 100) / 2) grade = 'mid';
+    return {...l, pct, grade};
+  }).sort((a, b) => b.pct - a.pct);
+
+  const best = allDeals[0];
+  const fire = allDeals.filter(d => d.grade === 'fire');
+  const mid  = allDeals.filter(d => d.grade === 'mid');
+
+  // Обновляем UI
+  document.getElementById('avgPrice').textContent = fmtMoney(avgPrice);
+  document.getElementById('avgSub').textContent = `${listings.length} объявлений`;
+  document.getElementById('bestPrice').textContent = best ? fmtMoney(best.price) : '—';
+  document.getElementById('bestSub').textContent = best ? `−${best.pct}% от рынка` : '—';
+
+  // Бюджет
+  document.getElementById('budgetVal').textContent = fmtMoney(budget);
+  const budgetPct = Math.min(100, Math.round((budget / avgPrice) * 100));
+  setTimeout(() => { document.getElementById('budgetFill').style.width = budgetPct + '%'; }, 200);
+
+  const canBuy = allDeals.filter(d => d.price <= budget);
+  document.getElementById('budgetHint').textContent =
+    canBuy.length > 0
+      ? `✅ В вашем бюджете ${canBuy.length} предложений. Лучшее: ${fmtMoney(canBuy[0].price)}`
+      : `⚠️ В бюджете ${fmtMoney(budget)} нет подходящих. Средняя цена: ${fmtMoney(avgPrice)}`;
+
+  // Счётчики
+  document.getElementById('cntAll').textContent = allDeals.length;
+  document.getElementById('cntFire').textContent = fire.length;
+  document.getElementById('cntMid').textContent = mid.length;
+  document.getElementById('dealsCount').textContent = `${allDeals.length} найдено`;
+  document.getElementById('lastUpdate').textContent = '🕐 Обновлено: ' + new Date().toLocaleTimeString('ru');
+
+  renderDeals();
+
+  prog.classList.remove('show');
+  document.getElementById('results').style.display = 'block';
+  btn.classList.remove('loading');
+  btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg> Обновить';
+
+  showToast('🔥 Найдено ' + fire.length + ' горящих предложений!');
+}
+
+function renderDeals() {
+  const list = document.getElementById('dealsList');
+  let items = allDeals;
+  if (currentTab === 'fire') items = allDeals.filter(d => d.grade === 'fire');
+  if (currentTab === 'mid')  items = allDeals.filter(d => d.grade === 'mid');
+
+  document.getElementById('dealsCount').textContent = items.length + ' показано';
+
+  if (!items.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div style="color:var(--muted2);font-size:14px;">По этим фильтрам ничего нет</div></div>`;
+    return;
+  }
+
+  list.innerHTML = items.map((d, i) => {
+    const savings = Math.round(avgPrice - d.price);
+    const budgetOk = d.price <= (parseInt(document.getElementById('fBudget').value) || 99999);
+
+    return `
+    <div class="deal-card ${d.grade}" style="animation-delay:${Math.min(i*0.04,0.3)}s" onclick="window.open('${d.url}','_blank')">
+      <div class="dc-top">
+        <div class="dc-name">${d.title}</div>
+        <div class="dc-badge ${d.grade === 'fire' ? 'fire' : d.grade === 'mid' ? 'mid' : 'norm'}">
+          ${d.grade === 'fire' ? '🔥 −' + d.pct + '%' : d.grade === 'mid' ? '💛 −' + d.pct + '%' : '—' + d.pct + '%'}
+        </div>
+      </div>
+
+      <div class="dc-price-row">
+        <div class="dc-price">${fmtMoney(d.price)}</div>
+        <div class="dc-avg-price">${fmtMoney(Math.round(avgPrice))}</div>
+        ${savings > 0 ? `<span class="savings ${d.grade === 'fire' ? 'good' : 'mid'}">−${fmtMoney(savings)}</span>` : ''}
+      </div>
+
+      <div class="dc-meta">
+        <div class="dc-pill">📅 ${d.year}</div>
+        <div class="dc-pill">🛣 ${d.mileage.toLocaleString()} км</div>
+        <div class="dc-pill">📍 ${d.city}</div>
+        ${budgetOk ? `<div class="dc-pill" style="background:rgba(0,255,159,0.07);color:var(--green);border-color:rgba(0,255,159,0.2);">✅ В бюджете</div>` : `<div class="dc-pill" style="background:rgba(255,79,106,0.07);color:var(--red);border-color:rgba(255,79,106,0.2);">❌ Дороже бюджета</div>`}
+      </div>
+
+      <div class="dc-footer">
+        <div class="dc-time">⏱ ${d.posted_at}</div>
+        <a class="dc-link" href="${d.url}" target="_blank" onclick="event.stopPropagation()">list.am →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1177,7 +1177,7 @@ Pt.prototype.u=function(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>cv
 for(var i=0;i<60;i++)pp.push(new Pt());
 (function ab(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(function(p){p.u();cx.globalAlpha=p.a;cx.fillStyle='#f0821d';cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});cx.globalAlpha=1;requestAnimationFrame(ab);})();
 
-var API='https://script.google.com/macros/s/AKfycbxchBhs2KNyhgvzkrl06K7IZnk2MwnM5L1Ws0bO-AYZmPYJ_uQ5zo2pQkWF3RB2MZc1/exec';
+var API='https://script.google.com/macros/s/AKfycbx8iViLEQZr1MLghbNWJ2DouLZASzfHXsxIodelGEouH2fNTIPoD33jfa66_xjNVfqy/exec';
 // ↑ Замени на свой URL после деплоя Apps Script
 
 var allDeals=[],avg=0,tab='all',plan='free',sniperOn=false;

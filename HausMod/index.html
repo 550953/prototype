@@ -1,1 +1,679 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Премиальные модульные дома под ключ в Беларуси и СНГ. Энергоэффективность, скорость сборки от 45 дней, фиксированная цена. Современная архитектура и полный цикл строительства.">
+  <meta name="keywords" content="модульные дома, дома под ключ, prefab homes, строительство домов, Vanguard Modular">
+  <meta name="author" content="Vanguard Modular">
+  <title>Vanguard Modular | Премиальные модульные дома под ключ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Элегантная типографика: Inter + Syne для акцентов -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FFFFFF;
+      color: #0F172A;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .logo, .nav-link, .btn, .section-title, .step-number {
+      font-family: 'Syne', sans-serif;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Sticky Header */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0F172A 0%, #2563EB 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #1E293B;
+      transition: color 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: #2563EB;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .phone-link {
+      font-weight: 600;
+      color: #0F172A;
+      text-decoration: none;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 1.5px solid #0F172A;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      transition: all 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: #0F172A;
+      font-size: 0.9rem;
+    }
+
+    .btn-outline-light:hover {
+      background: #0F172A;
+      color: white;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: #0F172A;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: #2563EB;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.6);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-weight: 600;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: white;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 90vh;
+      background: linear-gradient(107deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.2) 100%), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center 30%;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 750px;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 32px;
+    }
+
+    .metrics {
+      display: flex;
+      gap: 32px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .metric-item {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      padding: 12px 20px;
+      border-radius: 60px;
+      font-weight: 500;
+    }
+
+    /* cards */
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-sub {
+      font-size: 1.1rem;
+      color: #475569;
+      max-width: 650px;
+      margin-bottom: 60px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .card-premium {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      border: 1px solid #f1f5f9;
+    }
+
+    .card-premium:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 40px -12px rgba(0,0,0,0.12);
+      border-color: #e2e8f0;
+    }
+
+    .icon-bg {
+      background: #EFF6FF;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      color: #2563EB;
+      font-size: 28px;
+      margin-bottom: 24px;
+    }
+
+    /* steps */
+    .steps-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .step-item {
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      background: #0F172A;
+      color: white;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0 auto 20px;
+    }
+
+    /* gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .gallery-item {
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.4s;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .gallery-caption {
+      padding: 18px 0 8px;
+      font-weight: 600;
+    }
+
+    /* calculator */
+    .calc-card {
+      background: #F8FAFE;
+      border-radius: 40px;
+      padding: 40px;
+      box-shadow: 0 15px 40px -15px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 32px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    select:focus, input:focus {
+      border-color: #2563EB;
+    }
+
+    .price-result {
+      margin-top: 25px;
+      padding: 20px;
+      background: white;
+      border-radius: 32px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* why us */
+    .stats-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    .stat {
+      text-align: center;
+      flex: 1;
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #2563EB;
+    }
+
+    /* CTA */
+    .cta-block {
+      background: linear-gradient(120deg, #0F172A 0%, #1E2A3E 100%);
+      border-radius: 56px;
+      padding: 70px 48px;
+      text-align: center;
+      color: white;
+    }
+
+    .cta-form {
+      max-width: 500px;
+      margin: 30px auto 0;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta-form input {
+      flex: 1;
+      padding: 16px 20px;
+      border-radius: 50px;
+      border: none;
+    }
+
+    footer {
+      background: #F8FAFE;
+      padding: 50px 0 30px;
+      border-top: 1px solid #eef2ff;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .nav-links {
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 10px;
+      }
+      .header-actions {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: space-between;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .section {
+        padding: 70px 0;
+      }
+      .container {
+        padding: 0 24px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .btn-primary, .btn-secondary {
+        padding: 12px 20px;
+      }
+      .calc-card {
+        padding: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="sticky-header">
+  <div class="container">
+    <div class="navbar">
+      <div class="logo">VANGUARD MODULAR</div>
+      <ul class="nav-links">
+        <li><a href="#home">Главная</a></li>
+        <li><a href="#advantages">Преимущества</a></li>
+        <li><a href="#process">Процесс</a></li>
+        <li><a href="#gallery">Галерея</a></li>
+        <li><a href="#calculator">Калькулятор</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+      <div class="header-actions">
+        <a href="tel:+79781248490" class="phone-link"><i class="fas fa-phone-alt"></i> +7 978 124-84-90</a>
+        <a href="#contact-form" class="btn-outline-light">Связаться</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Модульные дома под ключ в Беларуси</h1>
+        <p>Скорость строительства от 45 дней, фиксированная цена, энергоэффективность класса А+. Премиальная архитектура для вашей свободы.</p>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <a href="#calculator" class="btn-primary"><i class="fas fa-calculator"></i> Рассчитать стоимость</a>
+          <a href="#gallery" class="btn-secondary"><i class="fas fa-images"></i> Посмотреть проекты</a>
+        </div>
+        <div class="metrics">
+          <div class="metric-item"><i class="fas fa-calendar-alt"></i> от 45 дней</div>
+          <div class="metric-item"><i class="fas fa-chart-line"></i> до 40% экономии</div>
+          <div class="metric-item"><i class="fas fa-leaf"></i> А+ энергоэффективность</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANTAGES -->
+  <section id="advantages" class="section">
+    <div class="container">
+      <h2 class="section-title">Преимущества Vanguard</h2>
+      <div class="section-sub">Технологии будущего, комфорт и надёжность, проверенная временем</div>
+      <div class="grid-3">
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-rocket"></i></div><h3>Скорость сборки</h3><p>Возведение за 2–6 недель. Въезжайте в новый дом уже через 45 дней после старта.</p></div>
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-tag"></i></div><h3>Фиксированная цена</h3><p>Никаких скрытых платежей. Полная смета до подписания договора.</p></div>
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-solar-panel"></i></div><h3>Энергоэффективность</h3><p>Снижение затрат на отопление до 70% благодаря технологиям пассивного дома.</p></div>
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-seedling"></i></div><h3>Экологичность</h3><p>Сертифицированные материалы, контроль качества на каждом этапе.</p></div>
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-user-check"></i></div><h3>Персональный подход</h3><p>Архитектор и дизайнер создают проект под ваш образ жизни.</p></div>
+        <div class="card-premium"><div class="icon-bg"><i class="fas fa-shield-alt"></i></div><h3>Гарантия 10 лет</h3><p>На несущие конструкции и инженерные системы.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS 5 STEPS -->
+  <section id="process" class="section" style="background: #F9FAFE;">
+    <div class="container">
+      <h2 class="section-title">Как это работает</h2>
+      <div class="section-sub">Прозрачный путь к дому мечты от идеи до заселения</div>
+      <div class="steps-wrapper">
+        <div class="step-item"><div class="step-number">1</div><h3>Консультация</h3><p>Обсуждаем бюджет, участок, стиль и сроки.</p></div>
+        <div class="step-item"><div class="step-number">2</div><h3>Выбор проекта</h3><p>Каталог готовых решений или индивидуальный дизайн.</p></div>
+        <div class="step-item"><div class="step-number">3</div><h3>Проектирование</h3><p>3D-визуализация, инженерные расчёты, согласование.</p></div>
+        <div class="step-item"><div class="step-number">4</div><h3>Заводское производство</h3><p>Модули высокого класса, контроль качества на заводе.</p></div>
+        <div class="step-item"><div class="step-number">5</div><h3>Монтаж и сдача "под ключ"</h3><p>Доставка, сборка, отделка — вы получаете готовый дом.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section">
+    <div class="container">
+      <h2 class="section-title">Реализованные проекты</h2>
+      <div class="section-sub">Современная архитектура, которая вдохновляет</div>
+      <div class="gallery-grid">
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Модульный дом с террасой"><div class="gallery-caption">Vanguard One | 105 м²</div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Современный минимализм"><div class="gallery-caption">Vanguard Forest | 142 м²</div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Панорамный модульный дом"><div class="gallery-caption">Vanguard Panorama | 186 м²</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR (интерактивный) -->
+  <section id="calculator" class="section" style="background: #F9FAFE;">
+    <div class="container">
+      <h2 class="section-title">Калькулятор стоимости</h2>
+      <div class="section-sub">Примерная стоимость под ключ в BYN / эквиваленте</div>
+      <div class="calc-card">
+        <div class="form-group">
+          <label><i class="fas fa-ruler-combined"></i> Площадь, м²</label>
+          <input type="range" id="areaRange" min="60" max="250" value="120" step="10">
+          <span id="areaValue" style="display: inline-block; margin-left: 16px; font-weight: 600;">120 м²</span>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-layer-group"></i> Этажность</label>
+          <select id="floors">
+            <option value="1">Одноэтажный</option>
+            <option value="1.35" selected>Двухэтажный +15%</option>
+            <option value="1.6">Мансардный +25%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-crown"></i> Комплектация</label>
+          <select id="package">
+            <option value="1">Стандарт (чистовая)</option>
+            <option value="1.2" selected>Премиум (под ключ)</option>
+            <option value="1.45">VIP (дизайн, умный дом)</option>
+          </select>
+        </div>
+        <button id="calcBtn" class="btn-primary" style="width:100%; justify-content:center;"><i class="fas fa-sync-alt"></i> Рассчитать</button>
+        <div id="priceResult" class="price-result">~ 98 500 BYN</div>
+        <div style="font-size: 0.85rem; text-align: center; margin-top: 12px; color:#475569;">*Стоимость ориентировочная, точную смету предоставит менеджер</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US (цифры доверия) -->
+  <section id="why-us" class="section">
+    <div class="container">
+      <h2 class="section-title">Почему Vanguard Modular</h2>
+      <div class="section-sub">Цифры и факты, подтверждающие наш уровень</div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-number">120+</div><div>домов сдано</div></div>
+        <div class="stat"><div class="stat-number">98%</div><div>клиентов рекомендуют</div></div>
+        <div class="stat"><div class="stat-number">5 лет</div><div>опыта на рынке СНГ</div></div>
+        <div class="stat"><div class="stat-number">24/7</div><div>поддержка стройки</div></div>
+      </div>
+      <div style="margin-top: 60px; background:#F1F5F9; border-radius: 32px; padding: 32px; text-align:center;">
+        <i class="fas fa-star" style="color:#FBBF24;"></i> <i class="fas fa-star" style="color:#FBBF24;"></i> <i class="fas fa-star" style="color:#FBBF24;"></i> <i class="fas fa-star" style="color:#FBBF24;"></i> <i class="fas fa-star" style="color:#FBBF24;"></i>
+        <p style="margin-top: 16px; font-style:italic; max-width:600px; margin-left:auto; margin-right:auto;">"Строили дом у Vanguard — реализовали сложный проект за 2 месяца. Качество сборки превосходное, все коммуникации подключены идеально." — Анна, Минский р-н</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA + FORM -->
+  <section id="contacts" class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="cta-block">
+        <h2 style="font-size: 2rem;">Готовы построить дом своей мечты?</h2>
+        <p style="margin-top: 16px; opacity: 0.85;">Оставьте заявку, и наш архитектор свяжется с вами в течение 30 минут</p>
+        <form id="contact-form" action="#" method="post" class="cta-form">
+          <input type="text" placeholder="Ваше имя" required id="formName">
+          <input type="tel" placeholder="+7 (___) ___-__-__" required id="formPhone">
+          <button type="submit" class="btn-primary" style="background:#2563EB;">Отправить →</button>
+        </form>
+        <div style="margin-top: 24px; font-size: 14px;">
+          <a href="tel:+79781248490" style="color:white; text-decoration:none; margin:0 12px;"><i class="fab fa-whatsapp"></i> WhatsApp</a> 
+          <span>|</span> 
+          <a href="tel:+79781248490" style="color:white; text-decoration:none; margin:0 12px;"><i class="fas fa-phone-alt"></i> +7 978 124-84-90</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px;">
+      <div><div class="logo" style="font-size:1.5rem;">VANGUARD MODULAR</div><p style="margin-top: 12px;">Премиальные модульные дома под ключ в Беларуси и СНГ.<br>Современные технологии, эстетика и надёжность.</p></div>
+      <div><h4>Навигация</h4><ul style="list-style: none; margin-top: 12px;"><li><a href="#advantages" style="text-decoration:none; color:#334155;">Преимущества</a></li><li><a href="#process" style="text-decoration:none; color:#334155;">Процесс</a></li><li><a href="#gallery" style="text-decoration:none; color:#334155;">Проекты</a></li></ul></div>
+      <div><h4>Контакты</h4><p><i class="fas fa-phone-alt"></i> <a href="tel:+79781248490" style="text-decoration:none; color:#0F172A;">+7 978 124-84-90</a></p><p><i class="fab fa-whatsapp"></i> WhatsApp доступен 24/7</p><p><i class="far fa-envelope"></i> info@vanguardmodular.by</p></div>
+    </div>
+    <hr style="margin: 40px 0 20px; border-color: #E2E8F0;">
+    <div style="text-align: center; font-size: 0.85rem;">© 2026 Vanguard Modular — архитектурное бюро премиальных модульных домов. Все права защищены.</div>
+  </div>
+</footer>
+
+<script>
+  // Калькулятор
+  const areaRange = document.getElementById('areaRange');
+  const areaValueSpan = document.getElementById('areaValue');
+  const floorsSelect = document.getElementById('floors');
+  const packageSelect = document.getElementById('package');
+  const priceDiv = document.getElementById('priceResult');
+  const calcBtn = document.getElementById('calcBtn');
+
+  function updateCalculator() {
+    let area = parseInt(areaRange.value);
+    areaValueSpan.innerText = area + ' м²';
+    let floorFactor = parseFloat(floorsSelect.value);
+    let packFactor = parseFloat(packageSelect.value);
+    // базовая цена за м² ~ 720 BYN (примерно 14000 руб? для премиум сегмента)
+    let basePricePerM2 = 720;
+    let total = area * basePricePerM2 * floorFactor * packFactor;
+    let rounded = Math.round(total / 1000) * 1000;
+    priceDiv.innerHTML = '~ ' + rounded.toLocaleString() + ' BYN';
+  }
+  areaRange.addEventListener('input', updateCalculator);
+  floorsSelect.addEventListener('change', updateCalculator);
+  packageSelect.addEventListener('change', updateCalculator);
+  calcBtn.addEventListener('click', updateCalculator);
+  updateCalculator();
+
+  // Форма (демо-алерт)
+  const contactForm = document.getElementById('contact-form');
+  if(contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('formName').value.trim();
+      const phone = document.getElementById('formPhone').value.trim();
+      if(name && phone) {
+        alert(`Спасибо, ${name}! Наш менеджер свяжется с вами по номеру ${phone} в ближайшее время.`);
+        contactForm.reset();
+      } else {
+        alert('Пожалуйста, заполните имя и телефон для связи.');
+      }
+    });
+  }
+
+  // Плавный скролл для всех якорей
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if(href === "#" || href === "") return;
+      const target = document.querySelector(href);
+      if(target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>

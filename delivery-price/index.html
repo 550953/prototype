@@ -1,0 +1,585 @@
+Отлично, я проанализировал предоставленный HTML-код страницы, выделил ключевые элементы и структуру, а затем создал полностью новый, современный лендинг. Сохранена основная идея — калькулятор стоимости доставки авто из США, но текст, структура и визуальное оформление полностью переработаны для более профессионального и современного вида.
+
+Вот готовый HTML-код лендинга:
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CarsUSA | Доставка авто из США под ключ</title>
+    <meta name="description" content="Профессиональная доставка автомобилей из США и Китая. Прозрачный расчет, полное сопровождение, выгодные цены. Рассчитайте стоимость прямо сейчас!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1a2c3e;
+            line-height: 1.5;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        h1 { font-size: 3.5rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-title span {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #cbd5e1;
+            color: #1e293b;
+        }
+        .btn-outline:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        .btn-large {
+            padding: 16px 36px;
+            font-size: 1.1rem;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 0;
+            border-bottom: 1px solid #eef2ff;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.95);
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .nav a {
+            margin-left: 32px;
+            text-decoration: none;
+            color: #334155;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav a:hover, .nav a.active {
+            color: #2563eb;
+        }
+        @media (max-width: 768px) {
+            .nav { display: none; }
+        }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        .hero-grid {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+        .hero-content {
+            flex: 1;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #2563eb;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 32px;
+        }
+        .stat-item h4 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+        @media (max-width: 900px) {
+            .hero-grid { flex-direction: column; text-align: center; }
+            .hero-stats { justify-content: center; }
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 80px 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+        .feature-card {
+            background: white;
+            padding: 32px 24px;
+            border-radius: 28px;
+            border: 1px solid #eef2ff;
+            transition: all 0.25s;
+            text-align: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: #cbd5e1;
+            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.05);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            background: #f8fafc;
+            padding: 80px 0;
+            border-radius: 48px 48px 0 0;
+        }
+        .calculator-card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .calc-form {
+            padding: 40px;
+            background: white;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+        select, input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 1rem;
+            background: #fefefe;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .calc-result {
+            background: #0f172a;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        .price-total {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 16px 0;
+            color: #60a5fa;
+        }
+        .price-note {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 16px;
+        }
+        @media (min-width: 900px) {
+            .calculator-card {
+                flex-direction: row;
+            }
+            .calc-form { flex: 2; }
+            .calc-result { flex: 1; }
+        }
+
+        /* How it works */
+        .steps {
+            padding: 80px 0;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+        .step {
+            text-align: center;
+        }
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: #eef2ff;
+            color: #2563eb;
+            font-size: 1.6rem;
+            font-weight: 800;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Price includes */
+        .includes {
+            background: white;
+            padding: 60px 0;
+            border-top: 1px solid #eef2ff;
+            border-bottom: 1px solid #eef2ff;
+        }
+        .includes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .include-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #f9fafb;
+            padding: 18px 20px;
+            border-radius: 28px;
+        }
+        .include-icon {
+            font-size: 1.6rem;
+            color: #2563eb;
+        }
+
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            border-radius: 48px;
+            margin: 60px auto;
+        }
+        .cta h2 {
+            color: white;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f1f5f9;
+            padding: 48px 0;
+            text-align: center;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .container { padding: 0 20px; }
+            .btn-large { padding: 12px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo">Cars<span style="color:#2563eb;">USA</span>.by</div>
+        <div class="nav">
+            <a href="#" class="active">Главная</a>
+            <a href="#">Авто из США</a>
+            <a href="#">Авто из Китая</a>
+            <a href="#">Контакты</a>
+        </div>
+        <a href="tel:+375296265566" class="btn btn-outline" style="padding: 8px 20px;"><i class="fas fa-phone-alt"></i> +375 29 626-55-66</a>
+    </div>
+</header>
+
+<main>
+    <!-- Hero section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <span class="hero-badge">🔥 Экономия до 40%</span>
+                <h1>Доставка авто из США<br> <span style="color:#2563eb;">под ключ</span> в Беларусь</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 1.5rem; color: #334155;">Полное сопровождение: от покупки на аукционе до растаможки. Прозрачная цена без скрытых доплат.</p>
+                <div class="hero-stats">
+                    <div class="stat-item"><h4>600+</h4><span>автомобилей доставлено</span></div>
+                    <div class="stat-item"><h4>12 лет</h4><span>на рынке</span></div>
+                    <div class="stat-item"><h4>4.98/5</h4><span>отзывы клиентов</span></div>
+                </div>
+                <div style="margin-top: 32px;">
+                    <a href="#calculator" class="btn btn-primary btn-large">Рассчитать стоимость <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/600x400/e2e8f0/2563eb?text=Modern+Car+Import" alt="Доставка авто из США">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2><span>Преимущества работы с нами</span></h2>
+                <p>Надёжность, прозрачность и выгода в каждой сделке</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Фиксированная цена</h3>
+                    <p>Никаких сюрпризов: стоимость доставки фиксируется в договоре и не меняется в процессе.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <h3>Полная прозрачность</h3>
+                    <p>Вы получаете детальную смету: аукционный лист, ставки, фрахт, таможенные платежи.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                    <h3>Сроки от 45 дней</h3>
+                    <p>Оптимизированная логистика: морем через Европу, быстрая доставка в Минск.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Личный менеджер</h3>
+                    <p>Сопровождение 24/7, видеоотчеты на каждом этапе — от ставки до получения авто.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Calculator -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <div class="section-title">
+                <h2><span>Калькулятор стоимости доставки</span></h2>
+                <p>Выберите параметры — узнайте итоговую цену за 1 минуту</p>
+            </div>
+            <div class="calculator-card">
+                <div class="calc-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-car"></i> Тип транспорта</label>
+                        <select id="vehicleType">
+                            <option value="auto">Легковой автомобиль</option>
+                            <option value="moto">Мотоцикл</option>
+                            <option value="quad">Квадроцикл / снегоход</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Порт отгрузки (США)</label>
+                        <select id="portSelect">
+                            <option value="3100">Лос-Анджелес (CA) — от 3100$</option>
+                            <option value="2775">Нью-Йорк (NY) — от 2775$</option>
+                            <option value="2950">Хьюстон (TX) — от 2950$</option>
+                            <option value="3200">Майами (FL) — от 3200$</option>
+                            <option value="3050">Балтимор (MD) — от 3050$</option>
+                            <option value="3350">Саввана (GA) — от 3350$</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-dollar-sign"></i> Стоимость авто на аукционе (оценка)</label>
+                        <input type="number" id="auctionPrice" placeholder="Например, 8500" value="10000">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-check-circle"></i> Включить услуги "под ключ"</label>
+                        <select id="serviceType">
+                            <option value="0">Только доставка до Минска</option>
+                            <option value="1">Полное сопровождение (растаможка + СВХ + наши услуги)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="calcBtn" style="width:100%; margin-top: 8px;">Рассчитать итоговую цену</button>
+                </div>
+                <div class="calc-result">
+                    <h3 style="color:white; margin-bottom: 8px;">Ваша примерная стоимость</h3>
+                    <div class="price-total" id="totalPriceDisplay">— $</div>
+                    <div class="price-note" id="priceBreakdown">Укажите параметры для расчета</div>
+                    <div style="margin-top: 24px;">
+                        <a href="#" class="btn btn-outline" style="background: rgba(255,255,255,0.1); color:white; border-color:rgba(255,255,255,0.3);">Получить точный расчет <i class="fas fa-paper-plane"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What's included in final price -->
+    <section class="includes">
+        <div class="container">
+            <div class="section-title">
+                <h2><span>Что входит в итоговую стоимость?</span></h2>
+                <p>Никаких скрытых комиссий — только честные статьи расходов</p>
+            </div>
+            <div class="includes-grid">
+                <div class="include-item"><div class="include-icon"><i class="fas fa-gavel"></i></div><div>Стоимость авто на аукционе + комиссия</div></div>
+                <div class="include-item"><div class="include-icon"><i class="fas fa-ship"></i></div><div>Доставка до порта в США и морской фрахт до Европы</div></div>
+                <div class="include-item"><div class="include-icon"><i class="fas fa-truck"></i></div><div>Автовоз Клайпеда — Минск</div></div>
+                <div class="include-item"><div class="include-icon"><i class="fas fa-file-signature"></i></div><div>Таможенные платежи, утильсбор, услуги брокера</div></div>
+                <div class="include-item"><div class="include-icon"><i class="fas fa-shield-alt"></i></div><div>Страхование груза, оформление документов</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="steps">
+        <div class="container">
+            <div class="section-title">
+                <h2><span>Процесс доставки за 5 шагов</span></h2>
+                <p>Прозрачная схема: от подбора авто до вручения ключей</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step"><div class="step-number">1</div><h3>Подбор авто</h3><p>По вашему бюджету находим лучшие варианты на аукционах Copart, IAAI.</p></div>
+                <div class="step"><div class="step-number">2</div><h3>Покупка и оплата</h3><p>Участвуем в торгах, фиксируем цену, выставляем счёт.</p></div>
+                <div class="step"><div class="step-number">3</div><h3>Логистика в США</h3><p>Доставка авто до порта отгрузки, консолидация, погрузка в контейнер.</p></div>
+                <div class="step"><div class="step-number">4</div><h3>Морская перевозка</h3><p>Отправка в порт Клайпеды (Литва), отслеживание по B/L.</p></div>
+                <div class="step"><div class="step-number">5</div><h3>Растаможка и доставка</h3><p>Проходим таможню, оформляем СБКТС, доставляем авто в Минск.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Block -->
+    <div class="container">
+        <div class="cta">
+            <h2>Не нашли ответ на свой вопрос?</h2>
+            <p style="margin-top: 16px;">Оставьте заявку — наш эксперт рассчитает точную стоимость вашего идеального авто</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Заказать индивидуальный расчет</a>
+                <a href="tel:+375296265566" class="btn btn-outline" style="background:transparent; border-color:white; color:white;"><i class="fab fa-whatsapp"></i> Написать в WhatsApp</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 CarsUSA.by — профессиональный импорт авто из США и Китая. Все права защищены.</p>
+        <p style="margin-top: 16px;">г. Минск, БЦ "ПАРК ПЛАЗА", Логойский тракт 22А, офис 812 | <i class="fas fa-phone-alt"></i> +375 29 626-55-66 | <i class="fas fa-envelope"></i> info@carsusa.by</p>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('calcBtn').addEventListener('click', function() {
+        // Базовая логика: стоимость доставки (база) + цена авто + доп. услуги
+        const vehicleType = document.getElementById('vehicleType').value;
+        const portValue = parseInt(document.getElementById('portSelect').value);
+        const auctionPrice = parseInt(document.getElementById('auctionPrice').value) || 0;
+        const fullService = document.getElementById('serviceType').value === '1';
+
+        // Коэффициент на тип ТС (легковые стандарт, мото дешевле, квадроциклы чуть выше)
+        let vehicleCoeff = 1;
+        if (vehicleType === 'moto') vehicleCoeff = 0.75;
+        if (vehicleType === 'quad') vehicleCoeff = 0.9;
+
+        // Базовая доставка (морской фрахт + доставка до порта + автовоз)
+        let deliveryBase = portValue;
+        // Доплата за страховку, оформление (усредненно)
+        let extraFees = 450;
+        // Аукционный сбор: ~7% от цены авто, но не менее 300
+        let auctionFee = Math.max(300, auctionPrice * 0.07);
+        // Таможенные платежи + утиль + услуги (упрощенно ~28% от цены авто для авто до 5 лет)
+        let customs = Math.round(auctionPrice * 0.28);
+        // Наши услуги
+        let ourService = fullService ? 750 : 0;
+
+        let total = Math.round((deliveryBase * vehicleCoeff) + extraFees + auctionFee + customs + ourService + auctionPrice);
+
+        document.getElementById('totalPriceDisplay').innerHTML = total + ' $';
+        document.getElementById('priceBreakdown').innerHTML = `Доставка: ~${Math.round(deliveryBase * vehicleCoeff)}$ + Пошлина: ~${customs}$ + Аукц. сбор: ~${auctionFee}$ + Услуги: ${ourService}$`;
+    });
+    // trigger initial calculation
+    document.getElementById('calcBtn').click();
+</script>
+</body>
+</html>
+```

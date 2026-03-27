@@ -1,683 +1,293 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Aurora Homes — премиальные модульные дома нового поколения в Беларуси и СНГ. Net-zero, энергоэффективность, здоровый микроклимат. Сборка за 45 дней.">
-  <meta name="keywords" content="модульные дома, премиум дома, net-zero дома, быстровозводимые дома, здоровое жилье, Aurora Homes">
-  <meta name="author" content="Aurora Homes">
-  <title>Aurora Homes | Премиальные модульные дома будущего</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #ffffff;
-      color: #0f172a;
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3, .logo, .nav-link, .btn, .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 500;
-    }
-
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    /* Sticky Header with glass effect */
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(15, 23, 42, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #0f172a 0%, #0ea5e9 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      font-weight: 500;
-      color: #1e293b;
-      transition: color 0.2s ease;
-      font-size: 0.9rem;
-      letter-spacing: -0.01em;
-    }
-
-    .nav-links a:hover {
-      color: #0ea5e9;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .phone-link {
-      font-weight: 500;
-      color: #0f172a;
-      text-decoration: none;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid #0f172a;
-      padding: 8px 24px;
-      border-radius: 40px;
-      font-weight: 600;
-      transition: all 0.2s;
-      cursor: pointer;
-      text-decoration: none;
-      color: #0f172a;
-      font-size: 0.85rem;
-    }
-
-    .btn-outline:hover {
-      background: #0f172a;
-      color: white;
-    }
-
-    .btn-primary {
-      background: #0ea5e9;
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
-    }
-
-    .btn-primary:hover {
-      background: #0284c7;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(14, 165, 233, 0.35);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
-      color: white;
-      padding: 14px 32px;
-      border-radius: 40px;
-      font-weight: 600;
-      transition: all 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: white;
-    }
-
-    /* Hero with parallax */
-    .hero {
-      min-height: 95vh;
-      background: linear-gradient(105deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%), url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-      background-size: cover;
-      background-position: center 40%;
-      display: flex;
-      align-items: center;
-      position: relative;
-      background-attachment: fixed;
-    }
-
-    .hero-content {
-      max-width: 800px;
-      color: white;
-    }
-
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 24px;
-      letter-spacing: -0.03em;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-bottom: 40px;
-      line-height: 1.5;
-    }
-
-    .metrics {
-      display: flex;
-      gap: 32px;
-      margin-top: 48px;
-      flex-wrap: wrap;
-    }
-
-    .metric-item {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      padding: 12px 24px;
-      border-radius: 60px;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    /* Sections */
-    .section {
-      padding: 110px 0;
-    }
-
-    .section-dark {
-      background: #f8fafc;
-    }
-
-    .section-title {
-      font-size: 2.8rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-
-    .section-sub {
-      font-size: 1.1rem;
-      color: #475569;
-      max-width: 650px;
-      margin-bottom: 60px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 40px;
-    }
-
-    .card-premium {
-      background: #ffffff;
-      border-radius: 32px;
-      padding: 36px 28px;
-      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05);
-      transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
-      border: 1px solid #f1f5f9;
-    }
-
-    .card-premium:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.12);
-      border-color: #e2e8f0;
-    }
-
-    .icon-bg {
-      background: #eef2ff;
-      width: 64px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 24px;
-      color: #0ea5e9;
-      font-size: 28px;
-      margin-bottom: 28px;
-    }
-
-    /* Steps */
-    .steps-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: space-between;
-    }
-
-    .step-card {
-      flex: 1;
-      min-width: 220px;
-      text-align: center;
-      padding: 24px;
-    }
-
-    .step-circle {
-      width: 80px;
-      height: 80px;
-      background: #0ea5e9;
-      color: white;
-      border-radius: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0 auto 24px;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    /* Tech grid */
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-    }
-
-    .tech-item {
-      background: white;
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
-      border: 1px solid #eef2ff;
-    }
-
-    /* Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 32px;
-    }
-
-    .gallery-card {
-      border-radius: 32px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .gallery-card img {
-      width: 100%;
-      height: 380px;
-      object-fit: cover;
-      transition: transform 0.7s ease;
-    }
-
-    .gallery-card:hover img {
-      transform: scale(1.05);
-    }
-
-    .gallery-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-      padding: 24px;
-      color: white;
-    }
-
-    /* Calculator */
-    .calculator-card {
-      background: #ffffff;
-      border-radius: 48px;
-      padding: 48px;
-      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.08);
-      border: 1px solid #eef2ff;
-    }
-
-    .calc-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 30px;
-      margin-bottom: 30px;
-    }
-
-    .calc-group label {
-      font-weight: 600;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    .calc-group input, .calc-group select {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 28px;
-      border: 1px solid #e2e8f0;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .price-display {
-      margin-top: 35px;
-      padding: 28px;
-      background: #f8fafc;
-      border-radius: 32px;
-      text-align: center;
-    }
-
-    .price-number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: #0ea5e9;
-    }
-
-    /* CTA */
-    .cta-section {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      border-radius: 56px;
-      padding: 70px 56px;
-      color: white;
-    }
-
-    .cta-form {
-      max-width: 550px;
-      margin-top: 32px;
-    }
-
-    .cta-form input, .cta-form textarea {
-      width: 100%;
-      padding: 16px 20px;
-      margin-bottom: 16px;
-      border-radius: 32px;
-      border: none;
-      font-family: 'Inter', sans-serif;
-    }
-
-    footer {
-      background: #f8fafc;
-      padding: 60px 0 30px;
-    }
-
-    @media (max-width: 900px) {
-      .container {
-        padding: 0 24px;
-      }
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-links {
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-      .section {
-        padding: 70px 0;
-      }
-      .section-title {
-        font-size: 2rem;
-      }
-      .calculator-card {
-        padding: 28px;
-      }
-      .cta-section {
-        padding: 48px 28px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-      .metrics {
-        gap: 12px;
-      }
-      .metric-item {
-        font-size: 0.75rem;
-        padding: 8px 16px;
-      }
-    }
-
-    .fade-up {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Aurora Homes — премиальные модульные дома под ключ в Беларуси и СНГ. Высокая энергоэффективность, здоровый микроклимат, фиксированная цена и скорость строительства от 45 дней.">
+    <meta name="keywords" content="модульные дома, премиальные дома, net-zero, умный дом, строительство под ключ, Aurora Homes">
+    <meta name="author" content="Aurora Homes">
+    <title>Aurora Homes | Премиальные модульные дома будущего</title>
+    <!-- Tailwind + Google Fonts + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- AOS-like custom scroll animations via simple JS + CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+            scroll-behavior: smooth;
+        }
+        /* custom glassmorphism & effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+        }
+        .parallax-hero {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+        @media (max-width: 768px) {
+            .parallax-hero {
+                background-attachment: scroll;
+            }
+        }
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .tech-icon-bg {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7fc 100%);
+            border-radius: 2rem;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            height: 4px;
+            border-radius: 4px;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            cursor: pointer;
+            box-shadow: 0 0 6px #0ea5e9;
+        }
+        .btn-primary {
+            background: #0f172a;
+            color: white;
+            transition: all 0.25s ease;
+        }
+        .btn-primary:hover {
+            background: #1e293b;
+            transform: scale(1.02);
+        }
+        .btn-accent {
+            background: #0ea5e9;
+            color: white;
+            transition: all 0.25s ease;
+        }
+        .btn-accent:hover {
+            background: #0284c7;
+            transform: scale(1.02);
+        }
+        nav a {
+            transition: color 0.2s;
+        }
+        .active-nav {
+            color: #0ea5e9;
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased">
 
-<header class="sticky-header">
-  <div class="container">
-    <div class="navbar">
-      <div class="logo">AURORA HOMES</div>
-      <ul class="nav-links">
-        <li><a href="#home">Главная</a></li>
-        <li><a href="#advantages">Преимущества</a></li>
-        <li><a href="#process">Процесс</a></li>
-        <li><a href="#projects">Проекты</a></li>
-        <li><a href="#tech">Технологии</a></li>
-        <li><a href="#calculator">Калькулятор</a></li>
-        <li><a href="#contact">Контакты</a></li>
-      </ul>
-      <div class="header-actions">
-        <a href="tel:+79781248490" class="phone-link"><i class="fab fa-whatsapp"></i> <i class="fas fa-phone-alt"></i> +7 978 124-84-90</a>
-        <a href="#calculator" class="btn-outline">Рассчитать стоимость</a>
-      </div>
+<!-- Sticky Header -->
+<header class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 py-4 flex justify-between items-center">
+        <div class="text-2xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">AURORA<span class="text-[#0ea5e9]">HOMES</span></div>
+        <nav class="hidden lg:flex space-x-8 text-sm font-medium text-gray-700">
+            <a href="#hero" class="hover:text-[#0ea5e9]">Главная</a>
+            <a href="#benefits" class="hover:text-[#0ea5e9]">Преимущества</a>
+            <a href="#process" class="hover:text-[#0ea5e9]">Процесс</a>
+            <a href="#projects" class="hover:text-[#0ea5e9]">Проекты</a>
+            <a href="#tech" class="hover:text-[#0ea5e9]">Технологии</a>
+            <a href="#calculator" class="hover:text-[#0ea5e9]">Калькулятор</a>
+            <a href="#contact" class="hover:text-[#0ea5e9]">Контакты</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <a href="tel:+79781248490" class="hidden md:flex items-center gap-2 text-gray-700 text-sm font-medium hover:text-[#0ea5e9]"><i class="fab fa-whatsapp text-green-500 text-lg"></i> +7 978 124-84-90</a>
+            <a href="#calculator" class="bg-[#0f172a] text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:bg-[#1e293b] transition">Рассчитать стоимость</a>
+            <button id="mobileMenuBtn" class="lg:hidden text-2xl text-gray-800"><i class="fas fa-bars"></i></button>
+        </div>
     </div>
-  </div>
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200 px-6 py-4 flex flex-col space-y-4 text-base font-medium">
+        <a href="#hero" class="hover:text-[#0ea5e9]">Главная</a>
+        <a href="#benefits" class="hover:text-[#0ea5e9]">Преимущества</a>
+        <a href="#process" class="hover:text-[#0ea5e9]">Процесс</a>
+        <a href="#projects" class="hover:text-[#0ea5e9]">Проекты</a>
+        <a href="#tech" class="hover:text-[#0ea5e9]">Технологии</a>
+        <a href="#calculator" class="hover:text-[#0ea5e9]">Калькулятор</a>
+        <a href="#contact" class="hover:text-[#0ea5e9]">Контакты</a>
+        <hr><a href="tel:+79781248490" class="flex items-center gap-2"><i class="fab fa-whatsapp text-green-600"></i> +7 978 124-84-90</a>
+    </div>
 </header>
 
 <main>
-  <section id="home" class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1>Модульные дома,<br>которые меняют жизнь</h1>
-        <p>Net-zero энергоэффективность, здоровый микроклимат и высочайшее качество. Сборка за 45 дней. Премиальное жильё, которое заботится о вас и планете.</p>
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-          <a href="#calculator" class="btn-primary"><i class="fas fa-calculator"></i> Рассчитать стоимость</a>
-          <a href="#projects" class="btn-secondary"><i class="fas fa-arrow-right"></i> Смотреть проекты</a>
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center parallax-hero" style="background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.2)), url('https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1600'); background-size: cover; background-position: center 30%;">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center text-white">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] drop-shadow-2xl">Модульные дома,<br>которые меняют жизнь</h1>
+            <p class="text-xl md:text-2xl mt-6 max-w-3xl mx-auto font-light text-white/95">Скорость, энергоэффективность и здоровый климат. Ваш дом — от 45 дней с фиксированной ценой.</p>
+            <div class="flex flex-col sm:flex-row gap-5 justify-center mt-10">
+                <a href="#calculator" class="bg-white text-gray-900 font-semibold px-8 py-4 rounded-full text-lg shadow-xl hover:bg-gray-100 transition">Рассчитать стоимость</a>
+                <a href="#projects" class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full text-lg hover:bg-white/10 transition">Смотреть проекты</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-16 text-white/90 text-sm md:text-base font-medium">
+                <div class="backdrop-blur-sm bg-black/30 rounded-2xl py-3 px-2">⏱ от 45 дней</div>
+                <div class="backdrop-blur-sm bg-black/30 rounded-2xl py-3 px-2">🌿 Net-Zero Ready</div>
+                <div class="backdrop-blur-sm bg-black/30 rounded-2xl py-3 px-2">⚡ До 70% экономии</div>
+                <div class="backdrop-blur-sm bg-black/30 rounded-2xl py-3 px-2">🛡 25 лет гарантии</div>
+            </div>
         </div>
-        <div class="metrics">
-          <div class="metric-item"><i class="fas fa-clock"></i> от 45 дней</div>
-          <div class="metric-item"><i class="fas fa-leaf"></i> Net-Zero Ready</div>
-          <div class="metric-item"><i class="fas fa-charging-station"></i> До 70% экономии энергии</div>
-          <div class="metric-item"><i class="fas fa-medal"></i> 25 лет гарантии</div>
+    </section>
+
+    <!-- BENEFITS SECTION -->
+    <section id="benefits" class="py-28 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 fade-up"><span class="text-[#0ea5e9] font-semibold tracking-wide">Почему Aurora</span><h2 class="text-4xl md:text-5xl font-bold mt-2 text-gray-900">Преимущества премиального модуля</h2></div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-rocket text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Скорость и предсказуемость</h3><p class="text-gray-600 mt-2">Строительство от 45 до 60 дней, фиксированная цена без скрытых платежей.</p></div>
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-solar-panel text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Net-Zero & энергоэффективность</h3><p class="text-gray-600 mt-2">Высший класс энергосбережения, возможность полной автономии.</p></div>
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-leaf text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Здоровый микроклимат</h3><p class="text-gray-600 mt-2">Приточная вентиляция с рекуперацией, мониторинг CO₂ и влажности.</p></div>
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-recycle text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Экологичность</h3><p class="text-gray-600 mt-2">Натуральные материалы, ответственное производство, забота о природе.</p></div>
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-drafting-compass text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Персонализация</h3><p class="text-gray-600 mt-2">Архитектурное качество и дизайн интерьеров на любой вкус.</p></div>
+                <div class="p-6 rounded-3xl bg-gray-50 hover:shadow-xl transition-all fade-up"><i class="fas fa-chart-line text-4xl text-[#0ea5e9] mb-5"></i><h3 class="text-xl font-bold">Фиксированная цена</h3><p class="text-gray-600 mt-2">Никаких сюрпризов, полная прозрачность сметы.</p></div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="advantages" class="section">
-    <div class="container">
-      <h2 class="section-title fade-up">Совершенство в деталях</h2>
-      <div class="section-sub fade-up">Технологии будущего для вашего здоровья и комфорта</div>
-      <div class="grid-3">
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-bolt"></i></div><h3>Скорость и предсказуемость</h3><p>Сборка за 45–60 дней. Фиксированные сроки и полный контроль на каждом этапе.</p></div>
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-chart-line"></i></div><h3>Фиксированная цена</h3><p>Никаких скрытых платежей. Вы получаете дом "под ключ" ровно за ту сумму, которая оговорена.</p></div>
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-solar-panel"></i></div><h3>Net-zero энергоэффективность</h3><p>Солнечные панели, тепловые насосы, рекуперация — до 70% экономии на коммунальных платежах.</p></div>
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-wind"></i></div><h3>Здоровый микроклимат</h3><p>Приточная вентиляция с фильтрацией, контроль CO₂, отсутствие формальдегидов. Чистый воздух 24/7.</p></div>
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-recycle"></i></div><h3>Экологичность и забота о природе</h3><p>Сертифицированные материалы, перерабатываемая упаковка, минимальный углеродный след.</p></div>
-        <div class="card-premium fade-up"><div class="icon-bg"><i class="fas fa-palette"></i></div><h3>Персонализация</h3><p>Индивидуальный дизайн под ваш образ жизни. Архитектурное качество мирового уровня.</p></div>
-      </div>
-    </div>
-  </section>
+    <!-- PROCESS -->
+    <section id="process" class="py-28 bg-[#f8fafc] px-6">
+        <div class="max-w-7xl mx-auto"><div class="text-center mb-14"><h2 class="text-4xl md:text-5xl font-bold">Как это работает</h2><p class="text-gray-500 mt-3">Простота и прозрачность на каждом этапе</p></div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white rounded-3xl p-6 shadow-sm text-center fade-up"><div class="bg-[#0ea5e9]/10 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-[#0ea5e9] mx-auto mb-4">1</div><h3 class="text-xl font-bold">Выбор планировки</h3><p class="text-gray-500">Каталог архитектурных решений под ваш участок и образ жизни.</p></div>
+            <div class="bg-white rounded-3xl p-6 shadow-sm text-center fade-up"><div class="bg-[#0ea5e9]/10 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-[#0ea5e9] mx-auto mb-4">2</div><h3 class="text-xl font-bold">Дизайн и отделка</h3><p class="text-gray-500">Выбираем материалы, смарт-технологии и премиальные опции.</p></div>
+            <div class="bg-white rounded-3xl p-6 shadow-sm text-center fade-up"><div class="bg-[#0ea5e9]/10 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-[#0ea5e9] mx-auto mb-4">3</div><h3 class="text-xl font-bold">Производство и доставка</h3><p class="text-gray-500">Заводская точность, сборка модулей под ключ, логистика по СНГ.</p></div>
+            <div class="bg-white rounded-3xl p-6 shadow-sm text-center fade-up"><div class="bg-[#0ea5e9]/10 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-[#0ea5e9] mx-auto mb-4">4</div><h3 class="text-xl font-bold">Живите комфортно</h3><p class="text-gray-500">Сдача под ключ и умный сервис мониторинга дома.</p></div>
+        </div></div>
+    </section>
 
-  <section id="process" class="section section-dark">
-    <div class="container">
-      <h2 class="section-title fade-up">Простота, возведённая в искусство</h2>
-      <div class="section-sub fade-up">Четыре шага к дому вашей мечты</div>
-      <div class="steps-container">
-        <div class="step-card fade-up"><div class="step-circle">1</div><h3>Выберите планировку</h3><p>Каталог премиальных проектов или индивидуальная разработка с архитектором.</p></div>
-        <div class="step-card fade-up"><div class="step-circle">2</div><h3>Персонализируйте дизайн</h3><p>Материалы, отделка, умные системы — всё под ваши предпочтения.</p></div>
-        <div class="step-card fade-up"><div class="step-circle">3</div><h3>Производство и доставка</h3><p>Высокоточная заводская сборка. Полный контроль качества.</p></div>
-        <div class="step-card fade-up"><div class="step-circle">4</div><h3>Живите комфортно</h3><p>Монтаж за 2–3 дня. Въезжайте и наслаждайтесь здоровым домом.</p></div>
-      </div>
-    </div>
-  </section>
+    <!-- TECHNOLOGY / HIGH-PERFORMANCE -->
+    <section id="tech" class="py-28 bg-white px-6">
+        <div class="max-w-7xl mx-auto"><div class="grid lg:grid-cols-2 gap-16 items-center"><div class="fade-up"><span class="text-[#0ea5e9] font-semibold">High‑Performance</span><h2 class="text-4xl font-bold mt-2 mb-6">Технологии умного дома и энергоэффективность</h2><div class="space-y-5"><div class="flex gap-4"><i class="fas fa-microchip text-2xl text-[#0ea5e9]"></i><div><h4 class="font-bold">Система мониторинга Aurora IQ</h4><p class="text-gray-600">Контроль качества воздуха, энергопотребления, температуры и влажности в реальном времени.</p></div></div><div class="flex gap-4"><i class="fas fa-sun text-2xl text-[#0ea5e9]"></i><div><h4 class="font-bold">Солнечные панели + накопители</h4><p class="text-gray-600">Net-zero готовность, снижение счетов за электричество до 90%.</p></div></div><div class="flex gap-4"><i class="fas fa-temperature-high text-2xl text-[#0ea5e9]"></i><div><h4 class="font-bold">Теплоизоляция пассивного дома</h4><p class="text-gray-600">Сверхвысокая герметичность, отсутствие мостиков холода.</p></div></div><div class="flex gap-4"><i class="fas fa-wind text-2xl text-[#0ea5e9]"></i><div><h4 class="font-bold">Вентиляция с рекуперацией 95%</h4><p class="text-gray-600">Постоянный приток свежего воздуха с минимальными потерями тепла.</p></div></div></div></div><div class="rounded-3xl overflow-hidden shadow-2xl fade-up"><img src="https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg?auto=compress&cs=tinysrgb&w=800" alt="умный дом технологии" class="w-full h-full object-cover"></div></div></div>
+    </section>
 
-  <section id="tech" class="section">
-    <div class="container">
-      <h2 class="section-title fade-up">High‑Performance технологии</h2>
-      <div class="section-sub fade-up">Интеллектуальные системы для здоровья и энергонезависимости</div>
-      <div class="tech-grid">
-        <div class="tech-item fade-up"><i class="fas fa-microchip" style="font-size: 2rem; color: #0ea5e9;"></i><h3 style="margin: 16px 0;">Aurora IQ — умный дом</h3><p>Мониторинг энергопотребления, качества воздуха, управление климатом и освещением с одного приложения.</p></div>
-        <div class="tech-item fade-up"><i class="fas fa-sun" style="font-size: 2rem; color: #0ea5e9;"></i><h3 style="margin: 16px 0;">Солнечная интеграция</h3><p>Фотоэлектрические панели + накопители энергии. До 100% автономии в летний сезон.</p></div>
-        <div class="tech-item fade-up"><i class="fas fa-fan" style="font-size: 2rem; color: #0ea5e9;"></i><h3 style="margin: 16px 0;">Рекуперация и фильтрация</h3><p>Система вентиляции с рекуперацией тепла и HEPA-фильтрами. Свежий воздух без потерь тепла.</p></div>
-        <div class="tech-item fade-up"><i class="fas fa-temperature-high" style="font-size: 2rem; color: #0ea5e9;"></i><h3 style="margin: 16px 0;">Пассивная изоляция</h3><p>Термопанели толщиной 300 мм, тепловые мосты исключены. Комфорт круглый год.</p></div>
-      </div>
-    </div>
-  </section>
+    <!-- GALLERY PROJECTS -->
+    <section id="projects" class="py-28 bg-[#f8fafc] px-6">
+        <div class="max-w-7xl mx-auto"><div class="text-center mb-12"><h2 class="text-4xl font-bold">Реализованные проекты</h2><p class="text-gray-500">Вдохновляющие резиденции в гармонии с природой</p></div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+            <div class="group relative rounded-2xl overflow-hidden shadow-md hover-lift cursor-pointer"><img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600" class="w-full h-72 object-cover transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-5"><div><p class="text-white font-bold text-xl">Forest Edge</p><p class="text-white/80">145 м² • Пассивный дом + Solar</p></div></div></div>
+            <div class="group relative rounded-2xl overflow-hidden shadow-md hover-lift"><img src="https://images.pexels.com/photos/2587054/pexels-photo-2587054.jpeg?auto=compress&cs=tinysrgb&w=600" class="w-full h-72 object-cover transition-transform group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-5"><div><p class="text-white font-bold text-xl">Lake Panorama</p><p class="text-white/80">210 м² • Умный дом, терраса</p></div></div></div>
+            <div class="group relative rounded-2xl overflow-hidden shadow-md hover-lift"><img src="https://images.pexels.com/photos/208736/pexels-photo-208736.jpeg?auto=compress&cs=tinysrgb&w=600" class="w-full h-72 object-cover transition-transform group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-5"><div><p class="text-white font-bold text-xl">Birch House</p><p class="text-white/80">98 м² • Минимализм, Net-Zero</p></div></div></div>
+        </div></div>
+    </section>
 
-  <section id="projects" class="section section-dark">
-    <div class="container">
-      <h2 class="section-title fade-up">Реализованные проекты</h2>
-      <div class="section-sub fade-up">Каждая деталь — про архитектурную чистоту и связь с природой</div>
-      <div class="gallery-grid">
-        <div class="gallery-card fade-up"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Aurora Lake House"><div class="gallery-overlay"><h3>Aurora Lake House</h3><p>162 м² · Панорамное остекление · Net-zero</p></div></div>
-        <div class="gallery-card fade-up"><img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Aurora Forest"><div class="gallery-overlay"><h3>Aurora Forest</h3><p>128 м² · Дом в лесу · Энергоэффективность А++</p></div></div>
-        <div class="gallery-card fade-up"><img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Aurora Panorama"><div class="gallery-overlay"><h3>Aurora Panorama</h3><p>210 м² · Терраса · Умный дом премиум</p></div></div>
-      </div>
-    </div>
-  </section>
+    <!-- INTERACTIVE CALCULATOR -->
+    <section id="calculator" class="py-28 px-6 bg-white">
+        <div class="max-w-5xl mx-auto glass-card p-8 md:p-12 shadow-xl"><h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Калькулятор стоимости</h2>
+            <div class="space-y-8"><div><label class="font-semibold">Площадь: <span id="areaVal" class="text-[#0ea5e9]">120</span> м²</label><input type="range" id="areaRange" min="60" max="250" step="10" value="120" class="w-full mt-2"></div>
+            <div><label class="font-semibold">Этажность</label><select id="floors" class="w-full border border-gray-200 rounded-xl p-3 mt-2 bg-gray-50"><option value="1">Одноэтажный</option><option value="1.2" selected>Двухэтажный (+20%)</option></select></div>
+            <div><label class="font-semibold">Комплектация</label><select id="package" class="w-full border rounded-xl p-3 mt-2 bg-gray-50"><option value="1">Базовая</option><option value="1.25" selected>Комфорт</option><option value="1.55">Премиум (умный дом + солнце)</option></select></div>
+            <div class="flex flex-wrap gap-4"><label class="flex items-center gap-2"><input type="checkbox" id="solar" value="3500"> <span>Солнечная станция (+3500 $)</span></label><label class="flex items-center gap-2"><input type="checkbox" id="smartHome" value="2800"> <span>Умный дом Aurora IQ (+2800 $)</span></label></div>
+            <div class="bg-gray-100 p-6 rounded-2xl text-center"><p class="text-gray-500">Ориентировочная стоимость</p><p class="text-4xl font-extrabold text-gray-900" id="priceDisplay">$ 0</p><p class="text-sm">*финальная цена после точного расчёта</p><button id="getExactBtn" class="mt-5 btn-primary px-8 py-3 rounded-full font-semibold">Получить точный расчёт</button></div>
+        </div></div>
+    </section>
 
-  <section id="calculator" class="section">
-    <div class="container">
-      <h2 class="section-title fade-up">Рассчитайте стоимость вашего дома</h2>
-      <div class="section-sub fade-up">Интерактивный расчёт под ключ. Цена в белорусских рублях.</div>
-      <div class="calculator-card fade-up">
-        <div class="calc-row">
-          <div class="calc-group"><label><i class="fas fa-ruler-combined"></i> Площадь, м²</label><input type="range" id="area" min="60" max="250" value="120" step="5"><span id="areaVal" style="margin-left: 12px;">120 м²</span></div>
-          <div class="calc-group"><label>Этажность</label><select id="floors"><option value="1">Одноэтажный</option><option value="1.3" selected>Двухэтажный (+30%)</option><option value="1.5">Мансарда (+50%)</option></select></div>
-          <div class="calc-group"><label>Комплектация</label><select id="package"><option value="1">Базовая (чистовая)</option><option value="1.25" selected>Комфорт (под ключ)</option><option value="1.55">Премиум (дизайн + умный дом)</option></select></div>
-        </div>
-        <div class="calc-row">
-          <div class="calc-group"><label><i class="fas fa-solar-panel"></i> Доп. опции</label><select id="options"><option value="1">Без доп. опций</option><option value="1.12">Солнечная станция (+12%)</option><option value="1.18">Умный дом + Солнечная (+18%)</option></select></div>
-        </div>
-        <div class="price-display"><span class="price-number" id="totalPrice">~ 118 500 BYN</span><p style="margin-top: 8px;">*Окончательная стоимость после консультации с архитектором</p></div>
-        <button id="recalcBtn" class="btn-primary" style="width: 100%; margin-top: 20px;"><i class="fas fa-sync-alt"></i> Получить точный расчёт</button>
-      </div>
-    </div>
-  </section>
+    <!-- TRUST SECTION -->
+    <section class="py-20 bg-[#0f172a] text-white">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center"><div><p class="text-5xl font-bold text-[#22d3ee]">127+</p><p>домов построено</p></div><div><p class="text-5xl font-bold text-[#22d3ee]">до 72%</p><p>средняя экономия энергии</p></div><div><p class="text-5xl font-bold text-[#22d3ee]">98%</p><p>клиентов рекомендуют нас</p></div></div>
+        <div class="max-w-4xl mx-auto text-center mt-16 italic text-gray-300">«Aurora Homes создала для нас не просто дом, а настоящую экосистему. Умный контроль, теплый минимализм и абсолютная прозрачность.» — Анна и Дмитрий, Минск</div>
+    </section>
 
-  <section id="why" class="section section-dark">
-    <div class="container">
-      <h2 class="section-title fade-up">Почему выбирают Aurora</h2>
-      <div class="grid-3" style="margin-bottom: 50px;">
-        <div class="card-premium fade-up" style="text-align: center;"><div class="icon-bg" style="margin: 0 auto 20px;"><i class="fas fa-home"></i></div><div style="font-size: 2.5rem; font-weight: 800;">85+</div><p>домов построено за 4 года</p></div>
-        <div class="card-premium fade-up" style="text-align: center;"><div class="icon-bg" style="margin: 0 auto 20px;"><i class="fas fa-charging-station"></i></div><div style="font-size: 2.5rem; font-weight: 800;">68%</div><p>средняя экономия энергии</p></div>
-        <div class="card-premium fade-up" style="text-align: center;"><div class="icon-bg" style="margin: 0 auto 20px;"><i class="fas fa-star"></i></div><div style="font-size: 2.5rem; font-weight: 800;">98%</div><p>клиентов рекомендуют друзьям</p></div>
-      </div>
-      <div class="card-premium fade-up" style="text-align: center; background: #ffffff;"><i class="fas fa-quote-left" style="color: #0ea5e9; font-size: 2rem;"></i><p style="font-size: 1.1rem; margin: 20px 0;">«Мы искали дом, который сочетал бы эстетику, экологичность и передовые технологии. Aurora Homes превзошёл ожидания — проект реализовали за 48 дней, а счета за отопление снизились на 70%»</p><strong>— Екатерина и Андрей, Минская область</strong></div>
-    </div>
-  </section>
+    <!-- FINAL CTA -->
+    <section id="contact" class="py-28 px-6 bg-white">
+        <div class="max-w-5xl mx-auto text-center"><h2 class="text-4xl md:text-5xl font-bold">Готовы построить дом своей мечты?</h2><p class="text-gray-500 text-xl mt-3">Оставьте заявку — мы создадим проект под ваш участок и бюджет</p>
+        <form id="callbackForm" class="mt-12 grid md:grid-cols-2 gap-6 bg-gray-50 p-8 rounded-3xl shadow-sm"><input type="text" placeholder="Ваше имя" class="p-4 rounded-xl border-gray-200 border" required><input type="tel" placeholder="Телефон" class="p-4 rounded-xl border-gray-200 border" required><textarea rows="2" placeholder="Ваш вопрос или пожелания" class="md:col-span-2 p-4 rounded-xl border-gray-200 border"></textarea><div class="md:col-span-2 flex gap-4 justify-center flex-wrap"><label><input type="checkbox"> Хочу получить презентацию проектов</label><label><input type="checkbox"> Интересна солнечная станция</label></div><button type="submit" class="md:col-span-2 btn-accent py-4 rounded-full text-lg font-semibold">Отправить заявку</button></form><p class="text-sm text-gray-400 mt-6">Нажимая кнопку, вы соглашаетесь с обработкой данных. Свяжемся в WhatsApp</p></div>
+    </section>
 
-  <section id="contact" class="section">
-    <div class="container">
-      <div class="cta-section fade-up">
-        <h2 style="font-size: 2.2rem;">Готовы построить дом своей мечты?</h2>
-        <p style="margin-top: 16px; opacity: 0.9;">Оставьте заявку, и архитектор свяжется с вами в течение 30 минут</p>
-        <div class="cta-form">
-          <input type="text" placeholder="Ваше имя" id="contactName">
-          <input type="tel" placeholder="+7 (___) ___-__-__" id="contactPhone">
-          <textarea rows="3" placeholder="Ваши пожелания или вопросы" id="contactMsg"></textarea>
-          <div style="display: flex; gap: 12px; margin: 20px 0;"><label><input type="checkbox"> Хочу получить каталог проектов</label><label><input type="checkbox"> Нужна консультация по участку</label></div>
-          <button id="submitContact" class="btn-primary" style="width: 100%;">Отправить заявку →</button>
-        </div>
-        <div style="margin-top: 32px; text-align: center;"><a href="tel:+79781248490" style="color: white; text-decoration: none; margin: 0 15px;"><i class="fab fa-whatsapp"></i> WhatsApp</a><span>|</span><a href="tel:+79781248490" style="color: white; text-decoration: none; margin: 0 15px;"><i class="fas fa-phone-alt"></i> +7 978 124-84-90</a></div>
-      </div>
-    </div>
-  </section>
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 py-12 px-6"><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4"><div class="text-2xl font-bold text-white">AURORA<span class="text-[#0ea5e9]">HOMES</span></div><div class="flex gap-6"><a href="tel:+79781248490" class="hover:text-white"><i class="fas fa-phone-alt"></i> +7 978 124-84-90</a><a href="#" class="hover:text-white"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="#" class="hover:text-white">Политика конфиденциальности</a></div><div class="text-sm">© 2026 Aurora Homes. Премиальные модульные дома в Беларуси и СНГ.</div></div></footer>
 </main>
 
-<footer>
-  <div class="container">
-    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
-      <div><div class="logo" style="font-size: 1.5rem;">AURORA HOMES</div><p style="margin-top: 12px; max-width: 280px;">Премиальные модульные дома нового поколения. Здоровье, комфорт и энергонезависимость.</p></div>
-      <div><h4>Исследуйте</h4><ul style="list-style: none; margin-top: 12px;"><li><a href="#advantages" style="text-decoration: none; color: #334155;">Преимущества</a></li><li><a href="#projects" style="text-decoration: none; color: #334155;">Проекты</a></li><li><a href="#tech" style="text-decoration: none; color: #334155;">Технологии</a></li></ul></div>
-      <div><h4>Контакты</h4><p><i class="fas fa-phone-alt"></i> <a href="tel:+79781248490" style="text-decoration: none; color: #0f172a;">+7 978 124-84-90</a></p><p><i class="fab fa-whatsapp"></i> WhatsApp для быстрой связи</p><p><i class="far fa-envelope"></i> hello@aurorahomes.by</p></div>
-    </div>
-    <hr style="margin: 40px 0 20px; border-color: #e2e8f0;"><div style="text-align: center; font-size: 0.85rem;">© 2026 Aurora Homes — архитектурное бюро премиальных модульных домов. Все права защищены.</div>
-  </div>
-</footer>
-
 <script>
-  // Scroll animations
-  const faders = document.querySelectorAll('.fade-up');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
-  faders.forEach(el => observer.observe(el));
+    // scroll animations observer
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+    fadeElements.forEach(el => observer.observe(el));
 
-  // Calculator
-  const areaSlider = document.getElementById('area');
-  const areaSpan = document.getElementById('areaVal');
-  const floorsSelect = document.getElementById('floors');
-  const packageSelect = document.getElementById('package');
-  const optionsSelect = document.getElementById('options');
-  const totalSpan = document.getElementById('totalPrice');
+    // calculator logic
+    const areaRange = document.getElementById('areaRange');
+    const areaValSpan = document.getElementById('areaVal');
+    const floorsSelect = document.getElementById('floors');
+    const packageSelect = document.getElementById('package');
+    const solarCheck = document.getElementById('solar');
+    const smartCheck = document.getElementById('smartHome');
+    const priceDisplay = document.getElementById('priceDisplay');
 
-  function calcPrice() {
-    let area = parseInt(areaSlider.value);
-    areaSpan.innerText = area + ' м²';
-    let floorFactor = parseFloat(floorsSelect.value);
-    let packFactor = parseFloat(packageSelect.value);
-    let optionsFactor = parseFloat(optionsSelect.value);
-    let baseM2 = 680; // BYN за м² премиум-класса
-    let total = area * baseM2 * floorFactor * packFactor * optionsFactor;
-    total = Math.round(total / 1000) * 1000;
-    totalSpan.innerText = '~ ' + total.toLocaleString() + ' BYN';
-  }
-
-  areaSlider.addEventListener('input', calcPrice);
-  floorsSelect.addEventListener('change', calcPrice);
-  packageSelect.addEventListener('change', calcPrice);
-  optionsSelect.addEventListener('change', calcPrice);
-  document.getElementById('recalcBtn').addEventListener('click', calcPrice);
-  calcPrice();
-
-  // Contact form handler
-  document.getElementById('submitContact').addEventListener('click', () => {
-    const name = document.getElementById('contactName').value.trim();
-    const phone = document.getElementById('contactPhone').value.trim();
-    if (name && phone) {
-      alert(`Спасибо, ${name}! Наш архитектор свяжется с вами по номеру ${phone} в ближайшее время.`);
-      document.getElementById('contactName').value = '';
-      document.getElementById('contactPhone').value = '';
-      document.getElementById('contactMsg').value = '';
-    } else {
-      alert('Пожалуйста, укажите имя и номер телефона для связи.');
+    function updatePrice() {
+        let area = parseInt(areaRange.value);
+        areaValSpan.innerText = area;
+        let basePrice = area * 1850; // базовый доллар за м2 премиум класс
+        let floorMult = parseFloat(floorsSelect.value);
+        let packMult = parseFloat(packageSelect.value);
+        let extras = 0;
+        if(solarCheck.checked) extras += 3500;
+        if(smartCheck.checked) extras += 2800;
+        let total = (basePrice * floorMult * packMult) + extras;
+        priceDisplay.innerText = '$ ' + Math.round(total).toLocaleString();
     }
-  });
+    areaRange.addEventListener('input', updatePrice);
+    floorsSelect.addEventListener('change', updatePrice);
+    packageSelect.addEventListener('change', updatePrice);
+    solarCheck.addEventListener('change', updatePrice);
+    smartCheck.addEventListener('change', updatePrice);
+    updatePrice();
+
+    document.getElementById('getExactBtn').addEventListener('click', () => {
+        alert('Спасибо! Наш архитектор свяжется с вами в течение часа для точного расчёта.');
+    });
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+
+    // smooth anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if(href === "#" || href === "") return;
+            const target = document.querySelector(href);
+            if(target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); if(!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden'); }
+        });
+    });
+
+    // form fake submit
+    document.getElementById('callbackForm').addEventListener('submit', (e) => { e.preventDefault(); alert('Спасибо! Мы свяжемся с вами в ближайшее время.'); e.target.reset(); });
 </script>
 </body>
 </html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>API Tester</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: monospace; font-size: 13px; background: #1a1a1a; color: #ccc; padding: 20px; }
+  h2 { color: #fff; margin-bottom: 16px; font-size: 15px; }
+  label { display: block; margin-bottom: 4px; color: #888; }
+  input, select { width: 100%; padding: 6px 8px; background: #2a2a2a; border: 1px solid #444; color: #eee; font-family: monospace; font-size: 13px; border-radius: 3px; margin-bottom: 12px; }
+  textarea { width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #eee; font-family: monospace; font-size: 12px; border-radius: 3px; resize: vertical; }
+  button { padding: 8px 20px; background: #3a7bd5; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-family: monospace; font-size: 13px; margin-top: 12px; }
+  button:hover { background: #2e6cc7; }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; }
+  #response { margin-top: 20px; }
+  #response-status { margin-bottom: 8px; font-size: 13px; }
+  #response-body { background: #111; border: 1px solid #333; padding: 12px; border-radius: 3px; white-space: pre-wrap; word-break: break-all; min-height: 80px; color: #8fc; font-size: 12px; }
+  .ok { color: #5d5; }
+  .err { color: #d55; }
+  hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<h2>POST API Tester</h2>
+
+<div class="row">
+  <div>
+    <label>URL</label>
+    <input type="text" id="url" value="http://localhost:3000/api/task" />
+  </div>
+  <div style="max-width:160px">
+    <label>Method</label>
+    <select id="method">
+      <option>POST</option>
+      <option>PUT</option>
+      <option>PATCH</option>
+      <option>GET</option>
+    </select>
+  </div>
+</div>
+
+<label>Content-Type</label>
+<input type="text" id="content-type" value="application/json" />
+
+<label>Body (JSON)</label>
+<textarea id="body" rows="28">{
+  "action": "start",
+  "task_type": "pf_click",
+  "project_id": 550953,
+  "target_url": "1.mail.ru",
+  "callback_url": "http://your-site.com/api/stat",
+  "config": {
+    "clicks_per_hour": 10,
+    "max_daily_clicks": 240,
+    "click_price": 1.00,
+    "hourly_coefficients": [0,0,0,0,0,0,10,20,50,100,100,90,80,70,60,50,40,30,20,10,5,0,0,0],
+    "active_days": [1, 2, 3, 4, 5],
+    "regions": [
+      {"id": 1, "name": "Москва", "weight": 100},
+      {"id": 77, "name": "Санкт-Петербург", "weight": 50}
+    ],
+    "keywords": [
+      {"phrase": "почта маил ру", "freq": 10},
+      {"phrase": "вход в почту", "freq": 5}
+    ],
+    "addons": [
+      {"phrase": "вход в личный кабинет", "freq": 10}
+    ],
+    "is_boost": false,
+    "auto_boost": { "enabled": true, "interval": "1h" }
+  },
+  "auth": {
+    "user_id": "90ede2d648944d8ba7275f9cb033071a",
+    "balance": 240.00
+  }
+}</textarea>
+
+<button onclick="send()">Отправить</button>
+<button onclick="formatJson()" style="background:#555; margin-left:8px;">Форматировать JSON</button>
+
+<div id="response">
+  <hr>
+  <div id="response-status">—</div>
+  <div id="response-body">Ответ появится здесь...</div>
+</div>
+
+<script>
+async function send() {
+  const url = document.getElementById('url').value.trim();
+  const method = document.getElementById('method').value;
+  const ct = document.getElementById('content-type').value.trim();
+  const bodyRaw = document.getElementById('body').value.trim();
+  const statusEl = document.getElementById('response-status');
+  const bodyEl = document.getElementById('response-body');
+
+  statusEl.textContent = 'Отправка...';
+  statusEl.className = '';
+  bodyEl.textContent = '';
+
+  try {
+    const opts = {
+      method,
+      headers: { 'Content-Type': ct }
+    };
+    if (method !== 'GET') opts.body = bodyRaw;
+
+    const res = await fetch(url, opts);
+    const text = await res.text();
+
+    statusEl.textContent = `HTTP ${res.status} ${res.statusText}`;
+    statusEl.className = res.ok ? 'ok' : 'err';
+
+    try {
+      bodyEl.textContent = JSON.stringify(JSON.parse(text), null, 2);
+    } catch {
+      bodyEl.textContent = text;
+    }
+  } catch (e) {
+    statusEl.textContent = 'Ошибка: ' + e.message;
+    statusEl.className = 'err';
+    bodyEl.textContent = '';
+  }
+}
+
+function formatJson() {
+  const el = document.getElementById('body');
+  try {
+    el.value = JSON.stringify(JSON.parse(el.value), null, 2);
+  } catch(e) {
+    alert('Невалидный JSON: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>

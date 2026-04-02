@@ -1,463 +1,922 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Мобильный VPN-клиент (iOS/Android PWA) с нативным дизайном (UI/UX 2026) и интеграцией с WireGuard/OpenVPN/VLESS</title>
-  <meta name="description" content="Готовый VPN-клиент нового поколения на PWA: установка без App Store/Google Play, работа на любых устройствах, премиальный UI/UX 2026, поддержка WireGuard, OpenVPN, VLESS, L2 Bridge для удалённой диагностики авто (ODIS, Xentry). Исходный код, White Label.">
-  <meta name="keywords" content="VPN клиент, PWA VPN, WireGuard, OpenVPN, VLESS, L2 Bridge, удаленная диагностика, ODIS, Xentry, White Label VPN, исходный код VPN, FastAPI, Webflow">
-  <meta name="author" content="Николай Шикин | guru_sun">
-  <link rel="canonical" href="https://edge.shikinn.com/">
-  <meta property="og:title" content="Мобильный VPN-клиент PWA с нативным дизайном (UI/UX 2026)">
-  <meta property="og:description" content="Установка без магазинов, WireGuard/VLESS/OpenVPN, L2 Bridge для диагностики авто. Исходный код, White Label.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- ═══ PRIMARY SEO ═══ -->
+  <title>Мобильный VPN-клиент PWA — iOS/Android без App Store | WireGuard VLESS OpenVPN | Николай Шикин</title>
+  <meta name="description" content="Готовый VPN-клиент нового поколения на PWA: установка без App Store и Google Play, WireGuard/OpenVPN/VLESS, UI/UX 2026 Cyber-Premium, L2 Bridge для удалённой диагностики ODIS/Xentry. Исходный код, White Label. Разработчик Николай Шикин, freelance с 2013 года, 109 выполненных проектов.">
+  <meta name="keywords" content="VPN клиент PWA, мобильный VPN iOS Android, WireGuard клиент, VLESS клиент, OpenVPN PWA, VPN без App Store, VPN без Google Play, L2 Bridge диагностика авто, ODIS VPN, Xentry удаленная диагностика, White Label VPN, исходный код VPN клиент, freelance VPN разработка, Николай Шикин, guru_sun, shikinn.com">
+  <meta name="author" content="Николай Шикин | guru_sun | shikinn.com">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://prototype.shikinn.com/mob_VantUI_eureka/vpn/free/">
+
+  <!-- ═══ OPEN GRAPH ═══ -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://edge.shikinn.com/">
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/684/684831.png">
+  <meta property="og:url" content="https://prototype.shikinn.com/mob_VantUI_eureka/vpn/free/">
+  <meta property="og:title" content="Мобильный VPN-клиент PWA — iOS/Android без App Store | WireGuard VLESS">
+  <meta property="og:description" content="VPN-клиент нового поколения: установка без магазинов, WireGuard/VLESS/OpenVPN, UI/UX 2026, L2 Bridge для диагностики авто ODIS/Xentry. 109 выполненных проектов.">
+  <meta property="og:site_name" content="BRAND TUN | shikinn.com">
+  <meta property="og:locale" content="ru_RU">
+
+  <!-- ═══ TWITTER CARD ═══ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Мобильный VPN-клиент PWA — iOS/Android без App Store">
+  <meta name="twitter:description" content="WireGuard/VLESS/OpenVPN PWA-клиент. UI/UX 2026. L2 Bridge для диагностики авто. Николай Шикин.">
+
+  <!-- ═══ STRUCTURED DATA (JSON-LD) ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BRAND TUN — Мобильный VPN-клиент PWA",
+    "description": "Полнофункциональный VPN-клиент нового поколения на PWA. Установка без App Store/Google Play. WireGuard, OpenVPN, VLESS, Shadowsocks. UI/UX 2026. L2 Bridge для удалённой диагностики авто ODIS/Xentry.",
+    "applicationCategory": "NetworkingApplication",
+    "operatingSystem": "iOS, Android, Windows, macOS, Linux",
+    "url": "https://vpn.shikinn.com",
+    "author": {
+      "@type": "Person",
+      "name": "Николай Шикин",
+      "alternateName": "guru_sun",
+      "url": "https://shikinn.com",
+      "telephone": "+79781248490"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Базовая версия (только UI)",
+        "price": "40000",
+        "priceCurrency": "RUB",
+        "description": "UI/UX дизайн и фронтенд-разработка VPN-клиента"
+      },
+      {
+        "@type": "Offer",
+        "name": "С backend интеграцией",
+        "price": "115000",
+        "priceCurrency": "RUB",
+        "description": "UI + подключение backend API"
+      },
+      {
+        "@type": "Offer",
+        "name": "Полный стек",
+        "price": "300000",
+        "priceCurrency": "RUB",
+        "description": "UI + Backend + Серверная инфраструктура"
+      }
+    ],
+    "featureList": [
+      "PWA — установка без App Store и Google Play",
+      "WireGuard, OpenVPN TCP/UDP, VLESS, Shadowsocks",
+      "Kill Switch, DNS-over-HTTPS, WebRTC leak protection",
+      "Split tunneling, Auto-connect",
+      "L2 Bridge для диагностики авто (ODIS, Xentry)",
+      "Dark/Light режим, мультиязычность RU/EN/DE/ES"
+    ]
+  }
+  </script>
+
+  <!-- ═══ FONTS ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg:       #030507;
+      --bg2:      #080d12;
+      --card:     rgba(10, 18, 28, 0.82);
+      --accent:   #f0821d;
+      --accent2:  #ff5722;
+      --green:    #00ffaa;
+      --blue:     #00b4ff;
+      --text:     #e8edf2;
+      --dim:      #6b7a8d;
+      --border:   rgba(255,255,255,0.06);
+      --glow:     rgba(240,130,29,0.18);
+      --font-h:   'Syne', sans-serif;
+      --font-m:   'JetBrains Mono', monospace;
     }
 
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(25, 25, 25, 0.75);
-      --accent: #f0821d;
-      --accent2: #ff5722;
-      --success: #00ff9f;
-      --text-main: #ffffff;
-      --text-dim: #a0a0a0;
-      --border: rgba(255,255,255,0.08);
-      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
-      color: var(--text-main);
-      font-family: var(--font);
-      line-height: 1.5;
+      color: var(--text);
+      font-family: var(--font-h);
+      overflow-x: hidden;
     }
 
-    #canvas-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
       z-index: 0;
-      opacity: 0.35;
+    }
+
+    /* ── GRID LINES ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,180,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,0.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── CANVAS ── */
+    #cvs {
+      position: fixed; inset: 0;
+      z-index: 0; opacity: 0.4;
       pointer-events: none;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 2;
-    }
+    .wrap { position:relative; z-index:2; max-width:1160px; margin:0 auto; padding:0 28px; }
 
-    .tag {
-      display: inline-block;
-      background: rgba(240,130,29,0.15);
-      border: 1px solid rgba(240,130,29,0.4);
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 40px;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 24px;
-      color: var(--text-main);
-    }
-
-    h2 {
-      font-size: clamp(26px, 4vw, 36px);
-      font-weight: 700;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-      border-left: 4px solid var(--accent);
-      padding-left: 20px;
-    }
-
-    h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--accent);
-    }
-
-    .section {
-      padding: 60px 0;
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      padding: 16px 0;
+      background: rgba(3,5,7,0.85);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
-
-    .section:last-child {
-      border-bottom: none;
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 14px;
     }
-
-    .glass-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 32px;
-      padding: 28px;
-      transition: all 0.3s ease;
+    .logo {
+      font-family: var(--font-m);
+      font-weight: 700; font-size: 18px;
+      letter-spacing: 4px;
+      color: var(--text);
+      text-decoration: none;
     }
-
-    .glass-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 30px rgba(240,130,29,0.2);
+    .logo span { color: var(--accent); }
+    .nav-links { display:flex; gap:12px; flex-wrap:wrap; }
+    .nav-links a {
+      font-family: var(--font-m);
+      font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dim); text-decoration: none;
+      padding: 7px 16px; border-radius: 40px;
+      border: 1px solid transparent;
+      transition: all .25s;
     }
+    .nav-links a:hover { color: var(--accent); border-color: rgba(240,130,29,0.35); }
 
-    .grid-2 {
+    /* ── HERO ── */
+    .hero {
+      min-height: 96vh;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-      margin: 40px 0;
-    }
-
-    .feature-icon {
-      font-size: 40px;
-      margin-bottom: 16px;
-    }
-
-    .price-badge {
-      font-size: 44px;
-      font-weight: 900;
-      color: var(--accent);
-      line-height: 1;
-    }
-
-    .price-sub {
-      color: var(--text-dim);
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      border-radius: 40px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: all 0.3s;
-      cursor: pointer;
-      border: none;
-      font-size: 15px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      box-shadow: 0 4px 20px rgba(240,130,29,0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 30px rgba(240,130,29,0.5);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .contact-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      margin: 30px 0 20px;
-    }
-
-    .contact-link {
-      display: inline-flex;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      gap: 10px;
-      background: var(--card-bg);
-      backdrop-filter: blur(8px);
-      padding: 12px 24px;
-      border-radius: 60px;
-      text-decoration: none;
-      color: var(--text-main);
-      font-weight: 600;
-      border: 1px solid var(--border);
-      transition: all 0.3s;
+      gap: 60px;
+      padding: 80px 0 60px;
     }
+    @media(max-width:860px){ .hero { grid-template-columns:1fr; min-height:auto; padding:60px 0; } }
 
-    .contact-link:hover {
-      border-color: var(--accent);
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-m);
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
       color: var(--accent);
-      transform: translateY(-2px);
+      background: rgba(240,130,29,0.08);
+      border: 1px solid rgba(240,130,29,0.25);
+      padding: 7px 16px; border-radius: 40px;
+      margin-bottom: 28px;
     }
+    .hero-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation: blink 1.4s ease infinite; }
 
-    .tech-tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.05);
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .hero h1 {
+      font-family: var(--font-h);
+      font-size: clamp(32px, 4.5vw, 54px);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 55%, #ffb347 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-family: var(--font-m);
+      font-size: 14px; line-height: 1.75;
+      color: var(--dim);
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+    .hero-btns { display:flex; gap:14px; flex-wrap:wrap; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-m);
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 28px; border-radius: 50px;
+      border: none; cursor: pointer;
+      transition: all .3s;
+    }
+    .btn-fire {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(240,130,29,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    }
+    .btn-fire:hover { transform:translateY(-3px); box-shadow:0 8px 36px rgba(240,130,29,.5); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
       border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      margin: 4px;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── PHONE MOCKUP ── */
+    .phone-wrap {
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+    }
+    .phone-wrap::before {
+      content: '';
+      position: absolute;
+      width: 340px; height: 340px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,130,29,.22) 0%, transparent 70%);
+      animation: pulse-ring 3s ease-in-out infinite;
+    }
+    @keyframes pulse-ring { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.15);opacity:.5} }
+
+    .phone {
+      width: 280px;
+      background: var(--card);
+      border: 1px solid rgba(240,130,29,.3);
+      border-radius: 44px;
+      padding: 20px 18px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 40px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.08);
+      position: relative; z-index: 2;
+    }
+    .phone-notch {
+      width: 80px; height: 8px; border-radius: 10px;
+      background: rgba(255,255,255,.1);
+      margin: 0 auto 24px;
+    }
+    .phone-status {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--font-m); font-size: 10px; color: var(--dim);
+      margin-bottom: 28px;
+    }
+    .phone-orbit-wrap {
+      display: flex; justify-content: center; align-items: center;
+      height: 160px; margin-bottom: 24px;
+      position: relative;
+    }
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(240,130,29,.25);
+      animation: spin-ring 8s linear infinite;
+    }
+    .orbit-ring:nth-child(1) { width:120px; height:120px; }
+    .orbit-ring:nth-child(2) { width:150px; height:150px; animation-direction:reverse; animation-duration:12s; border-color:rgba(0,180,255,.15); }
+
+    .orbit-ring:nth-child(1)::after, .orbit-ring:nth-child(2)::after {
+      content:''; position:absolute; width:7px; height:7px; border-radius:50%;
+      top:-3.5px; left:50%; transform:translateX(-50%);
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .orbit-ring:nth-child(2)::after { background: var(--blue); box-shadow: 0 0 10px var(--blue); }
+
+    @keyframes spin-ring { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+    .orbit-btn {
+      width: 74px; height: 74px; border-radius: 50%;
+      background: linear-gradient(135deg, #f0821d, #ff5722);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 0 30px rgba(240,130,29,.6), 0 0 60px rgba(240,130,29,.2);
+      position: relative; z-index: 3;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+    @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+
+    .phone-info {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 14px;
+      font-family: var(--font-m); font-size: 11px;
+    }
+    .phone-info-row {
+      display: flex; justify-content:space-between; align-items:center;
+      padding: 4px 0;
+    }
+    .phone-info-row span:first-child { color: var(--dim); }
+    .phone-info-row span:last-child { color: var(--green); font-weight:700; }
+    .phone-speed-row {
+      display: grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;
+    }
+    .speed-box {
+      background: rgba(255,255,255,.03); border-radius:10px; padding:8px;
+      text-align:center;
+    }
+    .speed-val { font-size:16px; font-weight:700; color:var(--accent); }
+    .speed-label { font-size:9px; color:var(--dim); margin-top:2px; }
+
+    /* ── SECTION ── */
+    section { padding: 80px 0; }
+    .sec-label {
+      font-family: var(--font-m);
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    .sec-title {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 800; letter-spacing: -0.025em;
+      line-height: 1.15; margin-bottom: 48px;
     }
 
-    footer {
-      padding: 40px 0;
+    /* ── CARDS GRID ── */
+    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px; padding: 28px;
+      backdrop-filter: blur(12px);
+      transition: all .3s;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(135deg, rgba(240,130,29,.04) 0%, transparent 60%);
+      opacity:0; transition:.3s;
+    }
+    .card:hover { border-color:rgba(240,130,29,.4); transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,.5),0 0 0 1px rgba(240,130,29,.1); }
+    .card:hover::before { opacity:1; }
+
+    .card-icon { font-size:36px; margin-bottom:16px; }
+    .card h3 {
+      font-size: 17px; font-weight:700; margin-bottom:10px; color:var(--text);
+    }
+    .card p { font-size:14px; line-height:1.7; color:var(--dim); }
+
+    /* ── TECH STACK ── */
+    .tech-list { display:flex; flex-wrap:wrap; gap:10px; margin-top:32px; }
+    .tech-tag {
+      font-family: var(--font-m); font-size:12px; font-weight:500;
+      padding: 7px 16px; border-radius:40px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      color: var(--dim);
+      transition: all .25s;
+    }
+    .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── PRICING ── */
+    .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:24px; margin-top:40px; }
+    .price-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px; padding: 36px 28px;
+      backdrop-filter: blur(12px);
       text-align: center;
-      border-top: 1px solid var(--border);
-      color: var(--text-dim);
-      font-size: 13px;
+      transition: all .3s;
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: rgba(240,130,29,.5);
+      box-shadow: 0 0 40px rgba(240,130,29,.15);
+    }
+    .price-card.featured::before {
+      content: 'ПОПУЛЯРНЫЙ';
+      position: absolute; top:-14px; left:50%; transform:translateX(-50%);
+      font-family: var(--font-m); font-size:10px; letter-spacing:3px; font-weight:700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff; padding:5px 18px; border-radius:40px;
+    }
+    .price-tier { font-family:var(--font-m); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:16px; }
+    .price-num { font-size:clamp(30px,4vw,42px); font-weight:900; color:var(--accent); line-height:1; margin-bottom:6px; }
+    .price-sub { font-family:var(--font-m); font-size:12px; color:var(--dim); margin-bottom:24px; }
+    .price-features { list-style:none; text-align:left; margin-bottom:28px; }
+    .price-features li {
+      font-family:var(--font-m); font-size:13px; color:var(--dim);
+      padding:6px 0; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:8px;
+    }
+    .price-features li::before { content:'→'; color:var(--accent); font-weight:700; }
+
+    /* ── TIMELINE ── */
+    .timeline { position:relative; padding-left:32px; }
+    .timeline::before {
+      content:''; position:absolute; left:7px; top:8px; bottom:8px;
+      width:2px; background:linear-gradient(180deg,var(--accent),transparent);
+    }
+    .tl-item { position:relative; margin-bottom:32px; }
+    .tl-item::before {
+      content:''; position:absolute; left:-28px; top:6px;
+      width:10px; height:10px; border-radius:50%;
+      background:var(--accent); box-shadow:0 0 12px var(--accent);
+    }
+    .tl-title { font-weight:700; font-size:15px; margin-bottom:4px; }
+    .tl-days { font-family:var(--font-m); font-size:12px; color:var(--accent); margin-bottom:6px; }
+    .tl-desc { font-size:13px; color:var(--dim); line-height:1.6; }
+
+    /* ── TRUST BAND ── */
+    .trust-band {
+      display:flex; flex-wrap:wrap; gap:24px; justify-content:center;
+      margin:40px 0;
+    }
+    .trust-item {
+      display:flex; align-items:center; gap:10px;
+      font-family:var(--font-m); font-size:12px; color:var(--dim);
+    }
+    .trust-num { font-size:28px; font-weight:900; color:var(--text); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height:1px; background:var(--border); margin:0;
     }
 
-    @media (max-width: 768px) {
-      .section {
-        padding: 40px 0;
-      }
-      .glass-card {
-        padding: 20px;
-      }
+    /* ── L2 BRIDGE ── */
+    .l2-card {
+      background: linear-gradient(135deg, rgba(10,18,28,.9), rgba(8,14,22,.95));
+      border: 1px solid rgba(0,180,255,.2);
+      border-radius:28px; padding:40px;
+      display:grid; grid-template-columns:1fr auto;
+      align-items:center; gap:32px;
+      position:relative; overflow:hidden;
     }
+    .l2-card::after {
+      content:'L2'; position:absolute; right:-10px; top:-20px;
+      font-size:160px; font-weight:900; color:rgba(0,180,255,.04);
+      line-height:1; pointer-events:none;
+    }
+    @media(max-width:640px){ .l2-card{grid-template-columns:1fr;} }
+
+    /* ── LINKS ── */
+    .link-grid { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+    .link-pill {
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:var(--font-m); font-size:12px; font-weight:500;
+      padding:10px 20px; border-radius:40px;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      color:var(--dim); text-decoration:none;
+      transition:all .25s;
+    }
+    .link-pill:hover { border-color:var(--blue); color:var(--blue); }
+    .link-pill::before { content:'↗'; opacity:.5; }
+
+    /* ── CONTACT ── */
+    .contact-section {
+      background: linear-gradient(135deg, rgba(240,130,29,.08), rgba(255,87,34,.04));
+      border:1px solid rgba(240,130,29,.18);
+      border-radius:32px; padding:56px 40px;
+      text-align:center;
+    }
+    .contact-row { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-top:32px; }
+    .contact-card {
+      display:flex; align-items:center; gap:12px;
+      background:rgba(255,255,255,.04); border:1px solid var(--border);
+      border-radius:50px; padding:14px 28px;
+      text-decoration:none; color:var(--text);
+      font-family:var(--font-m); font-size:13px; font-weight:600;
+      transition:all .3s;
+    }
+    .contact-card:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding:40px 0; text-align:center;
+      border-top:1px solid var(--border);
+      font-family:var(--font-m); font-size:12px; color:var(--dim);
+    }
+    footer a { color:var(--dim); text-decoration:none; }
+    footer a:hover { color:var(--accent); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity:0; transform:translateY(30px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity:1; transform:none; }
   </style>
 </head>
 <body>
-  <canvas id="canvas-bg"></canvas>
 
-  <div class="container">
-    <!-- ШАПКА С КОНТАКТАМИ -->
-    <div style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-      <div style="font-weight: 800; font-size: 20px; letter-spacing: 1px;">BRAND TUN</div>
-      <div style="display: flex; gap: 12px;">
-        <a href="tel:+79781248490" class="contact-link" style="padding: 8px 18px;">📞 +7 (978) 124-84-90</a>
-        <a href="https://t.me/snik550950" target="_blank" class="contact-link" style="padding: 8px 18px;">💬 Telegram</a>
-      </div>
+<canvas id="cvs"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">BRAND<span>TUN</span></a>
+    <div class="nav-links">
+      <a href="#about">Проект</a>
+      <a href="#tech">Технологии</a>
+      <a href="#l2">L2 Bridge</a>
+      <a href="#price">Цены</a>
+      <a href="#contact">Контакт</a>
     </div>
-
-    <!-- ЗАГОЛОВОК ПРОЕКТА -->
-    <div style="text-align: center; padding: 40px 0 20px;">
-      <div class="tag">ПОРТФОЛИО / КЕЙС</div>
-      <h1>Мобильный VPN-клиент (iOS/Android PWA)<br>с нативным дизайном (UI/UX 2026)<br>и интеграцией с WireGuard/OpenVPN/VLESS</h1>
-      <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-        <span>⭐ Рейтинг: 1 846</span>
-        <span>📝 Отзывов: 111</span>
-        <span>✅ Выполнено: 109 проектов</span>
-        <span>📁 Работ в портфолио: 142</span>
-      </div>
-    </div>
-
-    <!-- ОПИСАНИЕ -->
-    <div class="section">
-      <h2>Описание</h2>
-      <div class="glass-card">
-        <p style="font-size: 18px;">Создать полнофункциональный VPN-клиент нового поколения для защиты пользовательских данных. Требования: мгновенная установка без App Store/Google Play, работа на любых устройствах (desktop/mobile), премиальный визуальный стиль и высокая скорость подключения даже на слабых устройствах.</p>
-      </div>
-    </div>
-
-    <!-- РЕШЕНИЕ (полностью) -->
-    <div class="section">
-      <h2>Решение</h2>
-      <div class="grid-2">
-        <div class="glass-card">
-          <div class="feature-icon">📱</div>
-          <h3>Архитектура PWA</h3>
-          <p>Progressive Web App — установка на iOS/Android в один клик, минуя магазины. Service Worker для оффлайн-кэширования и мгновенной загрузки интерфейса. Адаптивная вёрстка от 320px до 4K.</p>
-        </div>
-        <div class="glass-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Протоколы</h3>
-          <p>Готовность к интеграции с WireGuard, OpenVPN, VLESS, Shadowsocks. Чистый HTML5/CSS3/JS без тяжёлых фреймворков — 60 FPS на бюджетных устройствах. Код прошёл тесты Core Web Vitals (скорость загрузки < 1.5 сек). Кроссбраузерная совместимость: Chrome, Safari, Firefox, Samsung Internet.</p>
-        </div>
-        <div class="glass-card">
-          <div class="feature-icon">🎨</div>
-          <h3>UI/UX 2026</h3>
-          <p>Стиль Cyber-Premium: тёмная тема, Glassmorphism, градиенты #f0821d → #ff5722. Центральная кнопка-орбита с анимацией состояний (Disconnected → Connecting → Connected). Реал-тайм дашборд скорости (Download/Upload в Mbps). Drawer-меню с выбором локаций серверов (Германия, Нидерланды, США, Сингапур).</p>
-        </div>
-        <div class="glass-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Технические фичи</h3>
-          <p>Kill Switch, DNS-over-HTTPS, WebRTC leak protection, Split tunneling, Auto-connect, мультиязычность (RU/EN/DE/ES), Dark/Light режим. Настройки: переключение протоколов (OpenVPN TCP/UDP, WireGuard).</p>
-        </div>
-      </div>
-
-      <!-- Блок L2 Bridge (диагностика) -->
-      <div class="glass-card" style="margin-top: 20px;">
-        <div class="feature-icon">🔧</div>
-        <h3>Remote Diagnostic VPN (L2 Bridge)</h3>
-        <p><strong>Готовое решение для удаленной диагностики авто и промышленного оборудования.</strong></p>
-        <ul style="margin-top: 16px; list-style: none; padding-left: 0;">
-          <li>✅ Интерфейс: Современный UX/UI в стиле BRAND TUN взамен устаревших окон.</li>
-          <li>✅ Технологии: Нативный L2-туннель через UDP, полная поддержка драйвера Wintun.</li>
-          <li>✅ Стабильность: Решена проблема поиска интерфейса 172.31.20.2.</li>
-          <li>✅ Формат: Один .exe файл без лишних зависимостей.</li>
-          <li>✅ Идеально для ODIS, Xentry и проброса любых USB-сканеров.</li>
-        </ul>
-        <div style="margin-top: 20px;">
-          <a href="https://vpn.shikinn.com/tun.exe" class="btn btn-primary">Скачать tun.exe (демо)</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- РЕЗУЛЬТАТ -->
-    <div class="section">
-      <h2>Результат</h2>
-      <div class="grid-2">
-        <div class="glass-card">
-          <h3>Готовый продукт</h3>
-          <p>Полностью рабочий прототип VPN-клиента. Адаптирован под desktop (1920x1080+) и mobile (320px-768px). Проверен на реальных устройствах: iPhone 13, Samsung Galaxy A52, MacBook Pro. Кодовая база оптимизирована и задокументирована.</p>
-        </div>
-        <div class="glass-card">
-          <h3>Масштабирование</h3>
-          <p>Готовность к подключению backend API (Node.js/Python). Интеграция с платёжными системами (Stripe, ЮKassa). Добавление серверной инфраструктуры. Расширение функционала: статистика, реферальная программа, multi-device управление.</p>
-        </div>
-      </div>
-      <div class="glass-card">
-        <h3>Технологии применённые в проекте</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <span class="tech-tag">✅ PWA (Progressive Web Apps)</span>
-          <span class="tech-tag">✅ Service Worker для оффлайн-работы</span>
-          <span class="tech-tag">✅ WebGL для аппаратного ускорения анимаций</span>
-          <span class="tech-tag">✅ CSS Grid + Flexbox для адаптивной вёрстки</span>
-          <span class="tech-tag">✅ JavaScript ES6+ (модульная архитектура)</span>
-          <span class="tech-tag">✅ LocalStorage API для сохранения настроек</span>
-          <span class="tech-tag">✅ Fetch API для работы с backend</span>
-          <span class="tech-tag">✅ WebSockets (готовность к real-time обновлениям)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- КОМУ ПОДОЙДЁТ -->
-    <div class="section">
-      <h2>Кому подойдёт проект</h2>
-      <div class="grid-2">
-        <div class="glass-card">✅ Стартапам VPN-сервисов — готовое решение для быстрого выхода на рынок</div>
-        <div class="glass-card">✅ Разработчикам backend VPN — нужен только frontend-клиент</div>
-        <div class="glass-card">✅ Компаниям с существующей VPN-инфраструктурой — замена устаревшего интерфейса</div>
-        <div class="glass-card">✅ Телеком-провайдерам — white-label решение для брендирования</div>
-      </div>
-    </div>
-
-    <!-- ЦЕНЫ И СРОКИ -->
-    <div class="section">
-      <h2>Ориентировочная стоимость (freelance.ru)</h2>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin: 30px 0;">
-        <div class="glass-card" style="text-align: center; flex: 1;">
-          <div class="price-badge">30 000 - 50 000 ₽</div>
-          <div class="price-sub">Базовая версия (только UI)</div>
-        </div>
-        <div class="glass-card" style="text-align: center; flex: 1;">
-          <div class="price-badge">80 000 - 150 000 ₽</div>
-          <div class="price-sub">С backend интеграцией</div>
-        </div>
-        <div class="glass-card" style="text-align: center; flex: 1;">
-          <div class="price-badge">200 000 - 400 000 ₽</div>
-          <div class="price-sub">Полный стек (UI + Backend + Серверы)</div>
-        </div>
-      </div>
-      <div class="glass-card" style="text-align: center;">
-        <p><strong>Срок выполнения:</strong> UI/UX дизайн (5-7 дн) → Frontend (10-14 дн) → Интеграция (7-10 дн) → Тестирование (3-5 дн) = <strong>1-1.5 месяца под ключ</strong></p>
-      </div>
-    </div>
-
-    <!-- ПРИМЕРЫ РЕАЛИЗАЦИИ -->
-    <div class="section">
-      <h2>Примеры реализации</h2>
-      <div class="glass-card">
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;">
-          <a href="https://vpn.shikinn.com" target="_blank" class="btn btn-outline">vpn.shikinn.com</a>
-          <a href="https://vpn.shikinn.com/tun.exe" target="_blank" class="btn btn-outline">tun.exe (L2 Bridge)</a>
-          <a href="https://prototype.shikinn.com/mob_VantUI_eureka/vpn/" target="_blank" class="btn btn-outline">Веб-кабинет (прототип)</a>
-          <a href="https://vpn.shikinn.com/TunCore_admin" target="_blank" class="btn btn-outline">TunCore_admin</a>
-          <a href="https://vpn.shikinn.com/pwa" target="_blank" class="btn btn-outline">PWA демо</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- КОНТАКТЫ -->
-    <div class="section">
-      <h2 style="text-align: center; border-left: none;">Хочешь попробовать или обсудить?</h2>
-      <div class="contact-row">
-        <a href="tel:+79781248490" class="contact-link">📞 +7 (978) 124-84-90</a>
-        <a href="https://t.me/snik550950" target="_blank" class="contact-link">✈️ Telegram: @snik550950</a>
-      </div>
-      <div style="text-align: center; margin-top: 20px;">
-        <p style="color: var(--text-dim);">Николай Шикин (guru_sun) | Паспорт верифицирован | Работа по Безопасной сделке</p>
-        <p style="color: var(--text-dim); margin-top: 8px;">shikinn.com</p>
-      </div>
-    </div>
-
-    <!-- ФУТЕР (как на freelance.ru) -->
-    <footer>
-      <p>© 2026 BRAND TUN. Проект представлен в портфолио на freelance.ru.</p>
-      <p style="margin-top: 10px;">Возможности: Сервисы | Помощь | Поиск | Правила | Оферта | Политика конфиденциальности</p>
-      <p style="margin-top: 10px; font-size: 11px;">Дисклеймер о ЗоЗПП | Отказ от ответственности | 18+</p>
-    </footer>
   </div>
+</nav>
 
-  <script>
-    // Фирменные частицы (как в твоём оригинале)
-    const canvas = document.getElementById('canvas-bg');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+<!-- HERO -->
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="hero-tag">Портфолио · Николай Шикин · 2026</div>
+      <h1>Мобильный VPN-клиент<br><em>PWA нового поколения</em><br>без App Store</h1>
+      <p class="hero-sub">
+        iOS / Android / Desktop — установка одним кликом.<br>
+        WireGuard · OpenVPN · VLESS · Shadowsocks.<br>
+        UI/UX Cyber-Premium 2026. L2 Bridge для ODIS/Xentry.<br>
+        Исходный код · White Label · Готов к деплою.
+      </p>
+      <div class="hero-btns">
+        <a href="https://vpn.shikinn.com/pwa" target="_blank" class="btn btn-fire">▶ Открыть демо</a>
+        <a href="#contact" class="btn btn-ghost">Обсудить проект</a>
+      </div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-status">
+          <span>BRAND TUN</span>
+          <span id="ptime">00:00:00</span>
+        </div>
+        <div class="phone-orbit-wrap">
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring"></div>
+          <button class="orbit-btn" id="orb-btn" title="Подключиться">⚡</button>
+        </div>
+        <div class="phone-info">
+          <div class="phone-info-row">
+            <span>СТАТУС</span><span id="vpn-status">● CONNECTED</span>
+          </div>
+          <div class="phone-info-row">
+            <span>IP</span><span>185.220.101.×××</span>
+          </div>
+          <div class="phone-info-row">
+            <span>СЕРВЕР</span><span>Amsterdam NL</span>
+          </div>
+          <div class="phone-speed-row">
+            <div class="speed-box">
+              <div class="speed-val" id="dl">—</div>
+              <div class="speed-label">↓ DOWNLOAD</div>
+            </div>
+            <div class="speed-box">
+              <div class="speed-val" id="ul">—</div>
+              <div class="speed-label">↑ UPLOAD</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+<div class="divider"></div>
 
-    window.addEventListener('resize', resize);
-    resize();
+<!-- TRUST NUMBERS -->
+<div class="wrap">
+  <div class="trust-band reveal" style="padding:50px 0;">
+    <div class="trust-item"><div class="trust-num">109</div><div>выполненных<br>проектов</div></div>
+    <div class="trust-item"><div class="trust-num">111</div><div>отзывов<br>Проф.:10</div></div>
+    <div class="trust-item"><div class="trust-num">142</div><div>работ<br>в портфолио</div></div>
+    <div class="trust-item"><div class="trust-num">13</div><div>лет<br>на фрилансе</div></div>
+    <div class="trust-item"><div class="trust-num">1846</div><div>рейтинг<br>freelance.ru</div></div>
+  </div>
+</div>
 
-    class Particle {
-      constructor() {
-        this.reset();
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <p class="sec-label reveal">Описание проекта</p>
+    <h2 class="sec-title reveal">Полнофункциональный<br>VPN-клиент без App Store</h2>
+    <div class="grid-2 reveal">
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <h3>PWA — установка без магазинов</h3>
+        <p>Progressive Web App устанавливается в один клик на iOS и Android, минуя App Store и Google Play. Service Worker обеспечивает оффлайн-работу и мгновенную загрузку интерфейса.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <h3>WireGuard · OpenVPN · VLESS</h3>
+        <p>Готовность к интеграции с любым протоколом: WireGuard, OpenVPN TCP/UDP, VLESS, Shadowsocks. Архитектура позволяет подключить любой backend в течение дня.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>60 FPS на бюджетных устройствах</h3>
+        <p>Чистый HTML5/CSS3/JS без тяжёлых фреймворков. Core Web Vitals: загрузка &lt; 1.5 сек. Chrome, Safari, Firefox, Samsung Internet. От 320px до 4K.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>UI/UX Cyber-Premium 2026</h3>
+        <p>Glassmorphism, анимированная кнопка-орбита, реал-тайм дашборд скорости, drawer-меню выбора серверов (Германия, Нидерланды, США, Сингапур). Dark/Light режим.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Kill Switch · DNS-over-HTTPS</h3>
+        <p>WebRTC leak protection, Split tunneling, Auto-connect при старте, DNS-over-HTTPS против утечек. Настройки протоколов на лету.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <h3>White Label · Мультиязычность</h3>
+        <p>Готовность i18n: RU/EN/DE/ES. Нет зависимостей от внешних CDN — 100% автономность. Готов к деплою на Netlify, Vercel, GitHub Pages, VPS.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label reveal">Стек технологий</p>
+    <h2 class="sec-title reveal">Что внутри</h2>
+    <div class="grid-3 reveal">
+      <div class="card">
+        <div class="card-icon">🏗️</div>
+        <h3>Архитектура</h3>
+        <p>PWA + Service Worker, модульный ES6+, LocalStorage API, Fetch API, WebSockets-ready.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">✨</div>
+        <h3>Визуал</h3>
+        <p>WebGL для аппаратного ускорения анимаций, CSS Grid + Flexbox, адаптив 320px–4K.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔮</div>
+        <h3>2026 тренды</h3>
+        <p>Post-Quantum Encryption ready, Zero Trust Architecture, Multi-hop VPN маршрутизация.</p>
+      </div>
+    </div>
+    <div class="tech-list reveal">
+      <span class="tech-tag">PWA</span>
+      <span class="tech-tag">Service Worker</span>
+      <span class="tech-tag">WebGL</span>
+      <span class="tech-tag">CSS Grid</span>
+      <span class="tech-tag">Flexbox</span>
+      <span class="tech-tag">JavaScript ES6+</span>
+      <span class="tech-tag">LocalStorage API</span>
+      <span class="tech-tag">Fetch API</span>
+      <span class="tech-tag">WebSockets</span>
+      <span class="tech-tag">WireGuard</span>
+      <span class="tech-tag">OpenVPN TCP/UDP</span>
+      <span class="tech-tag">VLESS</span>
+      <span class="tech-tag">Shadowsocks</span>
+      <span class="tech-tag">FastAPI</span>
+      <span class="tech-tag">Node.js ready</span>
+      <span class="tech-tag">DNS-over-HTTPS</span>
+      <span class="tech-tag">Webflow</span>
+      <span class="tech-tag">Kill Switch</span>
+      <span class="tech-tag">Split Tunneling</span>
+      <span class="tech-tag">WebRTC Leak Protection</span>
+    </div>
+  </div>
+</section>
+
+<!-- L2 BRIDGE -->
+<section id="l2">
+  <div class="wrap">
+    <p class="sec-label reveal">Специализированное решение</p>
+    <h2 class="sec-title reveal">L2 Bridge для диагностики авто</h2>
+    <div class="l2-card reveal">
+      <div>
+        <h3 style="font-size:22px;font-weight:800;margin-bottom:16px;color:var(--blue);">Remote Diagnostic VPN (L2 Bridge)</h3>
+        <p style="font-size:15px;line-height:1.75;color:var(--dim);margin-bottom:20px;">
+          Готовое решение для удалённой диагностики автомобилей и промышленного оборудования.
+          Современный UX/UI в стиле BRAND TUN взамен устаревших окон.
+          Нативный L2-туннель через UDP, полная поддержка драйвера <strong style="color:var(--text);">Wintun</strong>.
+          Решена проблема поиска интерфейса <code style="color:var(--blue);">172.31.20.2</code>.
+        </p>
+        <ul style="list-style:none;margin-bottom:24px;">
+          <li style="padding:6px 0;font-size:14px;color:var(--dim);display:flex;gap:10px;align-items:center;"><span style="color:var(--green);">✓</span> ODIS, Xentry и любые USB-сканеры через проброс</li>
+          <li style="padding:6px 0;font-size:14px;color:var(--dim);display:flex;gap:10px;align-items:center;"><span style="color:var(--green);">✓</span> Один .exe файл без лишних зависимостей</li>
+          <li style="padding:6px 0;font-size:14px;color:var(--dim);display:flex;gap:10px;align-items:center;"><span style="color:var(--green);">✓</span> Стабильная работа, решена проблема потери соединения</li>
+          <li style="padding:6px 0;font-size:14px;color:var(--dim);display:flex;gap:10px;align-items:center;"><span style="color:var(--green);">✓</span> Идеально для сервисов Volkswagen, Mercedes, BMW</li>
+        </ul>
+        <a href="https://vpn.shikinn.com/tun.exe" class="btn btn-fire">⬇ Скачать демо tun.exe</a>
+      </div>
+      <div style="text-align:center;opacity:.6;">
+        <div style="font-family:var(--font-m);font-size:72px;font-weight:900;color:var(--blue);line-height:1;">L2</div>
+        <div style="font-family:var(--font-m);font-size:11px;letter-spacing:3px;color:var(--dim);">BRIDGE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="price" style="background:var(--bg2);">
+  <div class="wrap">
+    <p class="sec-label reveal">Стоимость разработки</p>
+    <h2 class="sec-title reveal">Ориентировочные цены</h2>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <div class="price-tier">Базовая</div>
+        <div class="price-num">30 000 – 50 000 ₽</div>
+        <div class="price-sub">Только UI/UX</div>
+        <ul class="price-features">
+          <li>Дизайн и фронтенд</li>
+          <li>Адаптив 320px – 4K</li>
+          <li>PWA установка</li>
+          <li>Срок: 15–21 день</li>
+        </ul>
+        <a href="#contact" class="btn btn-ghost" style="width:100%;justify-content:center;">Обсудить</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tier">Стандарт</div>
+        <div class="price-num">80 000 – 150 000 ₽</div>
+        <div class="price-sub">UI + Backend интеграция</div>
+        <ul class="price-features">
+          <li>Всё из базовой</li>
+          <li>Backend API</li>
+          <li>Протоколы WireGuard/VLESS</li>
+          <li>Срок: 1 – 1.5 месяца</li>
+        </ul>
+        <a href="#contact" class="btn btn-fire" style="width:100%;justify-content:center;">Обсудить</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Полный стек</div>
+        <div class="price-num">200 000 – 400 000 ₽</div>
+        <div class="price-sub">UI + Backend + Серверы</div>
+        <ul class="price-features">
+          <li>Всё из стандарта</li>
+          <li>Серверная инфраструктура</li>
+          <li>Платежи Stripe / ЮKassa</li>
+          <li>White Label брендирование</li>
+        </ul>
+        <a href="#contact" class="btn btn-ghost" style="width:100%;justify-content:center;">Обсудить</a>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div style="margin-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px;">
+      <div class="reveal">
+        <p class="sec-label">Сроки выполнения</p>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">UI/UX Дизайн</div>
+            <div class="tl-days">5 – 7 дней</div>
+            <div class="tl-desc">Wireframes, прототипы, финальный дизайн в стиле Cyber-Premium</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Frontend-разработка</div>
+            <div class="tl-days">10 – 14 дней</div>
+            <div class="tl-desc">PWA, анимации, адаптивная вёрстка, оптимизация производительности</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Backend интеграция</div>
+            <div class="tl-days">7 – 10 дней</div>
+            <div class="tl-desc">API, протоколы, платежи, аутентификация</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-title">Тестирование и деплой</div>
+            <div class="tl-days">3 – 5 дней</div>
+            <div class="tl-desc">iPhone 13, Samsung Galaxy A52, MacBook Pro. Netlify / Vercel / VPS</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="sec-label">Кому подойдёт</p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+          <div class="card" style="padding:18px 22px;">✅ Стартапы VPN-сервисов — готовый выход на рынок</div>
+          <div class="card" style="padding:18px 22px;">✅ Backend-разработчики — нужен только фронтенд-клиент</div>
+          <div class="card" style="padding:18px 22px;">✅ Компании с VPN-инфраструктурой — замена устаревшего UI</div>
+          <div class="card" style="padding:18px 22px;">✅ Телеком-провайдеры — White Label брендирование</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO LINKS -->
+<section>
+  <div class="wrap">
+    <p class="sec-label reveal">Примеры реализации</p>
+    <h2 class="sec-title reveal">Рабочие прототипы</h2>
+    <div class="link-grid reveal">
+      <a href="https://vpn.shikinn.com" target="_blank" rel="noopener" class="link-pill">vpn.shikinn.com</a>
+      <a href="https://vpn.shikinn.com/pwa" target="_blank" rel="noopener" class="link-pill">PWA демо</a>
+      <a href="https://vpn.shikinn.com/tun.exe" target="_blank" rel="noopener" class="link-pill">tun.exe (L2 Bridge)</a>
+      <a href="https://prototype.shikinn.com/mob_VantUI_eureka/vpn/" target="_blank" rel="noopener" class="link-pill">Веб-кабинет прототип</a>
+      <a href="https://vpn.shikinn.com/TunCore_admin" target="_blank" rel="noopener" class="link-pill">TunCore Admin</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-section reveal">
+      <p class="sec-label" style="justify-content:center;display:flex;">Связаться</p>
+      <h2 style="font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-0.025em;margin-bottom:12px;">Хочешь такой же проект?</h2>
+      <p style="color:var(--dim);font-family:var(--font-m);font-size:14px;">
+        Николай Шикин · guru_sun · Паспорт верифицирован · Работа по Безопасной сделке
+      </p>
+      <div class="contact-row">
+        <a href="tel:+79781248490" class="contact-card">📞 +7 (978) 124-84-90</a>
+        <a href="https://t.me/snik550950" target="_blank" rel="noopener" class="contact-card">✈️ @snik550950</a>
+        <a href="https://shikinn.com" target="_blank" rel="noopener" class="contact-card">🌐 shikinn.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <p>© 2026 <a href="https://shikinn.com">Николай Шикин (guru_sun)</a> · BRAND TUN</p>
+    <p style="margin-top:8px;">
+      <a href="https://shikinn.com">shikinn.com</a> ·
+      <a href="https://vpn.shikinn.com">vpn.shikinn.com</a> ·
+      <a href="https://prototype.shikinn.com/mob_VantUI_eureka/vpn/">prototype.shikinn.com</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* CANVAS PARTICLES */
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+let W, H, pts = [];
+function resize(){ W = cvs.width = innerWidth; H = cvs.height = innerHeight; }
+window.addEventListener('resize', resize); resize();
+class Pt {
+  constructor(){
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.vx = (Math.random()-.5)*.35; this.vy = (Math.random()-.5)*.35;
+    this.r = Math.random()*1.8+.4;
+    this.c = Math.random()>.7 ? '#00b4ff' : '#f0821d';
+  }
+  tick(){
+    this.x+=this.vx; this.y+=this.vy;
+    if(this.x<0||this.x>W||this.y<0||this.y>H){this.x=Math.random()*W;this.y=Math.random()*H;}
+  }
+}
+for(let i=0;i<90;i++) pts.push(new Pt());
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // lines
+  for(let i=0;i<pts.length;i++){
+    for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){
+        ctx.globalAlpha=(.25)*(1-d/130);
+        ctx.strokeStyle=pts[i].c;
+        ctx.lineWidth=.6;
+        ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke();
       }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.size = Math.random() * 2 + 0.5;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-      }
     }
+  }
+  // dots
+  pts.forEach(p=>{
+    p.tick();
+    ctx.globalAlpha=.7; ctx.fillStyle=p.c;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha=1;
+  requestAnimationFrame(draw);
+}
+draw();
 
-    for (let i = 0; i < 80; i++) particles.push(new Particle());
+/* PHONE SPEED ANIMATION */
+function rnd(a,b){return (Math.random()*(b-a)+a).toFixed(1);}
+function updateSpeed(){
+  document.getElementById('dl').textContent = rnd(45,120)+' Mb';
+  document.getElementById('ul').textContent = rnd(15,60)+' Mb';
+}
+updateSpeed(); setInterval(updateSpeed, 2200);
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#f0821d';
-      particles.forEach(p => {
-        p.update();
-        ctx.globalAlpha = 0.5;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(animate);
-    }
+/* PHONE TIMER */
+let sec=0;
+setInterval(()=>{
+  sec++;
+  const h=String(Math.floor(sec/3600)).padStart(2,'0');
+  const m=String(Math.floor((sec%3600)/60)).padStart(2,'0');
+  const s=String(sec%60).padStart(2,'0');
+  document.getElementById('ptime').textContent=h+':'+m+':'+s;
+},1000);
 
-    animate();
-  </script>
+/* SCROLL REVEAL */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>КРОВЛЯ — Мониторинг</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -18,46 +18,44 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;fo
                    repeating-linear-gradient(90deg,transparent,transparent 39px,#1a1a1a 39px,#1a1a1a 40px);
 }
 
-/* TOP BAR */
+/* TOP BAR — адаптив */
 .topbar{display:flex;align-items:center;justify-content:space-between;
-  padding:12px 20px;border-bottom:1px solid var(--border);
+  padding:12px 16px;border-bottom:1px solid var(--border);
   background:#0D0D0Dcc;backdrop-filter:blur(8px);
-  position:sticky;top:0;z-index:100}
-.logo{font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;color:var(--y)}
-.logo span{color:var(--text);font-size:16px;margin-left:12px;font-family:'Oswald';font-weight:300;letter-spacing:1px}
-.topbar-right{display:flex;align-items:center;gap:20px}
-.clock{font-family:'JetBrains Mono';font-size:13px;color:var(--sub)}
-.status-pill{padding:4px 12px;border-radius:2px;font-size:11px;font-weight:600;letter-spacing:2px;
+  position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
+.logo{font-family:'Bebas Neue';font-size:24px;letter-spacing:2px;color:var(--y)}
+.logo span{font-size:12px;margin-left:8px;font-family:'Oswald';font-weight:300}
+.topbar-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.clock{font-family:'JetBrains Mono';font-size:11px;color:var(--sub)}
+.status-pill{padding:4px 10px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:1px;
   background:#FF3B2F22;border:1px solid var(--crit);color:var(--crit);animation:blink 2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* GRID */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;padding:1px;background:var(--border)}
-.panel{background:var(--panel);padding:16px}
-.c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}
-.c5{grid-column:span 5}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}
+/* GRID — мобильная колонка */
+.grid{display:flex;flex-direction:column;gap:1px;background:var(--border)}
+.panel{background:var(--panel);padding:14px}
 
-/* REPAIR INDEX — HERO */
+/* REPAIR INDEX — hero */
 .repair-hero{display:flex;flex-direction:column;justify-content:center;align-items:center;
-  padding:20px;position:relative;overflow:hidden;min-height:160px}
+  padding:20px;position:relative;overflow:hidden;min-height:140px}
 .repair-hero::before{content:'';position:absolute;inset:0;
   background:conic-gradient(from 180deg,#FF3B2F44,#F5C40011,#FF3B2F44);
   animation:spin 12s linear infinite;transform-origin:center}
-.repair-num{font-family:'Bebas Neue';font-size:96px;line-height:1;color:var(--crit);position:relative;
-  text-shadow:0 0 40px #FF3B2F88}
-.repair-label{font-size:11px;letter-spacing:3px;color:var(--sub);position:relative;margin-top:-4px}
-.repair-verdict{font-family:'Bebas Neue';font-size:18px;color:var(--crit);letter-spacing:2px;
-  position:relative;margin-top:6px;text-align:center;line-height:1.2}
+.repair-num{font-family:'Bebas Neue';font-size:72px;line-height:1;color:var(--crit);position:relative;
+  text-shadow:0 0 30px #FF3B2F88}
+.repair-label{font-size:10px;letter-spacing:2px;color:var(--sub);position:relative}
+.repair-verdict{font-family:'Bebas Neue';font-size:16px;color:var(--crit);letter-spacing:1px;
+  position:relative;margin-top:4px;text-align:center}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* SECTION LABEL */
-.section-label{font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;
+.section-label{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;
   margin-bottom:10px;border-left:2px solid var(--y);padding-left:8px}
 
 /* BIG METRIC */
-.big-val{font-family:'Bebas Neue';font-size:48px;line-height:1;letter-spacing:1px}
-.big-unit{font-size:13px;color:var(--sub);margin-left:3px;font-family:'JetBrains Mono'}
-.metric-label{font-size:11px;color:var(--sub);margin-top:2px;letter-spacing:1px}
+.big-val{font-family:'Bebas Neue';font-size:40px;line-height:1;letter-spacing:1px}
+.big-unit{font-size:11px;color:var(--sub);margin-left:3px;font-family:'JetBrains Mono'}
+.metric-label{font-size:10px;color:var(--sub);margin-top:2px;letter-spacing:0}
 .ok{color:var(--ok)}.warn{color:var(--warn)}.crit{color:var(--crit)}
 
 /* STATUS DOT */
@@ -66,89 +64,98 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;fo
 .dot.warn{background:var(--warn);box-shadow:0 0 6px var(--warn);animation:blink 1.5s infinite}
 .dot.crit{background:var(--crit);box-shadow:0 0 6px var(--crit);animation:blink .8s infinite}
 
-/* GAUGE — arc */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center}
-.gauge-svg{width:100%;max-width:130px}
-
-/* BAR CHART — horizontal */
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.bar-name{font-size:10px;color:var(--sub);width:90px;flex-shrink:0;letter-spacing:.5px}
-.bar-track{flex:1;height:5px;background:#222;border-radius:0;position:relative;overflow:hidden}
-.bar-fill{height:100%;border-radius:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.bar-val{font-family:'JetBrains Mono';font-size:10px;width:38px;text-align:right;flex-shrink:0}
-
-/* SPARKLINE */
-.spark-wrap{position:relative;height:40px;margin-top:6px}
-.spark-wrap svg{width:100%;height:100%}
+/* BAR CHART */
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.bar-name{font-size:10px;color:var(--sub);width:85px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:#222;border-radius:0;overflow:hidden;min-width:100px}
+.bar-fill{height:100%;border-radius:0}
+.bar-val{font-family:'JetBrains Mono';font-size:10px;width:42px;text-align:right;flex-shrink:0}
 
 /* LEAK MAP */
-.leak-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:8px}
+.leak-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px}
 .leak-cell{aspect-ratio:1;border-radius:1px;display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-family:'JetBrains Mono';font-weight:600;cursor:default;transition:all .3s}
+  font-size:10px;font-family:'JetBrains Mono';font-weight:600}
 .lc-ok{background:#00C97A18;border:1px solid #00C97A44;color:#00C97A66}
 .lc-warn{background:#F5C40022;border:1px solid #F5C40066;color:var(--warn)}
 .lc-crit{background:#FF3B2F22;border:1px solid #FF3B2F88;color:var(--crit);animation:blink 1s infinite}
 
 /* WIND COMPASS */
-.compass{position:relative;width:80px;height:80px;margin:8px auto 0}
+.compass{position:relative;width:70px;height:70px;margin:0 auto}
 .compass-ring{fill:none;stroke:#333;stroke-width:1}
-.compass-needle{transform-origin:40px 40px;transition:transform 1s}
+.compass-needle{transform-origin:35px 35px}
 
-/* SCORE BARS — vertical */
-.vbar-group{display:flex;gap:6px;align-items:flex-end;height:60px;margin-top:8px}
-.vbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.vbar-track{width:100%;background:#1a1a1a;border:1px solid #222;position:relative;flex:1;overflow:hidden}
-.vbar-fill{position:absolute;bottom:0;left:0;right:0;transition:height .8s cubic-bezier(.4,0,.2,1)}
-.vbar-label{font-size:8px;color:var(--sub);letter-spacing:.5px;text-align:center}
+/* SCORE BARS vertical */
+.vbar-group{display:flex;gap:6px;align-items:flex-end;height:70px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.vbar-wrap{flex:1;min-width:40px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.vbar-track{width:100%;height:50px;background:#1a1a1a;border:1px solid #222;position:relative;overflow:hidden}
+.vbar-fill{position:absolute;bottom:0;left:0;right:0}
+.vbar-label{font-size:8px;color:var(--sub);text-align:center}
 .vbar-val{font-family:'JetBrains Mono';font-size:9px;text-align:center}
 
 /* TEMP TIMELINE */
 .temp-row{display:flex;align-items:center;justify-content:space-between;
-  padding:4px 0;border-bottom:1px solid #1a1a1a}
+  padding:6px 0;border-bottom:1px solid #1a1a1a;flex-wrap:wrap;gap:6px}
 .temp-row:last-child{border-bottom:none}
-.temp-name{font-size:10px;color:var(--sub);letter-spacing:.5px}
+.temp-name{font-size:10px;color:var(--sub);min-width:100px}
 .temp-val{font-family:'JetBrains Mono';font-size:13px;font-weight:600}
-.temp-bar{flex:1;height:3px;margin:0 10px;background:#1a1a1a;border-radius:0;overflow:hidden}
-.temp-bar-fill{height:100%;border-radius:0}
+.temp-bar{flex:1;height:3px;margin:0 8px;background:#1a1a1a;overflow:hidden;min-width:80px}
+.temp-bar-fill{height:100%}
 
 /* ALERT LIST */
-.alert-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;
+.alert-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;
   border-bottom:1px solid #1a1a1a;font-size:11px;line-height:1.4}
 .alert-item:last-child{border-bottom:none}
-.alert-time{font-family:'JetBrains Mono';font-size:9px;color:var(--sub);width:36px;flex-shrink:0;margin-top:1px}
+.alert-time{font-family:'JetBrains Mono';font-size:9px;color:var(--sub);width:44px;flex-shrink:0}
 
 /* FREEZE CYCLES */
 .cycle-bar{display:flex;gap:2px;flex-wrap:wrap;margin-top:8px}
-.cycle-tick{width:6px;height:14px;border-radius:1px;background:#222;transition:background .3s}
+.cycle-tick{width:6px;height:14px;border-radius:1px;background:#222}
 .cycle-tick.active{background:var(--warn)}
 .cycle-tick.over{background:var(--crit)}
 
-/* ROT INDEX gauge */
-.rot-ring{stroke-dasharray:220;stroke-dashoffset:220;stroke-linecap:round;
-  transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);transform-origin:center;
-  transform:rotate(-90deg) translateX(-100%)}
+/* BOTTOM STATUS BAR — мобильная сетка */
+.bottom-bar{display:flex;flex-wrap:wrap;background:#0a0a0a;border-top:1px solid var(--border)}
+.bstat{flex:1 1 33%;min-width:110px;padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px}
+.bstat-label{font-size:9px;letter-spacing:1px;color:var(--sub);text-transform:uppercase}
+.bstat-val{font-family:'JetBrains Mono';font-size:11px;font-weight:600;margin-left:auto}
 
-/* BOTTOM STATUS BAR */
-.bottom-bar{display:flex;align-items:center;gap:0;background:#0a0a0a;border-top:1px solid var(--border)}
-.bstat{flex:1;padding:8px 14px;border-right:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.bstat:last-child{border-right:none}
-.bstat-label{font-size:9px;letter-spacing:2px;color:var(--sub);text-transform:uppercase}
-.bstat-val{font-family:'JetBrains Mono';font-size:12px;font-weight:600;margin-left:auto}
+/* temp groups */
+.temp-group{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.temp-group > div{flex:1;min-width:80px}
 
+/* responsive fixes */
+@media (max-width: 480px) {
+  .panel{padding:12px}
+  .logo{font-size:18px}
+  .logo span{font-size:9px}
+  .repair-num{font-size:56px}
+  .bar-name{width:70px;font-size:9px}
+  .bar-track{min-width:70px}
+  .temp-name{min-width:70px;font-size:9px}
+  .temp-bar{min-width:60px}
+  .vbar-wrap{min-width:35px}
+  .leak-cell{font-size:9px}
+  .alert-time{width:36px}
+  .bstat{min-width:95px;padding:6px 8px}
+  .bstat-label{font-size:8px}
+  .bstat-val{font-size:10px}
+  .status-pill{font-size:8px;padding:3px 8px}
+}
 </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div style="display:flex;align-items:center;gap:16px">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <div class="logo">ДЕПО <span>/ Мониторинг кровли</span></div>
-    <div style="font-size:10px;color:var(--sub);letter-spacing:1px">ул. Складская, 12 — корпус А</div>
+    <div style="font-size:9px;color:var(--sub);letter-spacing:0">ул. Складская, 12 — корпус А</div>
   </div>
   <div class="topbar-right">
-    <div style="display:flex;align-items:center;gap:6px">
+    <div style="display:flex;align-items:center;gap:4px">
       <span class="dot crit"></span>
-      <span style="font-size:11px;color:var(--crit);letter-spacing:1px">2 КРИТИЧЕСКИХ</span>
+      <span style="font-size:10px;color:var(--crit)">2 КРИТ.</span>
     </div>
     <div class="status-pill">РЕМОНТ СРОЧНО</div>
     <div class="clock" id="clock">—</div>
@@ -158,32 +165,26 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;fo
 <!-- MAIN GRID -->
 <div class="grid">
 
-  <!-- 1. ИНДЕКС НЕОТЛОЖНОСТИ — hero -->
-  <div class="panel c2 repair-hero">
+  <!-- 1. ИНДЕКС НЕОТЛОЖНОСТИ -->
+  <div class="panel repair-hero">
     <div class="repair-label">ИНДЕКС РЕМОНТА</div>
     <div class="repair-num" id="repairIdx">31</div>
-    <div class="repair-verdict">РЕМОНТ<br>В ЭТОМ МЕСЯЦЕ</div>
-    <div style="font-size:9px;color:#FF3B2F88;margin-top:6px;position:relative;letter-spacing:1px">порог: 20</div>
+    <div class="repair-verdict">РЕМОНТ В ЭТОМ МЕСЯЦЕ</div>
+    <div style="font-size:8px;color:#FF3B2F88;margin-top:4px;letter-spacing:0">порог: 20</div>
   </div>
 
-  <!-- 2. ПРОТЕЧКИ — сетка зон -->
-  <div class="panel c3">
+  <!-- 2. ПРОТЕЧКИ -->
+  <div class="panel">
     <div class="section-label">Протечки — зоны кровли</div>
     <div class="leak-grid">
-      <div class="leak-cell lc-ok">A1</div>
-      <div class="leak-cell lc-ok">A2</div>
-      <div class="leak-cell lc-warn">A3</div>
-      <div class="leak-cell lc-ok">A4</div>
-      <div class="leak-cell lc-ok">B1</div>
-      <div class="leak-cell lc-crit">B2</div>
-      <div class="leak-cell lc-crit">B3</div>
-      <div class="leak-cell lc-ok">B4</div>
-      <div class="leak-cell lc-ok">C1</div>
-      <div class="leak-cell lc-ok">C2</div>
-      <div class="leak-cell lc-warn">C3</div>
-      <div class="leak-cell lc-ok">C4</div>
+      <div class="leak-cell lc-ok">A1</div><div class="leak-cell lc-ok">A2</div>
+      <div class="leak-cell lc-warn">A3</div><div class="leak-cell lc-ok">A4</div>
+      <div class="leak-cell lc-ok">B1</div><div class="leak-cell lc-crit">B2</div>
+      <div class="leak-cell lc-crit">B3</div><div class="leak-cell lc-ok">B4</div>
+      <div class="leak-cell lc-ok">C1</div><div class="leak-cell lc-ok">C2</div>
+      <div class="leak-cell lc-warn">C3</div><div class="leak-cell lc-ok">C4</div>
     </div>
-    <div style="margin-top:8px;display:flex;gap:12px">
+    <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap">
       <span style="font-size:9px;color:var(--ok)">● сухо</span>
       <span style="font-size:9px;color:var(--warn)">● внимание</span>
       <span style="font-size:9px;color:var(--crit)">● вода!</span>
@@ -191,170 +192,90 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;fo
   </div>
 
   <!-- 3. ВЛАЖНОСТЬ КОНСТРУКЦИЙ -->
-  <div class="panel c3">
+  <div class="panel">
     <div class="section-label">Влажность конструкций</div>
-    <div class="bar-row">
-      <div class="bar-name">Стропило</div>
-      <div class="bar-track"><div class="bar-fill crit" style="width:78%;background:var(--crit)"></div></div>
-      <div class="bar-val crit">21.3%</div>
-    </div>
-    <div style="font-size:8px;color:#FF3B2F88;margin:-4px 0 6px 98px">порог 18% — ОПАСНО</div>
-    <div class="bar-row">
-      <div class="bar-name">Утеплитель</div>
-      <div class="bar-track"><div class="bar-fill warn" style="width:55%;background:var(--warn)"></div></div>
-      <div class="bar-val warn">8.2%</div>
-    </div>
-    <div style="font-size:8px;color:#F5C40088;margin:-4px 0 6px 98px">порог 10%</div>
-    <div class="bar-row">
-      <div class="bar-name">Бетон стяжки</div>
-      <div class="bar-track"><div class="bar-fill ok" style="width:40%;background:var(--ok)"></div></div>
-      <div class="bar-val ok">3.1%</div>
-    </div>
-    <div style="font-size:8px;color:#00C97A88;margin:-4px 0 6px 98px">норма &lt;4%</div>
-    <div class="bar-row">
-      <div class="bar-name">Воздух RH</div>
-      <div class="bar-track"><div class="bar-fill crit" style="width:92%;background:var(--crit)"></div></div>
-      <div class="bar-val crit">84%</div>
-    </div>
-    <div style="font-size:8px;color:#FF3B2F88;margin:-4px 0 0 98px">порог 80% — ОПАСНО</div>
+    <div class="bar-row"><div class="bar-name">Стропило</div><div class="bar-track"><div class="bar-fill crit" style="width:78%;background:var(--crit)"></div></div><div class="bar-val crit">21.3%</div></div>
+    <div style="font-size:7px;color:#FF3B2F88;margin:-4px 0 6px 78px">порог 18% — ОПАСНО</div>
+    <div class="bar-row"><div class="bar-name">Утеплитель</div><div class="bar-track"><div class="bar-fill warn" style="width:55%;background:var(--warn)"></div></div><div class="bar-val warn">8.2%</div></div>
+    <div style="font-size:7px;color:#F5C40088;margin:-4px 0 6px 78px">порог 10%</div>
+    <div class="bar-row"><div class="bar-name">Бетон стяжки</div><div class="bar-track"><div class="bar-fill ok" style="width:40%;background:var(--ok)"></div></div><div class="bar-val ok">3.1%</div></div>
+    <div style="font-size:7px;color:#00C97A88;margin:-4px 0 6px 78px">норма &lt;4%</div>
+    <div class="bar-row"><div class="bar-name">Воздух RH</div><div class="bar-track"><div class="bar-fill crit" style="width:92%;background:var(--crit)"></div></div><div class="bar-val crit">84%</div></div>
+    <div style="font-size:7px;color:#FF3B2F88;margin:-4px 0 0 78px">порог 80% — ОПАСНО</div>
   </div>
 
   <!-- 4. ТЕМПЕРАТУРЫ -->
-  <div class="panel c4">
+  <div class="panel">
     <div class="section-label">Температурный профиль</div>
-    <div class="temp-row">
-      <div class="temp-name">КРОВЛЯ (поверхн.)</div>
-      <div class="temp-bar"><div class="temp-bar-fill ok" style="width:38%;background:var(--ok)"></div></div>
-      <div class="temp-val ok">+23°</div>
-    </div>
-    <div class="temp-row">
-      <div class="temp-name">ЧЕРДАК</div>
-      <div class="temp-bar"><div class="temp-bar-fill warn" style="width:55%;background:var(--warn)"></div></div>
-      <div class="temp-val warn">+31°</div>
-    </div>
-    <div style="font-size:8px;color:#F5C40088;padding:2px 0 4px 0">⚠ порог +30°C превышен — конденсат</div>
-    <div class="temp-row">
-      <div class="temp-name">УЛИЦА</div>
-      <div class="temp-bar"><div class="temp-bar-fill" style="width:28%;background:var(--muted)"></div></div>
-      <div class="temp-val" style="color:var(--sub)">+18°</div>
-    </div>
-    <div class="temp-row">
-      <div class="temp-name">ТОЧКА РОСЫ</div>
-      <div class="temp-bar"><div class="temp-bar-fill warn" style="width:48%;background:var(--warn)"></div></div>
-      <div class="temp-val warn">+16°</div>
-    </div>
-    <div style="display:flex;gap:16px;margin-top:10px">
-      <div>
-        <div style="font-size:9px;color:var(--sub)">ΔT кровля–чердак</div>
-        <div style="font-family:'JetBrains Mono';font-size:20px;color:var(--warn)">8°</div>
-        <div style="font-size:8px;color:#F5C40066">норма &lt;15°</div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--sub)">ΔT чердак–улица</div>
-        <div style="font-family:'JetBrains Mono';font-size:20px;color:var(--crit)">13°</div>
-        <div style="font-size:8px;color:#FF3B2F66">вентиляция убита</div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--sub)">Переходов 0°C</div>
-        <div style="font-family:'JetBrains Mono';font-size:20px;color:var(--ok)">12</div>
-        <div style="font-size:8px;color:#00C97A66">из 50 макс.</div>
-      </div>
+    <div class="temp-row"><div class="temp-name">КРОВЛЯ (поверхн.)</div><div class="temp-bar"><div class="temp-bar-fill ok" style="width:38%;background:var(--ok)"></div></div><div class="temp-val ok">+23°</div></div>
+    <div class="temp-row"><div class="temp-name">ЧЕРДАК</div><div class="temp-bar"><div class="temp-bar-fill warn" style="width:55%;background:var(--warn)"></div></div><div class="temp-val warn">+31°</div></div>
+    <div style="font-size:7px;color:#F5C40088;margin:-4px 0 6px 0">⚠ порог +30°C превышен — конденсат</div>
+    <div class="temp-row"><div class="temp-name">УЛИЦА</div><div class="temp-bar"><div class="temp-bar-fill" style="width:28%;background:var(--muted)"></div></div><div class="temp-val" style="color:var(--sub)">+18°</div></div>
+    <div class="temp-row"><div class="temp-name">ТОЧКА РОСЫ</div><div class="temp-bar"><div class="temp-bar-fill warn" style="width:48%;background:var(--warn)"></div></div><div class="temp-val warn">+16°</div></div>
+    
+    <div class="temp-group">
+      <div><div style="font-size:9px;color:var(--sub)">ΔT кровля–чердак</div><div style="font-family:'JetBrains Mono';font-size:18px;color:var(--warn)">8°</div><div style="font-size:7px;color:#F5C40066">норма &lt;15°</div></div>
+      <div><div style="font-size:9px;color:var(--sub)">ΔT чердак–улица</div><div style="font-family:'JetBrains Mono';font-size:18px;color:var(--crit)">13°</div><div style="font-size:7px;color:#FF3B2F66">вентиляция убита</div></div>
+      <div><div style="font-size:9px;color:var(--sub)">Переходов 0°C</div><div style="font-family:'JetBrains Mono';font-size:18px;color:var(--ok)">12</div><div style="font-size:7px;color:#00C97A66">из 50 макс.</div></div>
     </div>
   </div>
 
   <!-- 5. МЕХАНИКА -->
-  <div class="panel c3">
+  <div class="panel">
     <div class="section-label">Механика конструкций</div>
-    <!-- снеговая нагрузка -->
-    <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px">
-      <div>
-        <div style="font-size:9px;color:var(--sub);margin-bottom:2px">Снег кг/м²</div>
-        <div class="big-val ok" style="font-size:40px">48</div>
-        <div style="font-size:8px;color:var(--ok)">68% от расч. нормы</div>
-      </div>
-      <div style="flex:1">
-        <!-- mini gauge -->
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <div><div style="font-size:9px;color:var(--sub)">Снег кг/м²</div><div class="big-val ok" style="font-size:36px">48</div><div style="font-size:8px;color:var(--ok)">68% от нормы</div></div>
+      <div style="flex:1;min-width:100px">
         <svg viewBox="0 0 100 55" style="width:100%">
           <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#222" stroke-width="8" stroke-linecap="round"/>
-          <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#00C97A" stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="126" stroke-dashoffset="40" opacity=".8"/>
-          <text x="50" y="52" text-anchor="middle" font-family="'JetBrains Mono'" font-size="11" fill="#888">70%</text>
+          <path d="M10 50 A40 40 0 0 1 90 50" fill="none" stroke="#00C97A" stroke-width="8" stroke-linecap="round" stroke-dasharray="126" stroke-dashoffset="40" opacity=".8"/>
+          <text x="50" y="52" text-anchor="middle" font-family="'JetBrains Mono'" font-size="10" fill="#888">70%</text>
         </svg>
-        <div style="font-size:8px;color:#888;text-align:center;margin-top:-4px">аварийный порог</div>
+        <div style="font-size:7px;color:#888;text-align:center">аварийный порог</div>
       </div>
     </div>
-    <div class="bar-row">
-      <div class="bar-name">Прогиб стропил</div>
-      <div class="bar-track"><div class="bar-fill ok" style="width:28%;background:var(--ok)"></div></div>
-      <div class="bar-val ok">4мм</div>
-    </div>
-    <div style="font-size:8px;color:#00C97A88;margin:-4px 0 6px 98px">норма &lt;15мм</div>
-    <div class="bar-row">
-      <div class="bar-name">Вибрация</div>
-      <div class="bar-track"><div class="bar-fill ok" style="width:18%;background:var(--ok)"></div></div>
-      <div class="bar-val ok">0.2</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-name">Трещина</div>
-      <div class="bar-track"><div class="bar-fill warn" style="width:60%;background:var(--warn)"></div></div>
-      <div class="bar-val warn">1.2мм</div>
-    </div>
-    <div style="font-size:8px;color:#F5C40088;margin:-4px 0 0 98px">порог 2мм — следим</div>
+    <div class="bar-row"><div class="bar-name">Прогиб стропил</div><div class="bar-track"><div class="bar-fill ok" style="width:28%;background:var(--ok)"></div></div><div class="bar-val ok">4мм</div></div>
+    <div style="font-size:7px;color:#00C97A88;margin:-4px 0 6px 78px">норма &lt;15мм</div>
+    <div class="bar-row"><div class="bar-name">Вибрация</div><div class="bar-track"><div class="bar-fill ok" style="width:18%;background:var(--ok)"></div></div><div class="bar-val ok">0.2 м/с²</div></div>
+    <div class="bar-row"><div class="bar-name">Трещина</div><div class="bar-track"><div class="bar-fill warn" style="width:60%;background:var(--warn)"></div></div><div class="bar-val warn">1.2мм</div></div>
+    <div style="font-size:7px;color:#F5C40088;margin:-4px 0 0 78px">порог 2мм — следим</div>
   </div>
 
   <!-- 6. БИОХИМИЯ -->
-  <div class="panel c2">
+  <div class="panel">
     <div class="section-label">Химия / биология</div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center">
-          <span class="dot crit"></span>
-          <span style="font-size:10px;color:var(--sub)">CO₂</span>
-        </div>
-        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--crit)">
-          742<span style="font-size:9px;color:var(--sub)"> ppm</span>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px">
+        <div style="display:flex;align-items:center"><span class="dot crit"></span><span style="font-size:10px;color:var(--sub)">CO₂</span></div>
+        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--crit)">742<span style="font-size:9px;color:var(--sub)"> ppm</span></div>
       </div>
-      <div style="font-size:8px;color:#FF3B2F66;text-align:right;margin-top:-6px">порог 600 — грибок</div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center">
-          <span class="dot warn"></span>
-          <span style="font-size:10px;color:var(--sub)">TVOC</span>
-        </div>
-        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--warn)">
-          390<span style="font-size:9px;color:var(--sub)"> ppb</span>
-        </div>
+      <div style="font-size:7px;color:#FF3B2F66;text-align:right;margin-top:-6px">порог 600 — грибок</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px">
+        <div style="display:flex;align-items:center"><span class="dot warn"></span><span style="font-size:10px;color:var(--sub)">TVOC</span></div>
+        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--warn)">390<span style="font-size:9px;color:var(--sub)"> ppb</span></div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center">
-          <span class="dot ok"></span>
-          <span style="font-size:10px;color:var(--sub)">pH конденсата</span>
-        </div>
-        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--ok)">
-          6.2<span style="font-size:9px;color:var(--sub)"> pH</span>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px">
+        <div style="display:flex;align-items:center"><span class="dot ok"></span><span style="font-size:10px;color:var(--sub)">pH конденсата</span></div>
+        <div style="font-family:'JetBrains Mono';font-size:16px;color:var(--ok)">6.2<span style="font-size:9px;color:var(--sub)"> pH</span></div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center">
-          <span class="dot ok"></span>
-          <span style="font-size:10px;color:var(--sub)">Запах гнили</span>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px">
+        <div style="display:flex;align-items:center"><span class="dot ok"></span><span style="font-size:10px;color:var(--sub)">Запах гнили</span></div>
         <div style="font-family:'JetBrains Mono';font-size:14px;color:var(--ok)">НЕТ</div>
       </div>
     </div>
   </div>
 
   <!-- 7. ВЕТЕР + ОСАДКИ -->
-  <div class="panel c2">
+  <div class="panel">
     <div class="section-label">Ветер / осадки</div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <svg class="compass" viewBox="0 0 80 80" width="72" height="72">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <svg class="compass" viewBox="0 0 80 80" width="65" height="65">
         <circle cx="40" cy="40" r="36" class="compass-ring"/>
         <circle cx="40" cy="40" r="28" fill="none" stroke="#1a1a1a" stroke-width="1"/>
-        <text x="40" y="10" text-anchor="middle" font-family="'JetBrains Mono'" font-size="9" fill="#555">С</text>
-        <text x="72" y="44" text-anchor="middle" font-family="'JetBrains Mono'" font-size="9" fill="#555">В</text>
-        <text x="40" y="76" text-anchor="middle" font-family="'JetBrains Mono'" font-size="9" fill="#555">Ю</text>
-        <text x="8"  y="44" text-anchor="middle" font-family="'JetBrains Mono'" font-size="9" fill="#555">З</text>
+        <text x="40" y="10" text-anchor="middle" font-family="'JetBrains Mono'" font-size="8" fill="#555">С</text>
+        <text x="72" y="44" text-anchor="middle" font-size="8" fill="#555">В</text>
+        <text x="40" y="76" text-anchor="middle" font-size="8" fill="#555">Ю</text>
+        <text x="8"  y="44" text-anchor="middle" font-size="8" fill="#555">З</text>
         <g class="compass-needle" style="transform:rotate(225deg);transform-origin:40px 40px">
           <polygon points="40,14 43,40 40,46 37,40" fill="var(--warn)" opacity=".9"/>
           <polygon points="40,66 43,40 40,46 37,40" fill="#333"/>
@@ -363,201 +284,93 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;fo
       </svg>
       <div>
         <div style="font-size:9px;color:var(--sub)">Порыв</div>
-        <div style="font-family:'JetBrains Mono';font-size:22px;color:var(--ok)">11<span style="font-size:11px"> м/с</span></div>
-        <div style="font-size:8px;color:var(--ok)">порог 25м/с</div>
-        <div style="font-size:9px;color:var(--sub);margin-top:4px">ЮЗ → торец</div>
+        <div style="font-family:'JetBrains Mono';font-size:20px;color:var(--ok)">11<span style="font-size:10px"> м/с</span></div>
+        <div style="font-size:7px;color:var(--ok)">порог 25м/с</div>
+        <div style="font-size:9px;color:var(--sub);margin-top:2px">ЮЗ → торец</div>
       </div>
     </div>
-    <div style="margin-top:8px">
-      <div class="bar-row" style="margin-bottom:4px">
-        <div class="bar-name">Дождь мм/ч</div>
-        <div class="bar-track"><div class="bar-fill" style="width:12%;background:#4488FF"></div></div>
-        <div class="bar-val" style="color:#4488FF">3.5</div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-name">Давление гПа</div>
-        <div class="bar-track"><div class="bar-fill ok" style="width:70%;background:var(--ok)"></div></div>
-        <div class="bar-val ok">1012</div>
-      </div>
-      <div style="font-size:8px;color:#00C97A88;margin:-4px 0 0 98px">стабильно</div>
+    <div style="margin-top:10px">
+      <div class="bar-row" style="margin-bottom:4px"><div class="bar-name">Дождь мм/ч</div><div class="bar-track"><div class="bar-fill" style="width:12%;background:#4488FF"></div></div><div class="bar-val" style="color:#4488FF">3.5</div></div>
+      <div class="bar-row"><div class="bar-name">Давление гПа</div><div class="bar-track"><div class="bar-fill ok" style="width:70%;background:var(--ok)"></div></div><div class="bar-val ok">1012</div></div>
+      <div style="font-size:7px;color:#00C97A88;margin:-4px 0 0 78px">стабильно</div>
     </div>
   </div>
 
   <!-- 8. ВОДОСТОК -->
-  <div class="panel c2">
+  <div class="panel">
     <div class="section-label">Водосток</div>
-    <div style="display:flex;gap:10px;align-items:flex-end">
-      <div>
-        <div style="font-size:9px;color:var(--sub)">Уровень желоба</div>
-        <div style="font-family:'JetBrains Mono';font-size:28px" class="ok">34<span style="font-size:11px"> мм</span></div>
-        <div style="font-size:8px;color:var(--ok)">норма (80мм max)</div>
-      </div>
-      <!-- желоб визуал -->
-      <svg viewBox="0 0 32 60" width="32" height="60" style="flex-shrink:0">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <div><div style="font-size:9px;color:var(--sub)">Уровень желоба</div><div style="font-family:'JetBrains Mono';font-size:26px" class="ok">34<span style="font-size:10px"> мм</span></div><div style="font-size:7px;color:var(--ok)">норма (80мм max)</div></div>
+      <svg viewBox="0 0 32 60" width="30" height="55">
         <rect x="4" y="2" width="24" height="56" rx="2" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
         <rect x="5" y="35" width="22" height="22" rx="1" fill="#00C97A44"/>
         <line x1="4" y1="10" x2="28" y2="10" stroke="#FF3B2F44" stroke-width="1" stroke-dasharray="2 2"/>
         <text x="16" y="8" text-anchor="middle" font-family="'JetBrains Mono'" font-size="5" fill="#FF3B2F66">80%</text>
       </svg>
     </div>
-    <div style="margin-top:8px">
-      <div style="font-size:9px;color:var(--sub)">Поток в трубе</div>
-      <div style="font-family:'JetBrains Mono';font-size:18px;color:var(--ok)">8.2 <span style="font-size:10px">л/мин</span></div>
-      <div style="font-size:8px;color:var(--ok)">засоров нет</div>
-    </div>
+    <div style="margin-top:8px"><div style="font-size:9px;color:var(--sub)">Поток в трубе</div><div style="font-family:'JetBrains Mono';font-size:16px;color:var(--ok)">8.2 <span style="font-size:9px">л/мин</span></div><div style="font-size:7px;color:var(--ok)">засоров нет</div></div>
   </div>
 
-  <!-- 9. ПРОГНОЗНЫЕ ИНДЕКСЫ — вертикальные бары -->
-  <div class="panel c4">
+  <!-- 9. ПРОГНОЗНЫЕ ИНДЕКСЫ -->
+  <div class="panel">
     <div class="section-label">Прогнозные индексы</div>
-    <div class="vbar-group" style="height:80px">
-      <div class="vbar-wrap">
-        <div class="vbar-val crit">87%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:87%;background:var(--crit)"></div></div>
-        <div class="vbar-label">ГНИЕНИЕ</div>
-      </div>
-      <div class="vbar-wrap">
-        <div class="vbar-val crit">91%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:91%;background:var(--crit)"></div></div>
-        <div class="vbar-label">КОНДЕНСАТ</div>
-      </div>
-      <div class="vbar-wrap">
-        <div class="vbar-val warn">54%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:54%;background:var(--warn)"></div></div>
-        <div class="vbar-label">УСТАЛОСТЬ</div>
-      </div>
-      <div class="vbar-wrap">
-        <div class="vbar-val crit">78%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:78%;background:var(--crit)"></div></div>
-        <div class="vbar-label">ВЕНТИЛЯЦИЯ</div>
-      </div>
-      <div class="vbar-wrap">
-        <div class="vbar-val ok">22%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:22%;background:var(--ok)"></div></div>
-        <div class="vbar-label">СНЕГ</div>
-      </div>
-      <div class="vbar-wrap">
-        <div class="vbar-val ok">18%</div>
-        <div class="vbar-track"><div class="vbar-fill" style="height:18%;background:var(--ok)"></div></div>
-        <div class="vbar-label">ВЕТЕР</div>
-      </div>
+    <div class="vbar-group">
+      <div class="vbar-wrap"><div class="vbar-val crit">87%</div><div class="vbar-track"><div class="vbar-fill" style="height:87%;background:var(--crit)"></div></div><div class="vbar-label">ГНИЕНИЕ</div></div>
+      <div class="vbar-wrap"><div class="vbar-val crit">91%</div><div class="vbar-track"><div class="vbar-fill" style="height:91%;background:var(--crit)"></div></div><div class="vbar-label">КОНДЕНСАТ</div></div>
+      <div class="vbar-wrap"><div class="vbar-val warn">54%</div><div class="vbar-track"><div class="vbar-fill" style="height:54%;background:var(--warn)"></div></div><div class="vbar-label">УСТАЛОСТЬ</div></div>
+      <div class="vbar-wrap"><div class="vbar-val crit">78%</div><div class="vbar-track"><div class="vbar-fill" style="height:78%;background:var(--crit)"></div></div><div class="vbar-label">ВЕНТИЛЯЦИЯ</div></div>
+      <div class="vbar-wrap"><div class="vbar-val ok">22%</div><div class="vbar-track"><div class="vbar-fill" style="height:22%;background:var(--ok)"></div></div><div class="vbar-label">СНЕГ</div></div>
+      <div class="vbar-wrap"><div class="vbar-val ok">18%</div><div class="vbar-track"><div class="vbar-fill" style="height:18%;background:var(--ok)"></div></div><div class="vbar-label">ВЕТЕР</div></div>
     </div>
-    <!-- прогноз отделки -->
     <div style="margin-top:12px;padding:8px;background:#FF3B2F11;border:1px solid #FF3B2F44;border-radius:2px">
-      <div style="display:flex;align-items:center;gap:6px">
-        <span class="dot crit"></span>
-        <span style="font-size:10px;color:var(--crit);letter-spacing:1px;font-weight:600">ПРОГНОЗ: ОТДЕЛКА ПОПЛЫВЁТ</span>
-      </div>
-      <div style="font-size:11px;color:var(--text);margin-top:4px">RH >85% × 48ч подряд → через <span style="color:var(--crit);font-family:'JetBrains Mono'">9–14 дней</span></div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="dot crit"></span><span style="font-size:10px;color:var(--crit);font-weight:600">ПРОГНОЗ: ОТДЕЛКА ПОПЛЫВЁТ</span></div>
+      <div style="font-size:10px;color:var(--text);margin-top:4px">RH >85% × 48ч подряд → через <span style="color:var(--crit);font-family:'JetBrains Mono'">9–14 дней</span></div>
     </div>
   </div>
 
   <!-- 10. АЛЕРТЫ -->
-  <div class="panel c4">
+  <div class="panel">
     <div class="section-label">Журнал событий</div>
-    <div class="alert-item">
-      <span class="dot crit" style="margin-top:3px"></span>
-      <span class="alert-time">08:41</span>
-      <span style="color:var(--crit)">Протечка зона B2–B3 — вода на гидроизоляции</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot crit" style="margin-top:3px"></span>
-      <span class="alert-time">07:15</span>
-      <span style="color:var(--crit)">CO₂ 742ppm — превышение порога 600ppm, гриб/плесень</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot crit" style="margin-top:3px"></span>
-      <span class="alert-time">06:52</span>
-      <span style="color:var(--crit)">Влажность стропил 21.3% — опасная зона (>18%)</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot warn" style="margin-top:3px"></span>
-      <span class="alert-time">05:30</span>
-      <span style="color:var(--warn)">ΔT чердак–улица 13°C — вентиляция не работает</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot warn" style="margin-top:3px"></span>
-      <span class="alert-time">04:17</span>
-      <span style="color:var(--warn)">RH чердак 84% — превышение 80%, риск конденсата</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot warn" style="margin-top:3px"></span>
-      <span class="alert-time">Вчера</span>
-      <span style="color:var(--warn)">Трещина узла C3: рост с 0.9мм до 1.2мм за 7 дней</span>
-    </div>
-    <div class="alert-item">
-      <span class="dot ok" style="margin-top:3px"></span>
-      <span class="alert-time">Вчера</span>
-      <span style="color:var(--sub)">Снеговая нагрузка в норме, 48 кг/м²</span>
-    </div>
+    <div class="alert-item"><span class="dot crit"></span><span class="alert-time">08:41</span><span style="color:var(--crit)">Протечка зона B2–B3 — вода на гидроизоляции</span></div>
+    <div class="alert-item"><span class="dot crit"></span><span class="alert-time">07:15</span><span style="color:var(--crit)">CO₂ 742ppm — превышение порога 600ppm, гриб/плесень</span></div>
+    <div class="alert-item"><span class="dot crit"></span><span class="alert-time">06:52</span><span style="color:var(--crit)">Влажность стропил 21.3% — опасная зона (>18%)</span></div>
+    <div class="alert-item"><span class="dot warn"></span><span class="alert-time">05:30</span><span style="color:var(--warn)">ΔT чердак–улица 13°C — вентиляция не работает</span></div>
+    <div class="alert-item"><span class="dot warn"></span><span class="alert-time">04:17</span><span style="color:var(--warn)">RH чердак 84% — превышение 80%, риск конденсата</span></div>
+    <div class="alert-item"><span class="dot warn"></span><span class="alert-time">Вчера</span><span style="color:var(--warn)">Трещина узла C3: рост с 0.9мм до 1.2мм за 7 дней</span></div>
+    <div class="alert-item"><span class="dot ok"></span><span class="alert-time">Вчера</span><span style="color:var(--sub)">Снеговая нагрузка в норме, 48 кг/м²</span></div>
   </div>
 
   <!-- 11. ЦИКЛЫ ЗАМОРОЗКИ -->
-  <div class="panel c2">
+  <div class="panel">
     <div class="section-label">Циклы 0°C / зима</div>
-    <div style="font-family:'JetBrains Mono';font-size:28px;color:var(--ok)">12
-      <span style="font-size:12px;color:var(--sub)">/50</span>
-    </div>
-    <div style="font-size:9px;color:var(--ok);margin-bottom:6px">норма, ресурс есть</div>
-    <div class="cycle-bar">
-      <script>document.write(Array.from({length:50},(_,i)=>`<div class="cycle-tick ${i<12?'active':''}" title="цикл ${i+1}"></div>`).join(''))</script>
-    </div>
-    <div style="margin-top:10px;font-size:9px;color:var(--sub)">>50 циклов → трещины мембраны</div>
+    <div style="font-family:'JetBrains Mono';font-size:26px;color:var(--ok)">12<span style="font-size:11px;color:var(--sub)">/50</span></div>
+    <div style="font-size:8px;color:var(--ok);margin-bottom:6px">норма, ресурс есть</div>
+    <div class="cycle-bar" id="cycleBar"></div>
+    <div style="margin-top:8px;font-size:8px;color:var(--sub)">>50 циклов → трещины мембраны</div>
   </div>
 
   <!-- 12. ЭКСПЛУАТАЦИЯ -->
-  <div class="panel c2">
+  <div class="panel">
     <div class="section-label">Эксплуатация / УК</div>
     <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a">
-        <span style="font-size:10px;color:var(--sub)">MTBF датчиков</span>
-        <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--ok)">847 дн</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a">
-        <span style="font-size:10px;color:var(--sub)">Скорость сушки</span>
-        <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--crit)">1.2%/сут</span>
-      </div>
-      <div style="font-size:8px;color:#FF3B2F66;text-align:right">норма >5%/сут</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a">
-        <span style="font-size:10px;color:var(--sub)">Откладываем</span>
-        <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--crit)">+18%/мес</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0">
-        <span style="font-size:10px;color:var(--sub)">Стоим. ремонта</span>
-        <span style="font-family:'JetBrains Mono';font-size:12px;color:var(--warn)">≈140 т.р.</span>
-      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a"><span style="font-size:10px;color:var(--sub)">MTBF датчиков</span><span style="font-family:'JetBrains Mono';font-size:11px;color:var(--ok)">847 дн</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a"><span style="font-size:10px;color:var(--sub)">Скорость сушки</span><span style="font-family:'JetBrains Mono';font-size:11px;color:var(--crit)">1.2%/сут</span></div>
+      <div style="font-size:7px;color:#FF3B2F66;text-align:right;margin-top:-4px">норма >5%/сут</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #1a1a1a"><span style="font-size:10px;color:var(--sub)">Откладываем</span><span style="font-family:'JetBrains Mono';font-size:11px;color:var(--crit)">+18%/мес</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0"><span style="font-size:10px;color:var(--sub)">Стоим. ремонта</span><span style="font-family:'JetBrains Mono';font-size:11px;color:var(--warn)">≈140 т.р.</span></div>
     </div>
   </div>
 
-</div><!-- /grid -->
+</div>
 
 <!-- BOTTOM STATUS BAR -->
 <div class="bottom-bar">
-  <div class="bstat">
-    <span class="dot ok"></span>
-    <span class="bstat-label">Датчиков онлайн</span>
-    <span class="bstat-val ok">12/12</span>
-  </div>
-  <div class="bstat">
-    <span class="bstat-label">Последнее обновление</span>
-    <span class="bstat-val" style="color:var(--sub)" id="lastupd">—</span>
-  </div>
-  <div class="bstat">
-    <span class="bstat-label">Raspberry Pi</span>
-    <span class="bstat-val ok">ONLINE</span>
-  </div>
-  <div class="bstat">
-    <span class="bstat-label">CPU темп.</span>
-    <span class="bstat-val ok">48°C</span>
-  </div>
-  <div class="bstat">
-    <span class="bstat-label">Период опроса</span>
-    <span class="bstat-val" style="color:var(--sub)">60 сек</span>
-  </div>
-  <div class="bstat">
-    <span class="bstat-label">Версия</span>
-    <span class="bstat-val" style="color:var(--muted)">ДЕПО v1.0</span>
-  </div>
+  <div class="bstat"><span class="dot ok"></span><span class="bstat-label">Датчиков</span><span class="bstat-val ok">12/12</span></div>
+  <div class="bstat"><span class="bstat-label">Обновление</span><span class="bstat-val" id="lastupd">—</span></div>
+  <div class="bstat"><span class="bstat-label">Raspberry Pi</span><span class="bstat-val ok">ONLINE</span></div>
+  <div class="bstat"><span class="bstat-label">CPU темп.</span><span class="bstat-val ok">48°C</span></div>
+  <div class="bstat"><span class="bstat-label">Период</span><span class="bstat-val">60 сек</span></div>
+  <div class="bstat"><span class="bstat-label">Версия</span><span class="bstat-val">ДЕПО v1.0</span></div>
 </div>
 
 <script>
@@ -568,6 +381,10 @@ function tick(){
   document.getElementById('lastupd').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
 }
 tick();setInterval(tick,1000);
+
+// циклы заморозки
+const cycleHtml = Array.from({length:50},(_,i)=>`<div class="cycle-tick ${i<12?'active':''}"></div>`).join('');
+document.getElementById('cycleBar').innerHTML = cycleHtml;
 </script>
 </body>
 </html>

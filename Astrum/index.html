@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRUM — Манифест груза</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --yellow: #F5C400;
+    --dark: #1a1f2e;
+    --bg: #f0f1f4;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --border-md: rgba(0,0,0,0.18);
+    --text: #1a1a1a;
+    --text-muted: #6b7280;
+    --text-hint: #9ca3af;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --tw-bg: rgba(245,196,0,0.08);
+    --tw-color: #7a5f00;
+    --tw-border: rgba(245,196,0,0.35);
+  }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; background: var(--dark); flex-shrink: 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .logo { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .logo-mark { display: flex; align-items: center; gap: 10px; }
+  .logo-tri { width: 30px; height: 30px; background: var(--yellow); clip-path: polygon(50% 0%,0% 100%,100% 100%); flex-shrink: 0; }
+  .logo-name { color: #fff; font-size: 17px; font-weight: 600; letter-spacing: 2px; }
+  .logo-sub { color: rgba(255,255,255,0.35); font-size: 10px; letter-spacing: 1px; margin-top: 2px; }
+  .nav { flex: 1; padding: 10px 0; }
+  .nav-section { padding: 14px 16px 5px; font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 16px; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 13px; border-left: 2px solid transparent; transition: all .15s; text-decoration: none; }
+  .nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+  .nav-item.active { color: var(--yellow); background: rgba(245,196,0,0.07); border-left-color: var(--yellow); }
+  .nav-icon { font-size: 14px; width: 16px; text-align: center; }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; height: 54px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
+  .topbar-title { font-size: 15px; font-weight: 500; flex: 1; }
+  .topbar-num { font-size: 12px; color: var(--text-muted); background: var(--bg); padding: 3px 10px; border-radius: 20px; }
+  .btn { padding: 7px 16px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 1px solid var(--border-md); background: var(--surface); color: var(--text); transition: background .15s; }
+  .btn:hover { background: var(--bg); }
+  .btn-primary { background: var(--dark); color: var(--yellow); border-color: transparent; font-weight: 500; }
+  .btn-primary:hover { background: #252c42; }
+
+  .content { padding: 20px 24px 48px; display: flex; flex-direction: column; gap: 12px; max-width: 1100px; }
+
+  /* Section card */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .sec-head { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sec-title { font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: 0.3px; }
+  .sec-body { padding: 14px 16px; }
+
+  /* Grid helpers */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+
+  /* Fields */
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 11px; color: var(--text-muted); }
+  .field input, .field select {
+    height: 34px; padding: 0 10px; font-size: 13px;
+    border: 1px solid var(--border-md); border-radius: var(--radius);
+    background: #fff; color: var(--text); width: 100%;
+    transition: border-color .15s;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: #9ca3af; }
+  .field input[readonly] { background: var(--bg); color: var(--text-muted); }
+
+  /* Cargo table */
+  .tbl-wrap { overflow-x: auto; }
+  table.cargo { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+  table.cargo th {
+    padding: 6px 7px; text-align: left;
+    color: var(--text-muted); font-weight: 400; font-size: 11px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+    background: var(--bg);
+  }
+  table.cargo td { padding: 3px 3px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.cargo tr:last-child td { border-bottom: none; }
+  table.cargo tr:hover td { background: #fafafa; }
+  table.cargo input, table.cargo select {
+    width: 100%; height: 30px; padding: 0 6px; font-size: 12px;
+    border: 1px solid transparent; border-radius: 5px;
+    background: transparent; color: var(--text);
+    transition: border-color .1s, background .1s;
+  }
+  table.cargo input:focus, table.cargo select:focus {
+    border-color: var(--border-md); background: #fff; outline: none;
+  }
+  table.cargo input[type=number] { text-align: right; }
+  .tw-cell {
+    background: var(--tw-bg); border: 1px solid var(--tw-border);
+    border-radius: 5px; padding: 0 7px; height: 30px;
+    display: flex; align-items: center;
+    font-size: 12px; font-weight: 500; color: var(--tw-color);
+    white-space: nowrap;
+  }
+  .tw-empty { color: var(--text-hint); font-weight: 400; background: transparent; border-color: transparent; }
+  .rnum { font-size: 11px; color: var(--text-hint); text-align: center; padding: 0 4px; }
+  .del-btn {
+    width: 26px; height: 26px; border: none; cursor: pointer;
+    background: none; color: var(--text-hint); font-size: 17px;
+    border-radius: 5px; display: flex; align-items: center; justify-content: center;
+  }
+  .del-btn:hover { background: #fee2e2; color: #b91c1c; }
+
+  .add-row-btn {
+    margin-top: 10px; background: none; border: 1px dashed var(--border-md);
+    border-radius: var(--radius); padding: 6px 14px;
+    font-size: 12px; color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all .15s;
+  }
+  .add-row-btn:hover { background: var(--bg); color: var(--text); border-color: #9ca3af; }
+
+  .totals { display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 0 0; border-top: 1px solid var(--border); margin-top: 8px; }
+  .tot { display: flex; flex-direction: column; gap: 2px; }
+  .tot label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .tot span { font-size: 14px; font-weight: 500; color: var(--text); }
+  .tot span.yw { color: var(--tw-color); }
+
+  /* Status chips */
+  .status-row { display: flex; gap: 7px; flex-wrap: wrap; }
+  .s-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border: 1px solid var(--border-md);
+    border-radius: 20px; cursor: pointer; font-size: 12px;
+    color: var(--text-muted); background: #fff; transition: all .15s;
+    user-select: none;
+  }
+  .s-chip:hover { border-color: #9ca3af; color: var(--text); }
+  .s-chip.active { border-color: var(--yellow); background: rgba(245,196,0,0.09); color: var(--tw-color); font-weight: 500; }
+  .s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Upload */
+  .upload-area {
+    border: 1px dashed var(--border-md); border-radius: var(--radius);
+    padding: 20px; text-align: center; cursor: pointer;
+    color: var(--text-muted); font-size: 12px; transition: all .15s;
+  }
+  .upload-area:hover { background: var(--bg); border-color: #9ca3af; }
+  .upload-area input { display: none; }
+  .uploaded-files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .file-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 4px 10px; font-size: 11px; color: var(--text-muted);
+  }
+  .file-chip button { background: none; border: none; cursor: pointer; color: var(--text-hint); font-size: 14px; line-height: 1; }
+
+  /* Footer */
+  .footer-btns { display: flex; gap: 10px; margin-top: 4px; align-items: center; }
+
+  /* Coef input in header */
+  .coef-ctrl { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .coef-ctrl input {
+    width: 56px; height: 26px; padding: 0 7px; font-size: 12px;
+    border: 1px solid var(--border-md); border-radius: var(--radius);
+    background: #fff; color: var(--text); text-align: center;
+  }
+  .coef-ctrl input:focus { outline: none; border-color: #9ca3af; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .g4 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <div class="logo-tri"></div>
+        <div>
+          <div class="logo-name">ASTRUM</div>
+          <div class="logo-sub">TMS · WMS · CRM</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Главное</div>
+      <a class="nav-item" href="#"><span class="nav-icon">▦</span> Дашборд</a>
+      <a class="nav-item active" href="#"><span class="nav-icon">☰</span> Манифесты</a>
+      <a class="nav-item" href="#"><span class="nav-icon">⬡</span> Склад</a>
+      <a class="nav-item" href="#"><span class="nav-icon">◉</span> Рейсы</a>
+      <div class="nav-section">Управление</div>
+      <a class="nav-item" href="#"><span class="nav-icon">⊞</span> GPS / Wialon</a>
+      <a class="nav-item" href="#"><span class="nav-icon">☷</span> Клиенты (CRM)</a>
+      <a class="nav-item" href="#"><span class="nav-icon">◈</span> Документы</a>
+      <a class="nav-item" href="#"><span class="nav-icon">₽</span> Бухгалтерия</a>
+      <div class="nav-section">Система</div>
+      <a class="nav-item" href="#"><span class="nav-icon">◐</span> Аналитика</a>
+      <a class="nav-item" href="#"><span class="nav-icon">⚙</span> Настройки</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Новый манифест груза</div>
+      <span class="topbar-num" id="manifest-num">AST-202604-00124</span>
+      <button class="btn" onclick="window.print()">Печать</button>
+      <button class="btn" id="btn-docs">Документы</button>
+      <button class="btn btn-primary" onclick="saveManifest()">Сохранить манифест</button>
+    </div>
+
+    <div class="content">
+
+      <!-- Основная информация -->
+      <div class="section">
+        <div class="sec-head"><span class="sec-title">Основная информация</span></div>
+        <div class="sec-body">
+          <div class="g4">
+            <div class="field">
+              <label>Номер манифеста</label>
+              <input id="f-num" value="AST-202604-00124" readonly>
+            </div>
+            <div class="field">
+              <label>Дата создания</label>
+              <input type="date" id="f-date">
+            </div>
+            <div class="field">
+              <label>Диспетчер</label>
+              <select id="f-dispatcher">
+                <option>Иванова А.С.</option>
+                <option>Петров К.Д.</option>
+                <option>Мирзоев Д.</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Склад отправки</label>
+              <select id="f-warehouse">
+                <option>Экспорт Бишкек</option>
+                <option>Импорт Бишкек</option>
+                <option>Экспорт Москва</option>
+                <option>Импорт Москва</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Отправитель / Получатель -->
+      <div class="section">
+        <div class="sec-head"><span class="sec-title">Отправитель и получатель</span></div>
+        <div class="sec-body">
+          <div class="g2">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="field">
+                <label>Отправитель (ФИО / компания)</label>
+                <input id="f-sender" placeholder="Имя или название — автоподстановка из CRM" list="crm-senders">
+                <datalist id="crm-senders">
+                  <option value="ООО Алмаз">
+                  <option value="Садыков Алибек Рустамович">
+                  <option value="ТОО Логистик Азия">
+                  <option value="ИП Мирзоев">
+                  <option value="Текстиль Юг ООО">
+                </datalist>
+              </div>
+              <div class="g2">
+                <div class="field"><label>ИНН / паспорт</label><input id="f-sender-inn" placeholder="—"></div>
+                <div class="field"><label>Телефон</label><input id="f-sender-phone" placeholder="+996"></div>
+              </div>
+              <div class="field"><label>Адрес погрузки</label><input id="f-load-addr" value="Бишкек, склад Экспорт"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div class="field">
+                <label>Получатель (ФИО / компания)</label>
+                <input id="f-recip" placeholder="Имя или название — автоподстановка из CRM" list="crm-recips">
+                <datalist id="crm-recips">
+                  <option value="Иванов Петр Сергеевич">
+                  <option value="ООО РусТорг">
+                  <option value="Смирнова Елена">
+                  <option value="Ким Дмитрий">
+                </datalist>
+              </div>
+              <div class="g2">
+                <div class="field"><label>ИНН / паспорт</label><input id="f-recip-inn" placeholder="—"></div>
+                <div class="field"><label>Телефон</label><input id="f-recip-phone" placeholder="+7"></div>
+              </div>
+              <div class="field"><label>Адрес(а) выгрузки</label><input id="f-unload-addr" value="Москва, склад Импорт"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Грузовые позиции -->
+      <div class="section">
+        <div class="sec-head">
+          <span class="sec-title">Грузовые позиции</span>
+          <div class="coef-ctrl">
+            Коэффициент м³→кг:
+            <input type="number" id="coef" value="300" min="1" max="1000">
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="tbl-wrap">
+            <table class="cargo">
+              <thead>
+                <tr>
+                  <th style="width:30px;">#</th>
+                  <th style="width:200px;">Наименование груза</th>
+                  <th style="width:60px;">Мест</th>
+                  <th style="width:90px;">Вес факт. кг</th>
+                  <th style="width:80px;">Объём м³</th>
+                  <th style="width:110px;">Тариф. вес кг</th>
+                  <th style="width:110px;">Вид оплаты</th>
+                  <th style="width:100px;">Фрахт ₽</th>
+                  <th style="width:30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="cargo-body"></tbody>
+            </table>
+          </div>
+          <button class="add-row-btn" id="add-row-btn">+ Добавить позицию</button>
+          <div class="totals">
+            <div class="tot"><label>Мест</label><span id="tot-p">0</span></div>
+            <div class="tot"><label>Вес факт.</label><span id="tot-w">0 кг</span></div>
+            <div class="tot"><label>Объём</label><span id="tot-v">0 м³</span></div>
+            <div class="tot"><label>Тариф. вес</label><span class="yw" id="tot-tw">0 кг</span></div>
+            <div class="tot"><label>Итого фрахт</label><span id="tot-f">0 ₽</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Транспорт -->
+      <div class="section">
+        <div class="sec-head"><span class="sec-title">Транспорт</span></div>
+        <div class="sec-body">
+          <div class="g3">
+            <div class="field">
+              <label>Водитель</label>
+              <select id="f-driver">
+                <option value="">— не назначен —</option>
+                <option>Сидоров А.А. — КамАЗ A123BC</option>
+                <option>Алимов Б. — МАЗ K456EH</option>
+                <option>Джумабеков С. — Volvo H789KM</option>
+              </select>
+            </div>
+            <div class="field"><label>Машина / прицеп</label><input id="f-truck" placeholder="A123BC 77 / Прицеп 4567"></div>
+            <div class="field"><label>GPS-объект Wialon</label><input id="f-gps" placeholder="08KG800AE"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Статус -->
+      <div class="section">
+        <div class="sec-head"><span class="sec-title">Статус груза</span></div>
+        <div class="sec-body">
+          <div class="status-row" id="status-row">
+            <div class="s-chip active" data-s="0"><span class="s-dot" style="background:#888780;"></span>Заявка принята</div>
+            <div class="s-chip" data-s="1"><span class="s-dot" style="background:#378add;"></span>На складе экспорт</div>
+            <div class="s-chip" data-s="2"><span class="s-dot" style="background:#F5C400;"></span>Загружен в авто</div>
+            <div class="s-chip" data-s="3"><span class="s-dot" style="background:#EF9F27;"></span>В пути</div>
+            <div class="s-chip" data-s="4"><span class="s-dot" style="background:#5DCAA5;"></span>На складе импорт</div>
+            <div class="s-chip" data-s="5"><span class="s-dot" style="background:#97C459;"></span>Выгружен</div>
+            <div class="s-chip" data-s="6"><span class="s-dot" style="background:#3B6D11;"></span>Доставлен</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Документы и фото -->
+      <div class="section">
+        <div class="sec-head"><span class="sec-title">Документы и фото</span></div>
+        <div class="sec-body">
+          <div class="upload-area" id="upload-area">
+            <input type="file" id="file-input" multiple accept="image/*,video/*,.pdf,.doc,.docx">
+            Прикрепить документы / фото / видео груза &nbsp;·&nbsp; перетащите файлы или <u style="cursor:pointer;" onclick="document.getElementById('file-input').click()">нажмите для выбора</u>
+          </div>
+          <div class="uploaded-files" id="uploaded-files"></div>
+        </div>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="footer-btns">
+        <button class="btn btn-primary" onclick="saveManifest()">Сохранить манифест</button>
+        <button class="btn" onclick="window.print()">Печать</button>
+        <button class="btn" id="btn-docs2">Документы (CMR, заявка)</button>
+        <button class="btn" style="color:#9ca3af;" onclick="clearForm()">Очистить форму</button>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+// --- Date ---
+document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+
+// --- Cargo rows ---
+const tbody = document.getElementById('cargo-body');
+const coefEl = document.getElementById('coef');
+let rowCount = 0;
+
+function tw(w, v) {
+  const coef = parseFloat(coefEl.value) || 300;
+  return Math.max(w, v * coef);
+}
+
+function addRow(d) {
+  rowCount++;
+  const n = rowCount;
+  d = d || {};
+  const tr = document.createElement('tr');
+  tr.dataset.id = n;
+  tr.innerHTML = `
+    <td><div class="rnum">${n}</div></td>
+    <td><input class="nm" value="${d.name||''}" placeholder="Наименование груза..."></td>
+    <td><input type="number" class="pl" value="${d.places||''}" placeholder="0" min="0"></td>
+    <td><input type="number" class="wt" value="${d.weight||''}" placeholder="0.0" min="0" step="0.1"></td>
+    <td><input type="number" class="vl" value="${d.vol||''}" placeholder="0.00" min="0" step="0.01"></td>
+    <td><div class="tw-cell tw-empty" id="tw${n}">—</div></td>
+    <td>
+      <select class="py">
+        <option${(d.pay||'')==='Предоплата'?' selected':''}>Предоплата</option>
+        <option${(d.pay||'')==='Оплата'?' selected':''}>Оплата</option>
+        <option${(d.pay||'')==='Постоплата'?' selected':''}>Постоплата</option>
+      </select>
+    </td>
+    <td><input type="number" class="fr" value="${d.freight||''}" placeholder="0" min="0"></td>
+    <td><button class="del-btn" title="Удалить строку" onclick="delRow(this)">×</button></td>
+  `;
+  tbody.appendChild(tr);
+  tr.querySelectorAll('input').forEach(i => i.addEventListener('input', recalc));
+  recalc();
+}
+
+function delRow(btn) {
+  btn.closest('tr').remove();
+  reindex();
+  recalc();
+}
+
+function reindex() {
+  Array.from(tbody.rows).forEach((r, i) => {
+    r.querySelector('.rnum').textContent = i + 1;
+  });
+}
+
+function recalc() {
+  const coef = parseFloat(coefEl.value) || 300;
+  let totP=0, totW=0, totV=0, totTW=0, totF=0;
+  Array.from(tbody.rows).forEach(r => {
+    const w = parseFloat(r.querySelector('.wt').value) || 0;
+    const v = parseFloat(r.querySelector('.vl').value) || 0;
+    const p = parseInt(r.querySelector('.pl').value) || 0;
+    const f = parseFloat(r.querySelector('.fr').value) || 0;
+    const twv = Math.max(w, v * coef);
+    const twEl = r.querySelector('.tw-cell');
+    if (w || v) {
+      twEl.textContent = twv.toFixed(1) + ' кг';
+      twEl.classList.remove('tw-empty');
+    } else {
+      twEl.textContent = '—';
+      twEl.classList.add('tw-empty');
+    }
+    totP += p; totW += w; totV += v; totTW += twv; totF += f;
+  });
+  document.getElementById('tot-p').textContent = totP;
+  document.getElementById('tot-w').textContent = totW.toFixed(1) + ' кг';
+  document.getElementById('tot-v').textContent = totV.toFixed(2) + ' м³';
+  document.getElementById('tot-tw').textContent = totTW.toFixed(1) + ' кг';
+  document.getElementById('tot-f').textContent = totF.toLocaleString('ru-RU') + ' ₽';
+}
+
+coefEl.addEventListener('input', recalc);
+document.getElementById('add-row-btn').addEventListener('click', () => addRow());
+
+// Default rows
+addRow({name:'Одежда оптом',places:'12',weight:'340',vol:'2.8',pay:'Предоплата',freight:'28000'});
+addRow({name:'Электроника',places:'3',weight:'85',vol:'0.5',pay:'Оплата',freight:'9500'});
+addRow({});
+
+// --- Status ---
+document.getElementById('status-row').addEventListener('click', e => {
+  const chip = e.target.closest('.s-chip');
+  if (!chip) return;
+  document.querySelectorAll('.s-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+});
+
+// --- File upload ---
+const fileInput = document.getElementById('file-input');
+const uploadedFiles = document.getElementById('uploaded-files');
+const uploadArea = document.getElementById('upload-area');
+
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.background='#eef0f5'; });
+uploadArea.addEventListener('dragleave', () => { uploadArea.style.background=''; });
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.style.background = '';
+  handleFiles(e.dataTransfer.files);
+});
+
+function handleFiles(files) {
+  Array.from(files).forEach(f => {
+    const chip = document.createElement('div');
+    chip.className = 'file-chip';
+    chip.innerHTML = `<span>${f.name}</span><button onclick="this.parentNode.remove()" title="Удалить">×</button>`;
+    uploadedFiles.appendChild(chip);
+  });
+}
+
+// --- Save ---
+function saveManifest() {
+  const rows = [];
+  Array.from(tbody.rows).forEach(r => {
+    rows.push({
+      name: r.querySelector('.nm').value,
+      places: r.querySelector('.pl').value,
+      weight: r.querySelector('.wt').value,
+      vol: r.querySelector('.vl').value,
+      pay: r.querySelector('.py').value,
+      freight: r.querySelector('.fr').value,
+    });
+  });
+  const data = {
+    num: document.getElementById('f-num').value,
+    date: document.getElementById('f-date').value,
+    dispatcher: document.getElementById('f-dispatcher').value,
+    warehouse: document.getElementById('f-warehouse').value,
+    sender: document.getElementById('f-sender').value,
+    recip: document.getElementById('f-recip').value,
+    loadAddr: document.getElementById('f-load-addr').value,
+    unloadAddr: document.getElementById('f-unload-addr').value,
+    driver: document.getElementById('f-driver').value,
+    truck: document.getElementById('f-truck').value,
+    gps: document.getElementById('f-gps').value,
+    status: document.querySelector('.s-chip.active')?.textContent?.trim(),
+    cargo: rows,
+  };
+  localStorage.setItem('astrum_manifest_' + data.num, JSON.stringify(data));
+  alert('Манифест ' + data.num + ' сохранён!');
+}
+
+// --- Clear ---
+function clearForm() {
+  if (!confirm('Очистить форму? Несохранённые данные будут потеряны.')) return;
+  ['f-sender','f-recip','f-sender-inn','f-recip-inn','f-sender-phone','f-recip-phone','f-load-addr','f-unload-addr','f-truck','f-gps']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  tbody.innerHTML = '';
+  rowCount = 0;
+  addRow({});
+  document.querySelectorAll('.s-chip').forEach((c,i) => c.classList.toggle('active', i===0));
+  uploadedFiles.innerHTML = '';
+}
+
+// --- Docs button ---
+[document.getElementById('btn-docs'), document.getElementById('btn-docs2')].forEach(btn => {
+  if(btn) btn.addEventListener('click', () => {
+    alert('Модуль документов: CMR, заявка на перевозку, счёт\n(подключается к бэкенду генерации PDF)');
+  });
+});
+</script>
+</body>
+</html>

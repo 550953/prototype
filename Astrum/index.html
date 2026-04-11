@@ -2,186 +2,341 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>ASTRUM — Манифест груза</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --yellow: #F5C400;
-    --dark: #1a1f2e;
-    --bg: #f0f1f4;
-    --surface: #ffffff;
-    --border: rgba(0,0,0,0.1);
-    --border-md: rgba(0,0,0,0.18);
-    --text: #1a1a1a;
-    --text-muted: #6b7280;
-    --text-hint: #9ca3af;
-    --radius: 8px;
-    --radius-lg: 12px;
-    --tw-bg: rgba(245,196,0,0.08);
-    --tw-color: #7a5f00;
-    --tw-border: rgba(245,196,0,0.35);
-  }
+:root {
+  --yellow: #F5C400;
+  --dark: #1a1f2e;
+  --bg: #f0f1f4;
+  --surface: #ffffff;
+  --border: rgba(0,0,0,0.1);
+  --border-md: rgba(0,0,0,0.18);
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --hint: #9ca3af;
+  --r: 8px;
+  --rl: 12px;
+  --tw-bg: rgba(245,196,0,0.09);
+  --tw-color: #7a5f00;
+  --tw-border: rgba(245,196,0,0.35);
+  --bottomnav-h: 0px;
+}
 
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text); font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  .layout { display: flex; min-height: 100vh; }
+.layout { display: flex; min-height: 100vh; }
 
-  /* Sidebar */
-  .sidebar { width: 220px; background: var(--dark); flex-shrink: 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-  .logo { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
-  .logo-mark { display: flex; align-items: center; gap: 10px; }
-  .logo-tri { width: 30px; height: 30px; background: var(--yellow); clip-path: polygon(50% 0%,0% 100%,100% 100%); flex-shrink: 0; }
-  .logo-name { color: #fff; font-size: 17px; font-weight: 600; letter-spacing: 2px; }
-  .logo-sub { color: rgba(255,255,255,0.35); font-size: 10px; letter-spacing: 1px; margin-top: 2px; }
-  .nav { flex: 1; padding: 10px 0; }
-  .nav-section { padding: 14px 16px 5px; font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase; }
-  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 16px; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 13px; border-left: 2px solid transparent; transition: all .15s; text-decoration: none; }
-  .nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
-  .nav-item.active { color: var(--yellow); background: rgba(245,196,0,0.07); border-left-color: var(--yellow); }
-  .nav-icon { font-size: 14px; width: 16px; text-align: center; }
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px; background: var(--dark); flex-shrink: 0;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; z-index: 100;
+}
+.logo { padding: 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.logo-mark { display: flex; align-items: center; gap: 10px; }
+.logo-tri { width: 28px; height: 28px; background: var(--yellow); clip-path: polygon(50% 0%,0% 100%,100% 100%); flex-shrink: 0; }
+.logo-name { color: #fff; font-size: 16px; font-weight: 600; letter-spacing: 2px; }
+.logo-sub { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 1px; margin-top: 2px; }
+.nav { flex: 1; padding: 8px 0; }
+.nav-section { padding: 14px 16px 4px; font-size: 10px; color: rgba(255,255,255,0.22); letter-spacing: 1px; text-transform: uppercase; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px; padding: 9px 16px;
+  color: rgba(255,255,255,0.48); font-size: 13px; border-left: 2px solid transparent;
+  transition: all .15s; text-decoration: none; cursor: pointer;
+}
+.nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+.nav-item.active { color: var(--yellow); background: rgba(245,196,0,0.07); border-left-color: var(--yellow); }
+.nav-icon { font-size: 14px; width: 16px; text-align: center; }
 
-  /* Main */
-  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; height: 54px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 10; }
-  .topbar-title { font-size: 15px; font-weight: 500; flex: 1; }
-  .topbar-num { font-size: 12px; color: var(--text-muted); background: var(--bg); padding: 3px 10px; border-radius: 20px; }
-  .btn { padding: 7px 16px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 1px solid var(--border-md); background: var(--surface); color: var(--text); transition: background .15s; }
-  .btn:hover { background: var(--bg); }
-  .btn-primary { background: var(--dark); color: var(--yellow); border-color: transparent; font-weight: 500; }
-  .btn-primary:hover { background: #252c42; }
+/* ── Main ── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
-  .content { padding: 20px 24px 48px; display: flex; flex-direction: column; gap: 12px; max-width: 1100px; }
+/* ── Topbar ── */
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  height: 54px; display: flex; align-items: center; gap: 10px;
+  padding: 0 16px; position: sticky; top: 0; z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.menu-btn {
+  display: none; width: 36px; height: 36px; background: none; border: none;
+  cursor: pointer; font-size: 20px; color: var(--text);
+  align-items: center; justify-content: center; border-radius: var(--r); flex-shrink: 0;
+}
+.topbar-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-num { font-size: 11px; color: var(--muted); background: var(--bg); padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.topbar-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn {
+  padding: 7px 14px; border-radius: var(--r); font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border-md); background: var(--surface); color: var(--text);
+  transition: background .15s; white-space: nowrap;
+}
+.btn:hover { background: var(--bg); }
+.btn:active { opacity: 0.8; }
+.btn-primary { background: var(--dark); color: var(--yellow); border-color: transparent; font-weight: 500; }
+.btn-primary:hover { background: #252c42; }
 
-  /* Section card */
-  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .sec-head { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .sec-title { font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: 0.3px; }
-  .sec-body { padding: 14px 16px; }
+/* ── Content ── */
+.content {
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  max-width: 1100px;
+  padding-bottom: calc(16px + var(--bottomnav-h));
+}
 
-  /* Grid helpers */
-  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+/* ── Section card ── */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; }
+.sec-head { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sec-title { font-size: 12px; font-weight: 500; letter-spacing: 0.3px; }
+.sec-body { padding: 12px 14px; }
 
-  /* Fields */
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field label { font-size: 11px; color: var(--text-muted); }
-  .field input, .field select {
-    height: 34px; padding: 0 10px; font-size: 13px;
-    border: 1px solid var(--border-md); border-radius: var(--radius);
-    background: #fff; color: var(--text); width: 100%;
-    transition: border-color .15s;
-  }
-  .field input:focus, .field select:focus { outline: none; border-color: #9ca3af; }
-  .field input[readonly] { background: var(--bg); color: var(--text-muted); }
+/* ── Grids ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
 
-  /* Cargo table */
-  .tbl-wrap { overflow-x: auto; }
-  table.cargo { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-  table.cargo th {
-    padding: 6px 7px; text-align: left;
-    color: var(--text-muted); font-weight: 400; font-size: 11px;
-    border-bottom: 1px solid var(--border); white-space: nowrap;
-    background: var(--bg);
-  }
-  table.cargo td { padding: 3px 3px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  table.cargo tr:last-child td { border-bottom: none; }
-  table.cargo tr:hover td { background: #fafafa; }
-  table.cargo input, table.cargo select {
-    width: 100%; height: 30px; padding: 0 6px; font-size: 12px;
-    border: 1px solid transparent; border-radius: 5px;
-    background: transparent; color: var(--text);
-    transition: border-color .1s, background .1s;
-  }
-  table.cargo input:focus, table.cargo select:focus {
-    border-color: var(--border-md); background: #fff; outline: none;
-  }
-  table.cargo input[type=number] { text-align: right; }
-  .tw-cell {
-    background: var(--tw-bg); border: 1px solid var(--tw-border);
-    border-radius: 5px; padding: 0 7px; height: 30px;
-    display: flex; align-items: center;
-    font-size: 12px; font-weight: 500; color: var(--tw-color);
-    white-space: nowrap;
-  }
-  .tw-empty { color: var(--text-hint); font-weight: 400; background: transparent; border-color: transparent; }
-  .rnum { font-size: 11px; color: var(--text-hint); text-align: center; padding: 0 4px; }
-  .del-btn {
-    width: 26px; height: 26px; border: none; cursor: pointer;
-    background: none; color: var(--text-hint); font-size: 17px;
-    border-radius: 5px; display: flex; align-items: center; justify-content: center;
-  }
-  .del-btn:hover { background: #fee2e2; color: #b91c1c; }
+/* ── Fields ── */
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 11px; color: var(--muted); }
+.field input, .field select {
+  height: 40px; padding: 0 10px; font-size: 14px;
+  border: 1px solid var(--border-md); border-radius: var(--r);
+  background: #fff; color: var(--text); width: 100%;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus { outline: none; border-color: #9ca3af; }
+.field input[readonly] { background: var(--bg); color: var(--muted); }
 
-  .add-row-btn {
-    margin-top: 10px; background: none; border: 1px dashed var(--border-md);
-    border-radius: var(--radius); padding: 6px 14px;
-    font-size: 12px; color: var(--text-muted); cursor: pointer;
-    display: flex; align-items: center; gap: 6px; transition: all .15s;
-  }
-  .add-row-btn:hover { background: var(--bg); color: var(--text); border-color: #9ca3af; }
+/* ── Cargo table (desktop) ── */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.cargo { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; min-width: 640px; }
+table.cargo th {
+  padding: 6px 7px; text-align: left; color: var(--muted); font-weight: 400;
+  font-size: 11px; border-bottom: 1px solid var(--border); white-space: nowrap; background: var(--bg);
+}
+table.cargo td { padding: 3px 3px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.cargo tr:last-child td { border-bottom: none; }
+table.cargo tr:hover td { background: #fafafa; }
+table.cargo input, table.cargo select {
+  width: 100%; height: 32px; padding: 0 6px; font-size: 13px;
+  border: 1px solid transparent; border-radius: 5px;
+  background: transparent; color: var(--text);
+  transition: border-color .1s, background .1s;
+}
+table.cargo input:focus, table.cargo select:focus { border-color: var(--border-md); background: #fff; outline: none; }
+table.cargo input[type=number] { text-align: right; }
+.tw-cell {
+  background: var(--tw-bg); border: 1px solid var(--tw-border); border-radius: 5px;
+  padding: 0 7px; height: 32px; display: flex; align-items: center;
+  font-size: 12px; font-weight: 500; color: var(--tw-color); white-space: nowrap;
+}
+.tw-empty { color: var(--hint); font-weight: 400; background: transparent; border-color: transparent; }
+.rnum { font-size: 11px; color: var(--hint); text-align: center; padding: 0 2px; }
+.del-btn {
+  width: 28px; height: 28px; border: none; cursor: pointer; background: none;
+  color: var(--hint); font-size: 18px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center; margin: auto;
+}
+.del-btn:hover { background: #fee2e2; color: #b91c1c; }
 
-  .totals { display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 0 0; border-top: 1px solid var(--border); margin-top: 8px; }
-  .tot { display: flex; flex-direction: column; gap: 2px; }
-  .tot label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .tot span { font-size: 14px; font-weight: 500; color: var(--text); }
-  .tot span.yw { color: var(--tw-color); }
+/* ── Cargo cards (mobile) ── */
+.cargo-cards { display: none; flex-direction: column; gap: 10px; }
+.cargo-card { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; background: var(--bg); }
+.cargo-card-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 10px; background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.cargo-card-num { font-size: 11px; color: var(--hint); background: var(--bg); border-radius: 4px; padding: 2px 7px; flex-shrink: 0; }
+.cargo-card-name { flex: 1; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cargo-card-body { padding: 10px; display: flex; flex-direction: column; gap: 9px; }
+.cargo-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cargo-card-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.cf { display: flex; flex-direction: column; gap: 3px; }
+.cf label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.cf input, .cf select {
+  height: 40px; padding: 0 9px; font-size: 15px;
+  border: 1px solid var(--border-md); border-radius: var(--r);
+  background: #fff; color: var(--text); width: 100%;
+}
+.cf input:focus, .cf select:focus { outline: none; border-color: #9ca3af; }
+.cf input[type=number] { text-align: right; }
+.tw-badge {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tw-bg); border: 1px solid var(--tw-border);
+  border-radius: var(--r); height: 40px; font-size: 14px;
+  font-weight: 500; color: var(--tw-color);
+}
+.tw-badge.empty { background: transparent; border-color: var(--border); color: var(--hint); font-weight: 400; }
+.del-card-btn {
+  width: 34px; height: 34px; border: none; cursor: pointer;
+  background: none; color: var(--hint); font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r); flex-shrink: 0;
+}
+.del-card-btn:active { background: #fee2e2; color: #b91c1c; }
 
-  /* Status chips */
-  .status-row { display: flex; gap: 7px; flex-wrap: wrap; }
-  .s-chip {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 12px; border: 1px solid var(--border-md);
-    border-radius: 20px; cursor: pointer; font-size: 12px;
-    color: var(--text-muted); background: #fff; transition: all .15s;
-    user-select: none;
-  }
-  .s-chip:hover { border-color: #9ca3af; color: var(--text); }
-  .s-chip.active { border-color: var(--yellow); background: rgba(245,196,0,0.09); color: var(--tw-color); font-weight: 500; }
-  .s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+/* ── Add row btn ── */
+.add-row-btn {
+  margin-top: 10px; background: none; border: 1px dashed var(--border-md);
+  border-radius: var(--r); padding: 10px 14px; font-size: 13px;
+  color: var(--muted); cursor: pointer; display: flex; align-items: center;
+  gap: 6px; transition: all .15s; width: 100%; justify-content: center;
+}
+.add-row-btn:hover, .add-row-btn:active { background: var(--bg); color: var(--text); }
 
-  /* Upload */
-  .upload-area {
-    border: 1px dashed var(--border-md); border-radius: var(--radius);
-    padding: 20px; text-align: center; cursor: pointer;
-    color: var(--text-muted); font-size: 12px; transition: all .15s;
-  }
-  .upload-area:hover { background: var(--bg); border-color: #9ca3af; }
-  .upload-area input { display: none; }
-  .uploaded-files { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .file-chip {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 4px 10px; font-size: 11px; color: var(--text-muted);
-  }
-  .file-chip button { background: none; border: none; cursor: pointer; color: var(--text-hint); font-size: 14px; line-height: 1; }
+/* ── Totals ── */
+.totals { display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 0 0; border-top: 1px solid var(--border); margin-top: 8px; }
+.tot { display: flex; flex-direction: column; gap: 2px; }
+.tot label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.tot span { font-size: 14px; font-weight: 500; }
+.tot span.yw { color: var(--tw-color); }
 
-  /* Footer */
-  .footer-btns { display: flex; gap: 10px; margin-top: 4px; align-items: center; }
+/* ── Status ── */
+.status-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.s-chip {
+  display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+  border: 1px solid var(--border-md); border-radius: 20px; cursor: pointer;
+  font-size: 12px; color: var(--muted); background: #fff;
+  transition: all .15s; user-select: none;
+}
+.s-chip:active { opacity: 0.8; }
+.s-chip.active { border-color: var(--yellow); background: rgba(245,196,0,0.09); color: var(--tw-color); font-weight: 500; }
+.s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-  /* Coef input in header */
-  .coef-ctrl { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
-  .coef-ctrl input {
-    width: 56px; height: 26px; padding: 0 7px; font-size: 12px;
-    border: 1px solid var(--border-md); border-radius: var(--radius);
-    background: #fff; color: var(--text); text-align: center;
-  }
-  .coef-ctrl input:focus { outline: none; border-color: #9ca3af; }
+/* ── Upload ── */
+.upload-area {
+  border: 1px dashed var(--border-md); border-radius: var(--r);
+  padding: 20px 16px; text-align: center; cursor: pointer;
+  color: var(--muted); font-size: 13px; line-height: 1.7;
+  transition: background .15s;
+}
+.upload-area:hover, .upload-area:active { background: var(--bg); }
+.upload-area input { display: none; }
+.uploaded-files { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.file-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 7px 10px; font-size: 12px; color: var(--muted);
+}
+.file-chip span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-chip button { background: none; border: none; cursor: pointer; color: var(--hint); font-size: 18px; flex-shrink: 0; }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .g4 { grid-template-columns: 1fr 1fr; }
-    .g3 { grid-template-columns: 1fr 1fr; }
-  }
+/* ── Footer ── */
+.footer-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; align-items: center; }
+
+/* ── Coef ── */
+.coef-ctrl { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+.coef-ctrl input {
+  width: 60px; height: 28px; padding: 0 7px; font-size: 12px; text-align: center;
+  border: 1px solid var(--border-md); border-radius: var(--r); background: #fff; color: var(--text);
+}
+.coef-ctrl input:focus { outline: none; border-color: #9ca3af; }
+
+/* ── Mobile drawer ── */
+.drawer-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+}
+.drawer-overlay.open { display: block; }
+.drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
+  background: var(--dark); z-index: 201;
+  transform: translateX(-100%); transition: transform .25s ease;
+  overflow-y: auto; display: flex; flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1px solid var(--border);
+  z-index: 50; height: 58px; align-items: center;
+}
+.bn-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 10px; color: var(--muted); cursor: pointer; padding: 4px 0;
+  flex: 1; text-decoration: none;
+}
+.bn-item.active { color: var(--yellow); }
+.bn-icon { font-size: 20px; line-height: 1; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  :root { --bottomnav-h: 58px; }
+
+  .sidebar { display: none; }
+  .menu-btn { display: flex; }
+  .topbar { padding: 0 12px; }
+  .topbar-actions .btn:not(.btn-primary) { display: none; }
+
+  .content { padding: 10px 10px calc(10px + var(--bottomnav-h)); gap: 10px; }
+  .sec-body { padding: 10px 12px; }
+
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: 1fr 1fr; }
+
+  /* Cargo: cards instead of table */
+  .tbl-wrap { display: none; }
+  .cargo-cards { display: flex; }
+
+  /* Totals scroll */
+  .totals { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .tot { flex-shrink: 0; }
+
+  /* Footer stack */
+  .footer-btns { flex-direction: column; align-items: stretch; }
+  .footer-btns .btn { text-align: center; padding: 12px; font-size: 14px; }
+
+  .bottom-nav { display: flex; }
+}
+
+@media (max-width: 400px) {
+  .g4, .g3 { grid-template-columns: 1fr; }
+  .cargo-card-row.three { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
 
+<!-- Mobile drawer overlay -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="logo" style="flex-shrink:0;">
+    <div class="logo-mark">
+      <div class="logo-tri"></div>
+      <div>
+        <div class="logo-name">ASTRUM</div>
+        <div class="logo-sub">TMS · WMS · CRM</div>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Главное</div>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">▦</span> Дашборд</a>
+    <a class="nav-item active" href="#" onclick="closeDrawer()"><span class="nav-icon">☰</span> Манифесты</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">⬡</span> Склад</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">◉</span> Рейсы</a>
+    <div class="nav-section">Управление</div>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">⊞</span> GPS / Wialon</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">☷</span> Клиенты (CRM)</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">◈</span> Документы</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">₽</span> Бухгалтерия</a>
+    <div class="nav-section">Система</div>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">◐</span> Аналитика</a>
+    <a class="nav-item" href="#" onclick="closeDrawer()"><span class="nav-icon">⚙</span> Настройки</a>
+  </nav>
+</div>
+
 <div class="layout">
 
+  <!-- Desktop sidebar -->
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-mark">
@@ -194,28 +349,33 @@
     </div>
     <nav class="nav">
       <div class="nav-section">Главное</div>
-      <a class="nav-item" href="#"><span class="nav-icon">▦</span> Дашборд</a>
-      <a class="nav-item active" href="#"><span class="nav-icon">☰</span> Манифесты</a>
-      <a class="nav-item" href="#"><span class="nav-icon">⬡</span> Склад</a>
-      <a class="nav-item" href="#"><span class="nav-icon">◉</span> Рейсы</a>
+      <a class="nav-item" href="#">▦ Дашборд</a>
+      <a class="nav-item active" href="#">☰ Манифесты</a>
+      <a class="nav-item" href="#">⬡ Склад</a>
+      <a class="nav-item" href="#">◉ Рейсы</a>
       <div class="nav-section">Управление</div>
-      <a class="nav-item" href="#"><span class="nav-icon">⊞</span> GPS / Wialon</a>
-      <a class="nav-item" href="#"><span class="nav-icon">☷</span> Клиенты (CRM)</a>
-      <a class="nav-item" href="#"><span class="nav-icon">◈</span> Документы</a>
-      <a class="nav-item" href="#"><span class="nav-icon">₽</span> Бухгалтерия</a>
+      <a class="nav-item" href="#">⊞ GPS / Wialon</a>
+      <a class="nav-item" href="#">☷ Клиенты (CRM)</a>
+      <a class="nav-item" href="#">◈ Документы</a>
+      <a class="nav-item" href="#">₽ Бухгалтерия</a>
       <div class="nav-section">Система</div>
-      <a class="nav-item" href="#"><span class="nav-icon">◐</span> Аналитика</a>
-      <a class="nav-item" href="#"><span class="nav-icon">⚙</span> Настройки</a>
+      <a class="nav-item" href="#">◐ Аналитика</a>
+      <a class="nav-item" href="#">⚙ Настройки</a>
     </nav>
   </aside>
 
   <div class="main">
     <div class="topbar">
-      <div class="topbar-title">Новый манифест груза</div>
-      <span class="topbar-num" id="manifest-num">AST-202604-00124</span>
-      <button class="btn" onclick="window.print()">Печать</button>
-      <button class="btn" id="btn-docs">Документы</button>
-      <button class="btn btn-primary" onclick="saveManifest()">Сохранить манифест</button>
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="openDrawer()">☰</button>
+        <div class="topbar-title">Новый манифест</div>
+        <span class="topbar-num" id="manifest-num">AST-202604-00124</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="window.print()">Печать</button>
+        <button class="btn" id="btn-docs">Документы</button>
+        <button class="btn btn-primary" onclick="saveManifest()">Сохранить</button>
+      </div>
     </div>
 
     <div class="content">
@@ -225,29 +385,19 @@
         <div class="sec-head"><span class="sec-title">Основная информация</span></div>
         <div class="sec-body">
           <div class="g4">
-            <div class="field">
-              <label>Номер манифеста</label>
-              <input id="f-num" value="AST-202604-00124" readonly>
-            </div>
-            <div class="field">
-              <label>Дата создания</label>
-              <input type="date" id="f-date">
-            </div>
+            <div class="field"><label>Номер манифеста</label><input id="f-num" value="AST-202604-00124" readonly></div>
+            <div class="field"><label>Дата создания</label><input type="date" id="f-date"></div>
             <div class="field">
               <label>Диспетчер</label>
               <select id="f-dispatcher">
-                <option>Иванова А.С.</option>
-                <option>Петров К.Д.</option>
-                <option>Мирзоев Д.</option>
+                <option>Иванова А.С.</option><option>Петров К.Д.</option><option>Мирзоев Д.</option>
               </select>
             </div>
             <div class="field">
-              <label>Склад отправки</label>
+              <label>Склад</label>
               <select id="f-warehouse">
-                <option>Экспорт Бишкек</option>
-                <option>Импорт Бишкек</option>
-                <option>Экспорт Москва</option>
-                <option>Импорт Москва</option>
+                <option>Экспорт Бишкек</option><option>Импорт Бишкек</option>
+                <option>Экспорт Москва</option><option>Импорт Москва</option>
               </select>
             </div>
           </div>
@@ -262,7 +412,7 @@
             <div style="display:flex;flex-direction:column;gap:8px;">
               <div class="field">
                 <label>Отправитель (ФИО / компания)</label>
-                <input id="f-sender" placeholder="Имя или название — автоподстановка из CRM" list="crm-senders">
+                <input id="f-sender" placeholder="Автоподстановка из CRM..." list="crm-senders">
                 <datalist id="crm-senders">
                   <option value="ООО Алмаз">
                   <option value="Садыков Алибек Рустамович">
@@ -273,26 +423,25 @@
               </div>
               <div class="g2">
                 <div class="field"><label>ИНН / паспорт</label><input id="f-sender-inn" placeholder="—"></div>
-                <div class="field"><label>Телефон</label><input id="f-sender-phone" placeholder="+996"></div>
+                <div class="field"><label>Телефон</label><input id="f-sender-phone" placeholder="+996" type="tel"></div>
               </div>
               <div class="field"><label>Адрес погрузки</label><input id="f-load-addr" value="Бишкек, склад Экспорт"></div>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <div class="field">
                 <label>Получатель (ФИО / компания)</label>
-                <input id="f-recip" placeholder="Имя или название — автоподстановка из CRM" list="crm-recips">
+                <input id="f-recip" placeholder="Автоподстановка из CRM..." list="crm-recips">
                 <datalist id="crm-recips">
                   <option value="Иванов Петр Сергеевич">
                   <option value="ООО РусТорг">
                   <option value="Смирнова Елена">
-                  <option value="Ким Дмитрий">
                 </datalist>
               </div>
               <div class="g2">
                 <div class="field"><label>ИНН / паспорт</label><input id="f-recip-inn" placeholder="—"></div>
-                <div class="field"><label>Телефон</label><input id="f-recip-phone" placeholder="+7"></div>
+                <div class="field"><label>Телефон</label><input id="f-recip-phone" placeholder="+7" type="tel"></div>
               </div>
-              <div class="field"><label>Адрес(а) выгрузки</label><input id="f-unload-addr" value="Москва, склад Импорт"></div>
+              <div class="field"><label>Адрес выгрузки</label><input id="f-unload-addr" value="Москва, склад Импорт"></div>
             </div>
           </div>
         </div>
@@ -303,36 +452,43 @@
         <div class="sec-head">
           <span class="sec-title">Грузовые позиции</span>
           <div class="coef-ctrl">
-            Коэффициент м³→кг:
+            Коэф. м³→кг:
             <input type="number" id="coef" value="300" min="1" max="1000">
           </div>
         </div>
         <div class="sec-body">
+
+          <!-- Desktop table -->
           <div class="tbl-wrap">
             <table class="cargo">
               <thead>
                 <tr>
-                  <th style="width:30px;">#</th>
-                  <th style="width:200px;">Наименование груза</th>
-                  <th style="width:60px;">Мест</th>
-                  <th style="width:90px;">Вес факт. кг</th>
-                  <th style="width:80px;">Объём м³</th>
-                  <th style="width:110px;">Тариф. вес кг</th>
-                  <th style="width:110px;">Вид оплаты</th>
-                  <th style="width:100px;">Фрахт ₽</th>
-                  <th style="width:30px;"></th>
+                  <th style="width:28px;">#</th>
+                  <th style="width:190px;">Наименование</th>
+                  <th style="width:55px;">Мест</th>
+                  <th style="width:88px;">Вес кг</th>
+                  <th style="width:78px;">Объём м³</th>
+                  <th style="width:105px;">Тариф. вес</th>
+                  <th style="width:105px;">Оплата</th>
+                  <th style="width:95px;">Фрахт ₽</th>
+                  <th style="width:28px;"></th>
                 </tr>
               </thead>
               <tbody id="cargo-body"></tbody>
             </table>
           </div>
+
+          <!-- Mobile cards -->
+          <div class="cargo-cards" id="cargo-cards"></div>
+
           <button class="add-row-btn" id="add-row-btn">+ Добавить позицию</button>
+
           <div class="totals">
             <div class="tot"><label>Мест</label><span id="tot-p">0</span></div>
             <div class="tot"><label>Вес факт.</label><span id="tot-w">0 кг</span></div>
             <div class="tot"><label>Объём</label><span id="tot-v">0 м³</span></div>
             <div class="tot"><label>Тариф. вес</label><span class="yw" id="tot-tw">0 кг</span></div>
-            <div class="tot"><label>Итого фрахт</label><span id="tot-f">0 ₽</span></div>
+            <div class="tot"><label>Фрахт итого</label><span id="tot-f">0 ₽</span></div>
           </div>
         </div>
       </div>
@@ -373,163 +529,239 @@
         </div>
       </div>
 
-      <!-- Документы и фото -->
+      <!-- Документы -->
       <div class="section">
         <div class="sec-head"><span class="sec-title">Документы и фото</span></div>
         <div class="sec-body">
-          <div class="upload-area" id="upload-area">
+          <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
             <input type="file" id="file-input" multiple accept="image/*,video/*,.pdf,.doc,.docx">
-            Прикрепить документы / фото / видео груза &nbsp;·&nbsp; перетащите файлы или <u style="cursor:pointer;" onclick="document.getElementById('file-input').click()">нажмите для выбора</u>
+            Нажмите чтобы прикрепить документы, фото или видео груза<br>
+            <span style="font-size:11px;color:var(--hint);">PDF, Word, изображения, видео</span>
           </div>
           <div class="uploaded-files" id="uploaded-files"></div>
         </div>
       </div>
 
-      <!-- Кнопки -->
+      <!-- Footer -->
       <div class="footer-btns">
         <button class="btn btn-primary" onclick="saveManifest()">Сохранить манифест</button>
         <button class="btn" onclick="window.print()">Печать</button>
         <button class="btn" id="btn-docs2">Документы (CMR, заявка)</button>
-        <button class="btn" style="color:#9ca3af;" onclick="clearForm()">Очистить форму</button>
+        <button class="btn" style="color:var(--hint);" onclick="clearForm()">Очистить форму</button>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /layout -->
+    </div>
+  </div>
+</div>
+
+<!-- Bottom nav (mobile) -->
+<nav class="bottom-nav">
+  <a class="bn-item" href="#"><div class="bn-icon">▦</div>Дашборд</a>
+  <a class="bn-item active" href="#"><div class="bn-icon">☰</div>Манифест</a>
+  <a class="bn-item" href="#"><div class="bn-icon">⬡</div>Склад</a>
+  <a class="bn-item" href="#"><div class="bn-icon">◉</div>Рейсы</a>
+  <a class="bn-item" href="#"><div class="bn-icon">⊞</div>GPS</a>
+</nav>
 
 <script>
-// --- Date ---
 document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
 
-// --- Cargo rows ---
+// ── Drawer ──
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Cargo ──
 const tbody = document.getElementById('cargo-body');
+const cardsEl = document.getElementById('cargo-cards');
 const coefEl = document.getElementById('coef');
 let rowCount = 0;
 
-function tw(w, v) {
-  const coef = parseFloat(coefEl.value) || 300;
-  return Math.max(w, v * coef);
-}
+function getCoef() { return parseFloat(coefEl.value) || 300; }
+function sel(val, opt) { return val === opt ? ' selected' : ''; }
 
 function addRow(d) {
   rowCount++;
-  const n = rowCount;
+  const id = rowCount;
   d = d || {};
+
+  // Desktop row
   const tr = document.createElement('tr');
-  tr.dataset.id = n;
+  tr.dataset.rid = id;
   tr.innerHTML = `
-    <td><div class="rnum">${n}</div></td>
-    <td><input class="nm" value="${d.name||''}" placeholder="Наименование груза..."></td>
+    <td><div class="rnum">${id}</div></td>
+    <td><input class="nm" value="${d.name||''}" placeholder="Наименование..."></td>
     <td><input type="number" class="pl" value="${d.places||''}" placeholder="0" min="0"></td>
     <td><input type="number" class="wt" value="${d.weight||''}" placeholder="0.0" min="0" step="0.1"></td>
     <td><input type="number" class="vl" value="${d.vol||''}" placeholder="0.00" min="0" step="0.01"></td>
-    <td><div class="tw-cell tw-empty" id="tw${n}">—</div></td>
+    <td><div class="tw-cell tw-empty" data-tw>—</div></td>
     <td>
       <select class="py">
-        <option${(d.pay||'')==='Предоплата'?' selected':''}>Предоплата</option>
-        <option${(d.pay||'')==='Оплата'?' selected':''}>Оплата</option>
-        <option${(d.pay||'')==='Постоплата'?' selected':''}>Постоплата</option>
+        <option${sel(d.pay,'Предоплата')}>Предоплата</option>
+        <option${sel(d.pay,'Оплата')}>Оплата</option>
+        <option${sel(d.pay,'Постоплата')}>Постоплата</option>
       </select>
     </td>
     <td><input type="number" class="fr" value="${d.freight||''}" placeholder="0" min="0"></td>
-    <td><button class="del-btn" title="Удалить строку" onclick="delRow(this)">×</button></td>
+    <td><button class="del-btn" onclick="delRow(${id})">×</button></td>
   `;
   tbody.appendChild(tr);
-  tr.querySelectorAll('input').forEach(i => i.addEventListener('input', recalc));
+  tr.querySelectorAll('input').forEach(i => i.addEventListener('input', () => { syncToCard(id, tr); recalc(); }));
+  tr.querySelector('.py').addEventListener('change', () => { syncToCard(id, tr); recalc(); });
+
+  // Mobile card
+  const card = document.createElement('div');
+  card.className = 'cargo-card';
+  card.dataset.rid = id;
+  card.innerHTML = `
+    <div class="cargo-card-head">
+      <span class="cargo-card-num">${id}</span>
+      <span class="cargo-card-name">${d.name||'Новая позиция'}</span>
+      <button class="del-card-btn" onclick="delRow(${id})">×</button>
+    </div>
+    <div class="cargo-card-body">
+      <div class="cf">
+        <label>Наименование груза</label>
+        <input class="c-nm" value="${d.name||''}" placeholder="Например: Одежда, электроника...">
+      </div>
+      <div class="cargo-card-row three">
+        <div class="cf"><label>Мест</label><input type="number" class="c-pl" value="${d.places||''}" placeholder="0" min="0" inputmode="numeric"></div>
+        <div class="cf"><label>Вес кг</label><input type="number" class="c-wt" value="${d.weight||''}" placeholder="0.0" min="0" step="0.1" inputmode="decimal"></div>
+        <div class="cf"><label>Объём м³</label><input type="number" class="c-vl" value="${d.vol||''}" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
+      </div>
+      <div class="cargo-card-row">
+        <div class="cf"><label>Тариф. вес кг</label><div class="tw-badge empty" data-ctw>—</div></div>
+        <div class="cf">
+          <label>Вид оплаты</label>
+          <select class="c-py">
+            <option${sel(d.pay,'Предоплата')}>Предоплата</option>
+            <option${sel(d.pay,'Оплата')}>Оплата</option>
+            <option${sel(d.pay,'Постоплата')}>Постоплата</option>
+          </select>
+        </div>
+      </div>
+      <div class="cf"><label>Фрахт ₽</label><input type="number" class="c-fr" value="${d.freight||''}" placeholder="0" min="0" inputmode="numeric"></div>
+    </div>
+  `;
+  cardsEl.appendChild(card);
+
+  // Card → table sync
+  const syncC = () => { syncToTable(id, card, tr); recalc(); };
+  card.querySelector('.c-nm').addEventListener('input', e => {
+    card.querySelector('.cargo-card-name').textContent = e.target.value || 'Новая позиция';
+    tr.querySelector('.nm').value = e.target.value;
+    recalc();
+  });
+  card.querySelector('.c-pl').addEventListener('input', e => { tr.querySelector('.pl').value = e.target.value; recalc(); });
+  card.querySelector('.c-wt').addEventListener('input', e => { tr.querySelector('.wt').value = e.target.value; recalc(); });
+  card.querySelector('.c-vl').addEventListener('input', e => { tr.querySelector('.vl').value = e.target.value; recalc(); });
+  card.querySelector('.c-fr').addEventListener('input', e => { tr.querySelector('.fr').value = e.target.value; recalc(); });
+  card.querySelector('.c-py').addEventListener('change', e => { tr.querySelector('.py').value = e.target.value; recalc(); });
+
   recalc();
 }
 
-function delRow(btn) {
-  btn.closest('tr').remove();
-  reindex();
-  recalc();
+function syncToCard(id, tr) {
+  const card = cardsEl.querySelector(`[data-rid="${id}"]`);
+  if (!card) return;
+  const nm = tr.querySelector('.nm').value;
+  card.querySelector('.c-nm').value = nm;
+  card.querySelector('.cargo-card-name').textContent = nm || 'Новая позиция';
+  card.querySelector('.c-pl').value = tr.querySelector('.pl').value;
+  card.querySelector('.c-wt').value = tr.querySelector('.wt').value;
+  card.querySelector('.c-vl').value = tr.querySelector('.vl').value;
+  card.querySelector('.c-fr').value = tr.querySelector('.fr').value;
+}
+
+function delRow(id) {
+  tbody.querySelector(`[data-rid="${id}"]`)?.remove();
+  cardsEl.querySelector(`[data-rid="${id}"]`)?.remove();
+  reindex(); recalc();
 }
 
 function reindex() {
-  Array.from(tbody.rows).forEach((r, i) => {
-    r.querySelector('.rnum').textContent = i + 1;
-  });
+  Array.from(tbody.rows).forEach((r,i) => r.querySelector('.rnum').textContent = i+1);
+  Array.from(cardsEl.children).forEach((c,i) => c.querySelector('.cargo-card-num').textContent = i+1);
 }
 
 function recalc() {
-  const coef = parseFloat(coefEl.value) || 300;
-  let totP=0, totW=0, totV=0, totTW=0, totF=0;
+  const coef = getCoef();
+  let totP=0,totW=0,totV=0,totTW=0,totF=0;
   Array.from(tbody.rows).forEach(r => {
-    const w = parseFloat(r.querySelector('.wt').value) || 0;
-    const v = parseFloat(r.querySelector('.vl').value) || 0;
-    const p = parseInt(r.querySelector('.pl').value) || 0;
-    const f = parseFloat(r.querySelector('.fr').value) || 0;
-    const twv = Math.max(w, v * coef);
-    const twEl = r.querySelector('.tw-cell');
-    if (w || v) {
-      twEl.textContent = twv.toFixed(1) + ' кг';
-      twEl.classList.remove('tw-empty');
-    } else {
-      twEl.textContent = '—';
-      twEl.classList.add('tw-empty');
+    const w = parseFloat(r.querySelector('.wt').value)||0;
+    const v = parseFloat(r.querySelector('.vl').value)||0;
+    const p = parseInt(r.querySelector('.pl').value)||0;
+    const f = parseFloat(r.querySelector('.fr').value)||0;
+    const twv = Math.max(w, v*coef);
+    const twEl = r.querySelector('[data-tw]');
+    if(w||v){ twEl.textContent=twv.toFixed(1)+' кг'; twEl.classList.remove('tw-empty'); }
+    else { twEl.textContent='—'; twEl.classList.add('tw-empty'); }
+    const card = cardsEl.querySelector(`[data-rid="${r.dataset.rid}"]`);
+    if(card){
+      const cb = card.querySelector('[data-ctw]');
+      if(w||v){ cb.textContent=twv.toFixed(1)+' кг'; cb.classList.remove('empty'); }
+      else { cb.textContent='—'; cb.classList.add('empty'); }
     }
-    totP += p; totW += w; totV += v; totTW += twv; totF += f;
+    totP+=p; totW+=w; totV+=v; totTW+=twv; totF+=f;
   });
   document.getElementById('tot-p').textContent = totP;
-  document.getElementById('tot-w').textContent = totW.toFixed(1) + ' кг';
-  document.getElementById('tot-v').textContent = totV.toFixed(2) + ' м³';
-  document.getElementById('tot-tw').textContent = totTW.toFixed(1) + ' кг';
-  document.getElementById('tot-f').textContent = totF.toLocaleString('ru-RU') + ' ₽';
+  document.getElementById('tot-w').textContent = totW.toFixed(1)+' кг';
+  document.getElementById('tot-v').textContent = totV.toFixed(2)+' м³';
+  document.getElementById('tot-tw').textContent = totTW.toFixed(1)+' кг';
+  document.getElementById('tot-f').textContent = totF.toLocaleString('ru-RU')+' ₽';
 }
 
 coefEl.addEventListener('input', recalc);
 document.getElementById('add-row-btn').addEventListener('click', () => addRow());
 
-// Default rows
 addRow({name:'Одежда оптом',places:'12',weight:'340',vol:'2.8',pay:'Предоплата',freight:'28000'});
 addRow({name:'Электроника',places:'3',weight:'85',vol:'0.5',pay:'Оплата',freight:'9500'});
 addRow({});
 
-// --- Status ---
+// ── Status ──
 document.getElementById('status-row').addEventListener('click', e => {
   const chip = e.target.closest('.s-chip');
-  if (!chip) return;
-  document.querySelectorAll('.s-chip').forEach(c => c.classList.remove('active'));
+  if(!chip) return;
+  document.querySelectorAll('.s-chip').forEach(c=>c.classList.remove('active'));
   chip.classList.add('active');
 });
 
-// --- File upload ---
+// ── Files ──
 const fileInput = document.getElementById('file-input');
 const uploadedFiles = document.getElementById('uploaded-files');
 const uploadArea = document.getElementById('upload-area');
 
-fileInput.addEventListener('change', () => handleFiles(fileInput.files));
-
+fileInput.addEventListener('change', () => { handleFiles(fileInput.files); fileInput.value=''; });
 uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.background='#eef0f5'; });
 uploadArea.addEventListener('dragleave', () => { uploadArea.style.background=''; });
-uploadArea.addEventListener('drop', e => {
-  e.preventDefault();
-  uploadArea.style.background = '';
-  handleFiles(e.dataTransfer.files);
-});
+uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.style.background=''; handleFiles(e.dataTransfer.files); });
 
 function handleFiles(files) {
   Array.from(files).forEach(f => {
     const chip = document.createElement('div');
     chip.className = 'file-chip';
-    chip.innerHTML = `<span>${f.name}</span><button onclick="this.parentNode.remove()" title="Удалить">×</button>`;
+    chip.innerHTML = `<span>${f.name}</span><button onclick="this.parentNode.remove()">×</button>`;
     uploadedFiles.appendChild(chip);
   });
 }
 
-// --- Save ---
+// ── Save ──
 function saveManifest() {
-  const rows = [];
-  Array.from(tbody.rows).forEach(r => {
-    rows.push({
-      name: r.querySelector('.nm').value,
-      places: r.querySelector('.pl').value,
-      weight: r.querySelector('.wt').value,
-      vol: r.querySelector('.vl').value,
-      pay: r.querySelector('.py').value,
-      freight: r.querySelector('.fr').value,
-    });
-  });
+  const cargoRows = Array.from(tbody.rows).map(r => ({
+    name: r.querySelector('.nm').value,
+    places: r.querySelector('.pl').value,
+    weight: r.querySelector('.wt').value,
+    vol: r.querySelector('.vl').value,
+    pay: r.querySelector('.py').value,
+    freight: r.querySelector('.fr').value,
+  }));
   const data = {
     num: document.getElementById('f-num').value,
     date: document.getElementById('f-date').value,
@@ -543,27 +775,26 @@ function saveManifest() {
     truck: document.getElementById('f-truck').value,
     gps: document.getElementById('f-gps').value,
     status: document.querySelector('.s-chip.active')?.textContent?.trim(),
-    cargo: rows,
+    cargo: cargoRows,
   };
-  localStorage.setItem('astrum_manifest_' + data.num, JSON.stringify(data));
-  alert('Манифест ' + data.num + ' сохранён!');
+  try { localStorage.setItem('astrum_manifest_'+data.num, JSON.stringify(data)); } catch(e){}
+  alert('Манифест '+data.num+' сохранён!');
 }
 
-// --- Clear ---
+// ── Clear ──
 function clearForm() {
-  if (!confirm('Очистить форму? Несохранённые данные будут потеряны.')) return;
+  if(!confirm('Очистить форму? Данные будут потеряны.')) return;
   ['f-sender','f-recip','f-sender-inn','f-recip-inn','f-sender-phone','f-recip-phone','f-load-addr','f-unload-addr','f-truck','f-gps']
-    .forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  tbody.innerHTML = '';
-  rowCount = 0;
+    .forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  tbody.innerHTML=''; cardsEl.innerHTML=''; rowCount=0;
   addRow({});
-  document.querySelectorAll('.s-chip').forEach((c,i) => c.classList.toggle('active', i===0));
-  uploadedFiles.innerHTML = '';
+  document.querySelectorAll('.s-chip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  uploadedFiles.innerHTML='';
 }
 
-// --- Docs button ---
-[document.getElementById('btn-docs'), document.getElementById('btn-docs2')].forEach(btn => {
-  if(btn) btn.addEventListener('click', () => {
+// ── Docs ──
+['btn-docs','btn-docs2'].forEach(id => {
+  document.getElementById(id)?.addEventListener('click', () => {
     alert('Модуль документов: CMR, заявка на перевозку, счёт\n(подключается к бэкенду генерации PDF)');
   });
 });

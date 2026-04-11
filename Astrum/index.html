@@ -1,851 +1,1041 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRUM TMS — Новый манифест</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заявка на перевозку — ASTRUM</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            background-color: #e5e7eb;
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            padding: 30px 20px;
-        }
+  :root {
+    --bg: #f0f2f5;
+    --surface: #ffffff;
+    --border: #d0d5dd;
+    --border-light: #e4e7ec;
+    --text: #101828;
+    --text-muted: #667085;
+    --accent: #1570ef;
+    --accent-hover: #1048a8;
+    --accent-light: #eff4ff;
+    --label: #344054;
+    --section-header: #f8f9fb;
+    --required: #d92d20;
+    --success: #067647;
+    --success-bg: #ecfdf3;
+    --row-alt: #fafafa;
+    --shadow: 0 1px 3px rgba(16,24,40,.08), 0 1px 2px rgba(16,24,40,.06);
+  }
 
-        /* Основной контейнер — строгий, без теней и лишних украшений */
-        .document {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            padding: 32px 36px;
-        }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 24px;
+    min-height: 100vh;
+  }
 
-        /* Заголовки — только размер и вес */
-        h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 8px;
-            letter-spacing: -0.3px;
-        }
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
 
-        .subhead {
-            color: #4b5563;
-            font-size: 14px;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
-        }
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -.3px;
+  }
 
-        /* Сетки */
-        .row-2col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            margin-bottom: 32px;
-        }
+  .page-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
 
-        .row-3col {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
-        }
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
 
-        .row-4col {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 32px;
-        }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    transition: background .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--section-header); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-ghost { border-color: transparent; background: transparent; color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--border-light); color: var(--text); }
 
-        /* Блоки полей */
-        .field-group {
-            margin-bottom: 16px;
-        }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
 
-        .field-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            color: #374151;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            margin-bottom: 6px;
-        }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--section-header);
+    border-bottom: 1px solid var(--border-light);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--label);
+  }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            font-size: 14px;
-            border: 1px solid #cbd5e1;
-            background: #ffffff;
-            border-radius: 0px;
-            font-family: inherit;
-            transition: 0.1s linear;
-        }
+  .section-header .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: none;
-        }
+  .section-body { padding: 14px 16px; }
 
-        textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
+  .grid { display: grid; gap: 12px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .grid-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .col-span-2 { grid-column: span 2; }
+  .col-span-3 { grid-column: span 3; }
+  .col-span-4 { grid-column: span 4; }
 
-        /* Таблица строгая, без скруглений */
-        .cargo-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0 16px;
-            font-size: 13px;
-        }
+  .field { display: flex; flex-direction: column; gap: 3px; }
 
-        .cargo-table th,
-        .cargo-table td {
-            border: 1px solid #d4d4d8;
-            padding: 10px 8px;
-            text-align: left;
-            vertical-align: middle;
-        }
+  label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--label);
+    letter-spacing: .1px;
+  }
+  label .req { color: var(--required); margin-left: 2px; }
 
-        .cargo-table th {
-            background-color: #f9fafb;
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 12px;
-        }
+  input[type="text"], input[type="date"], input[type="number"], input[type="tel"],
+  select, textarea {
+    width: 100%;
+    padding: 6px 9px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(21,112,239,.12);
+  }
+  input::placeholder, textarea::placeholder { color: #aab4c4; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667085' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px; }
+  textarea { resize: vertical; min-height: 56px; }
 
-        /* Итоговая строка — как на скриншоте */
-        .totals {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            padding: 16px 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 36px;
-            margin: 20px 0 28px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #111827;
-        }
+  .inline-group {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .inline-group .field { flex: 1; }
+  .inline-group .field-fixed { flex: 0 0 auto; }
 
-        .totals span {
-            font-weight: 600;
-            color: #000000;
-        }
+  /* Cargo table */
+  .cargo-table-wrap { overflow-x: auto; }
+  table.cargo {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.cargo thead tr {
+    background: var(--section-header);
+  }
+  table.cargo th {
+    padding: 7px 8px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  table.cargo td {
+    padding: 5px 6px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+  }
+  table.cargo tbody tr:nth-child(even) td { background: var(--row-alt); }
+  table.cargo td input, table.cargo td select {
+    padding: 4px 7px;
+    font-size: 12px;
+  }
+  table.cargo td.td-num { width: 30px; color: var(--text-muted); text-align: center; }
+  table.cargo td.td-btn { width: 34px; text-align: center; }
 
-        /* Кнопки — строгие, без градиентов */
-        button {
-            background: #1f2937;
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
-            border-radius: 0px;
-            transition: 0.1s ease;
-        }
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: background .15s, color .15s;
+  }
+  .btn-icon:hover { background: #fff0f0; border-color: #fca5a5; color: var(--required); }
+  .btn-icon.add { color: var(--accent); border-color: var(--accent-light); background: var(--accent-light); }
+  .btn-icon.add:hover { background: var(--accent); color: #fff; }
 
-        button.secondary {
-            background: #ffffff;
-            color: #1f2937;
-            border: 1px solid #9ca3af;
-        }
+  .totals-row {
+    display: flex;
+    gap: 24px;
+    padding: 10px 16px;
+    background: var(--accent-light);
+    border-top: 1px solid #c7d9fd;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+  .totals-row .total-item { display: flex; flex-direction: column; gap: 1px; }
+  .totals-row .total-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: .3px; }
+  .totals-row .total-value { font-weight: 700; font-size: 13px; color: var(--accent); }
 
-        button.danger {
-            background: #ffffff;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-            padding: 4px 12px;
-            font-size: 12px;
-        }
+  .divider { border: none; border-top: 1px solid var(--border-light); margin: 12px 0; }
 
-        button.danger:hover {
-            background: #fef2f2;
-        }
+  .hint { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-        .flex-buttons {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 36px;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 24px;
-        }
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 0;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--label);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  input[type="checkbox"] {
+    width: 14px; height: 14px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
 
-        .file-area {
-            background: #fefce8;
-            border: 1px dashed #cbd5e1;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0 10px;
-        }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--success-bg);
+    color: var(--success);
+  }
 
-        .file-input-label {
-            display: inline-block;
-            background: #111827;
-            color: white;
-            padding: 8px 20px;
-            font-size: 13px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
+  .mapping-note {
+    font-size: 10px;
+    color: #9eb3d0;
+    font-style: italic;
+    margin-top: 1px;
+  }
 
-        .file-input-label input {
-            display: none;
-        }
+  .form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 0 4px;
+  }
 
-        hr {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 24px 0;
-        }
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+    .col-span-2, .col-span-3, .col-span-4 { grid-column: span 1; }
+    body { padding: 12px; }
+  }
 
-        .status-badge {
-            background: #e6f7e6;
-            display: inline-block;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #2b6e2b;
-            border: 1px solid #c6e6c6;
-        }
-    </style>
+  @media print {
+    body { background: white; padding: 0; }
+    .btn, .btn-icon, .form-footer { display: none; }
+  }
+</style>
 </head>
 <body>
-<div class="document">
-    <h1>ASTRUM TMS — Новый манифест</h1>
-    <div class="subhead">Заполните все разделы. Данные используются для генерации счёт-фактуры, заявки, акта и экспедиторской расписки.</div>
 
-    <!-- ================= 1. РЕКВИЗИТЫ МАНИФЕСТА ================= -->
-    <div class="row-2col">
-        <div class="field-group">
-            <label>Номер манифеста</label>
-            <input type="text" id="manifestNum" value="AST-202604-00124">
-        </div>
-        <div class="field-group">
-            <label>Дата создания</label>
-            <input type="date" id="manifestDate" value="2026-04-11">
-        </div>
-    </div>
-
-    <!-- ================= 2. ОТПРАВИТЕЛЬ И ПОЛУЧАТЕЛЬ ================= -->
-    <div class="row-2col">
-        <div class="field-group">
-            <label>Отправитель (компания / ФИО)</label>
-            <input type="text" id="senderName" value="ОсОО «ТЭК Аструм»">
-        </div>
-        <div class="field-group">
-            <label>Адрес погрузки</label>
-            <input type="text" id="loadingAddress" value="Бишкек, склад Экспорт ASTRUM">
-        </div>
-    </div>
-
-    <div class="row-2col">
-        <div class="field-group">
-            <label>Получатель (компания / ФИО)</label>
-            <input type="text" id="receiverName" value="ИП Пирогова Эллина Владиславовна">
-        </div>
-        <div class="field-group">
-            <label>Адрес выгрузки</label>
-            <input type="text" id="unloadAddress" value="Москва, склад Импорт ASTRUM">
-        </div>
-		<!-- Юридические адреса (для счёт-фактуры) -->
-<div class="row-2col">
-    <div class="field-group">
-        <label>Юр. адрес отправителя</label>
-        <input type="text" id="senderLegalAddress" value="Чуйская обл., Иссык-Атинский р-н, Новопокровка ул. Октябрьская, д. 16Б">
-    </div>
-    <div class="field-group">
-        <label>Юр. адрес получателя</label>
-        <input type="text" id="receiverLegalAddress" value="РФ, г. Калининград, ул. Краснопрудная, д. 47, кв. 10">
-    </div>
+<div class="page-header">
+  <div>
+    <div class="page-title">Новая заявка на перевозку</div>
+    <div class="page-subtitle">ОсОО «ТЭК Аструм» · Транспортно-экспедиционное обслуживание</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="clearForm()">Очистить</button>
+    <button class="btn" onclick="window.print()">🖨 Печать</button>
+    <button class="btn btn-primary" onclick="submitForm()">💾 Сохранить в Google Sheets</button>
+  </div>
 </div>
 
+<form id="mainForm" autocomplete="off">
 
-
+  <!-- 1. Реквизиты договора -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Договор и заявка</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Договор №<span class="req">*</span></label>
+          <input type="text" id="contract_number" placeholder="2025/129">
+          <div class="mapping-note">→ contract.number</div>
+        </div>
+        <div class="field">
+          <label>Дата договора<span class="req">*</span></label>
+          <input type="date" id="contract_date" value="2025-12-16">
+          <div class="mapping-note">→ contract.date</div>
+        </div>
+        <div class="field">
+          <label>Заявка №<span class="req">*</span></label>
+          <input type="number" id="order_number" placeholder="8">
+          <div class="mapping-note">→ transport_order.order_number</div>
+        </div>
+        <div class="field">
+          <label>Дата заявки<span class="req">*</span></label>
+          <input type="date" id="order_date">
+          <div class="mapping-note">→ transport_order.order_date</div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- ================= 3. ТАБЛИЦА ГРУЗА ================= -->
-    <div class="field-group" style="margin-top: 20px;">
-        <label>Коэффициент объёма (м³ → кг)</label>
-        <input type="number" id="volCoeff" value="300" style="width: 200px;">
+  <!-- 2. Заказчик -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Заказчик</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Тип<span class="req">*</span></label>
+          <select id="customer_type">
+            <option value="ИП">ИП</option>
+            <option value="ООО">ООО</option>
+            <option value="ОсОО">ОсОО</option>
+            <option value="АО">АО</option>
+          </select>
+          <div class="mapping-note">→ customer.type</div>
+        </div>
+        <div class="field col-span-2">
+          <label>ФИО / Наименование<span class="req">*</span></label>
+          <input type="text" id="customer_name" placeholder="Пирогова Эллина Владиславовна">
+          <div class="mapping-note">→ customer.full_name</div>
+        </div>
+        <div class="field">
+          <label>ИНН<span class="req">*</span></label>
+          <input type="text" id="customer_inn" placeholder="910225741672">
+          <div class="mapping-note">→ customer.inn</div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <table class="cargo-table" id="cargoTable">
+  <!-- 3. Маршрут и погрузка -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Маршрут и погрузка</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Откуда<span class="req">*</span></label>
+          <input type="text" id="route_from" placeholder="г. Бишкек (КР)">
+          <div class="mapping-note">→ route.from</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Куда<span class="req">*</span></label>
+          <input type="text" id="route_to" placeholder="г. Москва (РФ)">
+          <div class="mapping-note">→ route.to</div>
+        </div>
+        <div class="field col-span-3">
+          <label>Адрес погрузки</label>
+          <input type="text" id="loading_address" placeholder="ОсОО «Мастер Пласт», Бишкек">
+          <div class="mapping-note">→ loading.address</div>
+        </div>
+        <div class="field">
+          <label>Дата погрузки</label>
+          <input type="date" id="loading_date">
+          <div class="mapping-note">→ loading.date</div>
+        </div>
+        <div class="field col-span-3">
+          <label>Адрес выгрузки</label>
+          <input type="text" id="unloading_address" placeholder="г. Москва, склад">
+          <div class="mapping-note">→ unloading.address</div>
+        </div>
+        <div class="field">
+          <label>Дата выгрузки</label>
+          <input type="date" id="unloading_date">
+          <div class="mapping-note">→ unloading.date</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Грузовые позиции -->
+  <div class="card">
+    <div class="section-header">
+      <span class="dot"></span>Грузовые позиции
+      <span style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+        <label style="text-transform:none; font-weight:400; font-size:12px; color:var(--text-muted);">Коэф. м³→кг:</label>
+        <input type="number" id="volume_coef" value="300" style="width:64px; padding:3px 7px; font-size:12px;">
+      </span>
+    </div>
+    <div class="cargo-table-wrap">
+      <table class="cargo" id="cargoTable">
         <thead>
-            <tr>
-                <th>#</th><th>Наименование</th><th>Мест</th><th>Вес (кг)</th><th>Объём (м³)</th><th>Тариф. вес</th><th>Фрахт (валюта)</th><th></th>
-            </tr>
+          <tr>
+            <th>#</th>
+            <th>Наименование груза</th>
+            <th>Мест</th>
+            <th>Ед.уп.</th>
+            <th>Вес, кг</th>
+            <th>Объём, м³</th>
+            <th>Тар.вес, кг</th>
+            <th>Тариф, ₽/кг</th>
+            <th>НДС</th>
+            <th>Фрахт, ₽</th>
+            <th>Оплата</th>
+            <th></th>
+          </tr>
         </thead>
-        <tbody id="cargoBody">
-            <tr>
-                <td>1</td>
-                <td><input type="text" class="cargo-name" value="Текстиль (одежда)"></td>
-                <td><input type="number" class="cargo-places" value="25"></td>
-                <td><input type="number" class="cargo-weight" value="633"></td>
-                <td><input type="number" step="0.01" class="cargo-vol" value="2.1"></td>
-                <td class="tariff-cell">0.0</td>
-                <td><input type="number" class="cargo-price" value="28485.00"></td>
-                <td><button type="button" class="danger" onclick="removeRow(this)">✕</button></td>
-            </tr>
+        <tbody id="cargoRows">
+          <tr>
+            <td class="td-num">1</td>
+            <td><input type="text" id="cargo_name_1" placeholder="текстиль" style="min-width:120px"></td>
+            <td><input type="number" id="cargo_places_1" placeholder="25" style="width:60px" oninput="recalc(1)"></td>
+            <td>
+              <select id="cargo_places_unit_1" style="width:80px">
+                <option>мешков</option>
+                <option>коробок</option>
+                <option>паллет</option>
+                <option>мест</option>
+                <option>штук</option>
+              </select>
+            </td>
+            <td><input type="number" id="cargo_weight_1" placeholder="633" style="width:70px" oninput="recalc(1)"></td>
+            <td><input type="number" id="cargo_volume_1" placeholder="0.00" step="0.01" style="width:70px" oninput="recalc(1)"></td>
+            <td><input type="number" id="cargo_tariff_weight_1" readonly style="width:70px; background:#f8f9fb; color:var(--accent); font-weight:600" placeholder="—"></td>
+            <td><input type="number" id="cargo_rate_1" placeholder="45" style="width:64px" oninput="recalc(1)"></td>
+            <td>
+              <select id="cargo_vat_1" style="width:60px">
+                <option>0%</option>
+                <option>12%</option>
+                <option>20%</option>
+              </select>
+            </td>
+            <td><input type="number" id="cargo_freight_1" readonly style="width:80px; background:#f8f9fb; color:var(--accent); font-weight:700" placeholder="—"></td>
+            <td>
+              <select id="cargo_payment_1" style="width:100px">
+                <option>Предоплата</option>
+                <option>По скану АВР</option>
+                <option>По факту</option>
+                <option>Нал</option>
+              </select>
+            </td>
+            <td class="td-btn"><button type="button" class="btn-icon" onclick="removeRow(this)">×</button></td>
+          </tr>
         </tbody>
-    </table>
-    <button type="button" onclick="addRow()" class="secondary">+ Добавить позицию</button>
-
-    <!-- ИТОГИ (как в макете) -->
-    <div class="totals">
-        <div>Мест всего: <span id="totalPlaces">0</span></div>
-        <div>Вес факт.: <span id="totalWeight">0</span> кг</div>
-        <div>Объём: <span id="totalVol">0.00</span> м³</div>
-        <div>Тарифный вес: <span id="totalTariff">0</span> кг</div>
-        <div>Итого фрахт: <span id="totalSum">0</span> <span id="totalCurrSymbol">RUB</span></div>
+      </table>
     </div>
+    <div style="padding:8px 16px; border-top:1px solid var(--border-light);">
+      <button type="button" class="btn btn-ghost" style="font-size:12px" onclick="addCargoRow()">+ Добавить позицию</button>
+    </div>
+    <div class="totals-row" id="totalsRow">
+      <div class="total-item"><span class="total-label">Мест всего</span><span class="total-value" id="tot_places">—</span></div>
+      <div class="total-item"><span class="total-label">Вес факт., кг</span><span class="total-value" id="tot_weight">—</span></div>
+      <div class="total-item"><span class="total-label">Объём, м³</span><span class="total-value" id="tot_volume">—</span></div>
+      <div class="total-item"><span class="total-label">Тар. вес, кг</span><span class="total-value" id="tot_tariff_weight">—</span></div>
+      <div class="total-item"><span class="total-label">Фрахт итого</span><span class="total-value" id="tot_freight" style="font-size:16px">— ₽</span></div>
+    </div>
+  </div>
 
-    <!-- ================= 4. ТРАНСПОРТ / GPS ================= -->
-    <div class="row-2col">
-        <div class="field-group">
-            <label>Мандат / Водитель</label>
-            <input type="text" id="driverName" value="Иванов Иван Иванович">
+  <!-- 5. Транспорт -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Транспорт и водитель</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Водитель (ФИО)</label>
+          <input type="text" id="driver_name" placeholder="Иванов Иван Иванович">
+          <div class="mapping-note">→ vehicle.driver</div>
         </div>
-        <div class="field-group">
-            <label>GPS-объект (Wialon)</label>
-            <input type="text" id="wialonId" value="КамАЗ-123">
+        <div class="field">
+          <label>Телефон водителя</label>
+          <input type="tel" id="driver_phone" placeholder="+996 700 000 000">
         </div>
-		
-		
-		<!-- Телефоны отправителя и получателя -->
-<div class="row-2col">
-    <div class="field-group">
-        <label>Телефон отправителя</label>
-        <input type="text" id="senderPhone" value="+996 708 88 22 88">
+        <div class="field">
+          <label>Машина / прицеп</label>
+          <input type="text" id="truck_number" placeholder="О 123 АБ / ПП 456">
+          <div class="mapping-note">→ vehicle.truck / trailer</div>
+        </div>
+        <div class="field col-span-2">
+          <label>GPS объект (Wialon)</label>
+          <input type="text" id="gps_object" placeholder="КамАЗ-123 или трекер ID">
+          <div class="mapping-note">→ vehicle.gps_object</div>
+        </div>
+        <div class="field">
+          <label>СМР №</label>
+          <input type="text" id="cmr_number" placeholder="согласно СМР">
+          <div class="mapping-note">→ vehicle.cmr</div>
+        </div>
+        <div class="field">
+          <label>Статус груза</label>
+          <select id="cargo_status">
+            <option>Принят на склад (Экспорт Бишкек)</option>
+            <option>В пути (КР → РФ)</option>
+            <option>Принят на склад (Импорт Москва)</option>
+            <option>Доставлен получателю</option>
+          </select>
+          <div class="mapping-note">→ cargo.status</div>
+        </div>
+      </div>
     </div>
-    <div class="field-group">
-        <label>Телефон получателя</label>
-        <input type="text" id="receiverPhone" value="+7 910 225 74 16">
-    </div>
-</div>
+  </div>
 
+  <!-- 6. Оплата -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Условия оплаты</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Сумма к оплате, ₽</label>
+          <input type="number" id="payment_amount" placeholder="28485">
+          <div class="mapping-note">→ payment.amount_rub</div>
+        </div>
+        <div class="field">
+          <label>Валюта</label>
+          <select id="payment_currency">
+            <option>RUB</option>
+            <option>KGS</option>
+            <option>USD</option>
+            <option>EUR</option>
+          </select>
+          <div class="mapping-note">→ payment.currency</div>
+        </div>
+        <div class="field">
+          <label>Курс (если не RUB)</label>
+          <input type="number" id="exchange_rate" placeholder="1.0000" step="0.0001">
+          <div class="mapping-note">→ invoice.exchange_rate</div>
+        </div>
+        <div class="field">
+          <label>Форма оплаты</label>
+          <select id="payment_form">
+            <option>Безналичная</option>
+            <option>Наличная</option>
+          </select>
+          <div class="mapping-note">→ payment.form</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Условия оплаты</label>
+          <input type="text" id="payment_terms" placeholder="на р/с до 4 б/д по скану АВР и СЧ">
+          <div class="mapping-note">→ payment.terms</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- 7. Счёт-фактура (Сет-фактура) -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Счёт-фактура (КР)</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Покупатель (ФИО / наименование)</label>
+          <input type="text" id="sf_buyer_name" placeholder="ИП Шушакова Елена Викторовна">
+          <div class="mapping-note">→ invoice.buyer.name_full</div>
+        </div>
+        <div class="field">
+          <label>ИНН покупателя</label>
+          <input type="text" id="sf_buyer_inn" placeholder="390517658070">
+          <div class="mapping-note">→ invoice.buyer.inn</div>
+        </div>
+        <div class="field">
+          <label>Страна / код нал. органа</label>
+          <input type="text" id="sf_buyer_country" placeholder="643 — Российская Федерация">
+          <div class="mapping-note">→ buyer.tax_authority_or_country</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Адрес покупателя</label>
+          <input type="text" id="sf_buyer_address" placeholder="РФ, г. Калининград, ул. Краснопрудная, дом 47, кв. 10">
+          <div class="mapping-note">→ invoice.buyer.address_actual</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Банк покупателя</label>
+          <input type="text" id="sf_buyer_bank" placeholder="АО КБ «МОДУЛЬБАНК», БИК 044525092">
+          <div class="mapping-note">→ buyer.bank.name + bik</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Счёт покупателя</label>
+          <input type="text" id="sf_buyer_account" placeholder="40802810870010417761">
+          <div class="mapping-note">→ buyer.bank.account</div>
+        </div>
+        <div class="field">
+          <label>Договор (контракт) №</label>
+          <input type="text" id="sf_contract" placeholder="№2025/065">
+          <div class="mapping-note">→ delivery.contract_number</div>
+        </div>
+        <div class="field">
+          <label>Дата договора</label>
+          <input type="date" id="sf_contract_date">
+          <div class="mapping-note">→ delivery.contract_date</div>
+        </div>
+        <div class="field">
+          <label>Примечание (№ рейса)</label>
+          <input type="text" id="sf_note" placeholder="№0429">
+          <div class="mapping-note">→ delivery.note</div>
+        </div>
+        <div class="field">
+          <label>Вид поставки</label>
+          <select id="sf_supply_type">
+            <option>облагаемая по ставке "0"</option>
+            <option>облагаемая по ставке "12%"</option>
+            <option>необлагаемая</option>
+          </select>
+          <div class="mapping-note">→ delivery.supply_type</div>
+        </div>
+        <div class="field">
+          <label>Сумма с/ф (кг. сом / ин.вал.)</label>
+          <input type="number" id="sf_amount_foreign" placeholder="25425.00">
+          <div class="mapping-note">→ totals.foreign_currency_total</div>
+        </div>
+        <div class="field">
+          <label>Курс валюты с/ф</label>
+          <input type="number" id="sf_exchange_rate" placeholder="1.1111" step="0.0001">
+          <div class="mapping-note">→ totals.exchange_rate</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Сумма с/ф (KGS, итого)</label>
+          <input type="number" id="sf_amount_kgs" placeholder="28249.72">
+          <div class="mapping-note">→ totals.invoice_total</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    </div>
-<!-- Плательщик для экспедиторской расписки -->
-<div class="row-2col">
-    <div class="field-group"><label>Плательщик</label>
-        <select id="payer">
-            <option>Отправитель</option>
-            <option>Получатель</option>
-            <option>3-я сторона</option>
-        </select>
-    </div>
-    <div class="field-group"><label>Форма оплаты</label>
-        <select id="paymentForm">
-            <option>Безналичные</option>
-            <option>Наличные</option>
-        </select>
-    </div>
-	
-	
-	<!-- Статус оплаты для экспедиторской расписки -->
-<div class="row-2col">
-    <div class="field-group">
-        <label>Статус оплаты</label>
+  <!-- 8. Экспедиторская расписка -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Экспедиторская расписка (TA)</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Серия / №</label>
+          <div class="inline-group">
+            <input type="text" id="waybill_series" value="TA" style="width:50px">
+            <input type="text" id="waybill_number" placeholder="001721">
+          </div>
+          <div class="mapping-note">→ waybill.series / number</div>
+        </div>
+        <div class="field">
+          <label>Дата</label>
+          <input type="date" id="waybill_date">
+          <div class="mapping-note">→ waybill.date</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Объявленная стоимость груза (страхование)</label>
+          <input type="number" id="waybill_insurance" placeholder="0.00">
+          <div class="mapping-note">→ waybill.insurance.declared_value</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Отправитель (ФИО/компания)</label>
+          <input type="text" id="waybill_sender_name" placeholder="ФИО или наименование компании">
+          <div class="mapping-note">→ waybill.sender.fullname_or_company</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Город, адрес отправителя</label>
+          <input type="text" id="waybill_sender_address" placeholder="Бишкек, ул. Октябрьская, 16Б">
+          <div class="mapping-note">→ waybill.sender.city_street_house</div>
+        </div>
+        <div class="field">
+          <label>Паспорт / ИНН отправителя</label>
+          <input type="text" id="waybill_sender_doc" placeholder="ИНН или серия/номер паспорта">
+          <div class="mapping-note">→ waybill.sender.passport_inn</div>
+        </div>
+        <div class="field">
+          <label>Тел. отправителя</label>
+          <input type="tel" id="waybill_sender_phone" placeholder="+996 700 000 000">
+          <div class="mapping-note">→ waybill.sender.contact_phone</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Получатель (ФИО/компания)</label>
+          <input type="text" id="waybill_receiver_name" placeholder="ФИО или наименование компании">
+          <div class="mapping-note">→ waybill.receiver.fullname_or_company</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Город, адрес получателя</label>
+          <input type="text" id="waybill_receiver_address" placeholder="Москва, склад Импорт ASTRUM">
+          <div class="mapping-note">→ waybill.receiver.city_street_house</div>
+        </div>
+        <div class="field">
+          <label>Паспорт / ИНН получателя</label>
+          <input type="text" id="waybill_receiver_doc" placeholder="ИНН или серия/номер паспорта">
+          <div class="mapping-note">→ waybill.receiver.passport_inn</div>
+        </div>
+        <div class="field">
+          <label>Тел. получателя</label>
+          <input type="tel" id="waybill_receiver_phone" placeholder="+7 900 000 0000">
+          <div class="mapping-note">→ waybill.receiver.contact_phone</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="grid grid-2">
         <div>
-            <label style="display: inline-block; margin-right: 20px;"><input type="radio" name="paymentStatus" value="Оплачено"> Оплачено</label>
-            <label style="display: inline-block;"><input type="radio" name="paymentStatus" value="Не оплачено" checked> Не оплачено</label>
+          <label style="display:block; margin-bottom:6px;">Доп. услуги (отправитель)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" id="svc_prr_sender"> ПРР</label>
+            <label class="checkbox-label"><input type="checkbox" id="svc_docs"> Оформление документов</label>
+            <label class="checkbox-label"><input type="checkbox" id="svc_door"> Доставка до двери</label>
+          </div>
+          <div class="mapping-note">→ sender.additional_services</div>
         </div>
-    </div>
-    <div class="field-group">
-        <label> </label>
-    </div>
-</div>
-	
-	
-	
-</div>
-    <div class="row-2col">
-        <div class="field-group">
-            <label>Автомобиль (госномер)</label>
-            <input type="text" id="vehicle" value="Scania, A123BC 777">
-        </div>
-        <div class="field-group">
-            <label>Прицеп</label>
-            <input type="text" id="trailer" value="Schmitz, ВЕ4567 77">
-        </div>
-    </div>
-
-    <!-- СТАТУС -->
-    <div class="field-group">
-        <label>Статус груза</label>
-        <select id="cargoStatus">
-            <option>Принят на складе (Экспорт Бишкек)</option>
-            <option>В пути</option>
-            <option>Доставлен</option>
-            <option>Задержан</option>
-        </select>
-    </div>
-
-    <!-- ================= 5. ДОПОЛНИТЕЛЬНЫЕ РЕКВИЗИТЫ ДЛЯ ДОКУМЕНТОВ ================= -->
-    <hr>
-    <div style="font-weight: 600; margin: 20px 0 12px 0;">Реквизиты для счёт-фактуры, заявки, акта</div>
-    <div class="row-3col">
-        <div class="field-group"><label>ИНН отправителя</label><input type="text" id="senderINN" value="00612201810097"></div>
-        <div class="field-group"><label>БИК отправителя</label><input type="text" id="senderBIC" value="124016"></div>
-        <div class="field-group"><label>Счёт отправителя</label><input type="text" id="senderAccount" value="1240340000038169"></div>
-        <div class="field-group"><label>Банк отправителя</label><input type="text" id="senderBank" value="ОАО «БАКАЙ БАНК»"></div>
-        <div class="field-group"><label>ИНН получателя</label><input type="text" id="receiverINN" value="910225741672"></div>
-        <div class="field-group"><label>БИК получателя</label><input type="text" id="receiverBIC" value="044525092"></div>
-        <div class="field-group"><label>Счёт получателя</label><input type="text" id="receiverAccount" value="40802810870010417761"></div>
-        <div class="field-group"><label>Ставка НДС</label><select id="vatRate"><option value="0">НДС 0%</option><option value="12">НДС 12%</option><option value="none">Без НДС</option></select></div>
-        <div class="field-group"><label>Валюта документа</label><select id="currencyText"><option>RUB</option><option>KGS</option><option>USD</option></select></div>
-
-
-		<!-- Курс валюты и итог в иностранной валюте -->
-<div class="row-2col">
-    <div class="field-group">
-        <label>Курс (валюта → RUB)</label>
-        <input type="text" id="exchangeRate" value="1" placeholder="1 RUB = X валюты">
-    </div>
-    <div class="field-group">
-        <label>Итого в иностранной валюте</label>
-        <input type="text" id="totalForeign" readonly style="background:#f3f4f6;">
-    </div>
-</div>
-
-
-
-		<div class="field-group"><label>Код валюты (ISO)</label><input type="text" id="currencyCode" value="643" placeholder="643 - RUB"></div>
-    </div>
-
-  <div class="row-2col">
-        <div class="field-group"><label>Номер заявки / договора</label><input type="text" id="orderNum" value="8"></div>
-        <div class="field-group"><label>Счёт на оплату №</label><input type="text" id="invoiceNumber" value="0370"></div>
-        <div class="field-group"><label>Дата счёта / акта</label><input type="date" id="invoiceDate" value="2026-03-30"></div>
-        <div class="field-group"><label>Условия оплаты</label><input type="text" id="paymentTerms" value="Оплата в течение 4 б/д по скану АВР и СЧ"></div>
-    </div>
-
-    <!-- Дата поставки для счёт-фактуры -->
-    <div class="row-2col">
-        <div class="field-group"><label>Дата поставки (сч-ф)</label><input type="date" id="supplyDate" value="2026-04-09"></div>
-        <div class="field-group"><label>Договор №</label><input type="text" id="contractNum" value="2025/129"></div>
-        <div class="field-group"><label>Заявка №</label><input type="text" id="requestNum" value="8"></div>
-    </div>
-
-    <!-- ПАСПОРТНЫЕ И ПОДПИСИ -->
-    <div class="row-2col">
-        <div class="field-group"><label>Паспорт отправителя (Эксп. расписка)</label><textarea rows="2" id="senderPassport">серия ID 123456, выдан ОВД Свердловского р-на</textarea></div>
-        <div class="field-group"><label>Паспорт получателя</label><textarea rows="2" id="receiverPassport">серия 4015 123456, выдан УМВД Калининграда</textarea></div>
-    </div>
-
-    <div class="row-3col">
-        <div class="field-group"><label>Подпись отправителя</label><input type="text" id="signSender" value="Шумаков В.Б."></div>
-        <div class="field-group"><label>Подпись получателя</label><input type="text" id="signReceiver" value="Пирогова Э.В."></div>
-        <div class="field-group"><label>Подпись экспедитора / склада</label><input type="text" id="signForwarder" value="Иванова А.С."></div>
-    </div>
-<!-- Доп.услуги и упаковка для Экспедиторской расписки -->
-<hr>
-<div style="font-weight: 600; margin: 20px 0 12px 0;">Доп.услуги и упаковка (Экспедиторская расписка)</div>
-
-
-<div class="row-2col">
-    <div class="field-group">
-        <label>Серия ТА</label>
-        <input type="text" id="taSeries" value="TA" style="width: 100px;">
-    </div>
-    <div class="field-group">
-        <label>Номер ТА (экспедиторской расписки)</label>
-        <input type="text" id="taNumber" value="001721">
-    </div>
-</div>
-
-
-<div class="row-2col">
-    <div class="field-group">
-        <label>Доп.услуги (отправитель)</label><br>
-        <label><input type="checkbox" id="senderPrr"> ПРР (погрузо-разгрузочные)</label><br>
-        <label><input type="checkbox" id="senderDocs"> Оформление документов</label><br>
-        <label><input type="checkbox" id="senderDelivery"> Доставка до двери</label>
-    </div>
-    <div class="field-group">
-        <label>Доп.услуги (получатель)</label><br>
-        <label><input type="checkbox" id="receiverPrr"> ПРР (погрузо-разгрузочные)</label>
-    </div>
-</div>
-
-<div class="row-3col">
-    <div class="field-group">
-        <label>Тип упаковки</label><br>
-        <label><input type="checkbox" id="packCardboard"> картон</label><br>
-        <label><input type="checkbox" id="packBag"> мешок</label><br>
-        <label><input type="checkbox" id="packPlastic"> пластик</label>
-    </div>
-    <div class="field-group">
-        <label> </label><br>
-        <label><input type="checkbox" id="packWood"> дерево</label><br>
-        <label><input type="checkbox" id="packMetal"> металл</label><br>
-        <label><input type="checkbox" id="packPallet"> паллет</label>
-    </div>
-    <div class="field-group">
-        <label>Страхование</label>
-        <input type="text" id="insurance" placeholder="Сумма / полис / страховщик">
-    </div>
-</div>
-    <!-- ОСОБЫЕ ОТМЕТКИ -->
-    <div class="field-group">
-        <label>Примечание / Особые отметки</label>
-        <textarea rows="2" id="remarks">Стоимость перевозки 45 руб/кг (расчёт по наибольшему значению)</textarea>
-    </div>
-
-    <!-- ================= 6. ФАЙЛЫ И ДОКУМЕНТЫ (как в ТЗ) ================= -->
-    <div class="file-area">
-        <div style="font-weight: 500; margin-bottom: 12px;">Нажмите чтобы прикрепить документы, фото или видео груза</div>
-        <div class="file-input-label">
-            Выбрать файлы <input type="file" multiple>
-        </div>
-        <div style="font-size: 12px; color: #4b5563;">Файл не выбран | PDF, Word, изображения, видео</div>
-    </div>
-
-    <!-- КНОПКИ ДЕЙСТВИЙ -->
-    <div class="flex-buttons">
         <div>
-            <button onclick="generateAllDocumentsPreview()">Сформировать предпросмотр документов</button>
-            <button class="secondary" onclick="window.print()">Распечатать манифест</button>
+          <label style="display:block; margin-bottom:6px;">Доп. услуги (получатель)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" id="svc_prr_receiver"> ПРР</label>
+          </div>
+          <div class="mapping-note">→ receiver.additional_services</div>
         </div>
-        <button onclick="submitManifest()">Сохранить манифест</button>
-    </div>
+      </div>
 
-    <div style="font-size: 11px; color: #6c7283; text-align: center; margin-top: 32px;">
-        ASTRUM TMS — генерация счёт-фактуры, экспедиторской расписки, заявки, акта, счёта
+      <hr class="divider">
+
+      <div class="grid grid-2">
+        <div>
+          <label style="display:block; margin-bottom:6px;">Упаковка отправителя</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" id="pack_access"> Есть доступ к вложениям</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_none"> Без упаковки</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_cardboard"> Картон</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_bag"> Мешок</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_plastic"> Пластик</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_wood"> Дерево</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_metal"> Металл</label>
+          </div>
+          <div class="mapping-note">→ waybill.packing_by_sender</div>
+        </div>
+        <div>
+          <label style="display:block; margin-bottom:6px;">Доп. упаковка</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" id="pack_refused_oppg"> Отказ от ОППГ</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_hard"> ЖУ</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_box"> Коробка</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_sealed_bag"> Мешок с пломбой</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_strapping"> Стрепинг лента</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_pallet_board"> Паллетный борт (ПБ)</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_pallet"> Паллет</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_stretch"> Стрейч-плёнка</label>
+            <label class="checkbox-label"><input type="checkbox" id="pack_palletizing"> Паллетизация</label>
+          </div>
+          <div class="mapping-note">→ waybill.extra_packing</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="grid grid-3">
+        <div>
+          <label style="display:block; margin-bottom:6px;">Плательщик</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="radio" name="payer" value="sender"> Отправитель</label>
+            <label class="checkbox-label"><input type="radio" name="payer" value="receiver"> Получатель</label>
+            <label class="checkbox-label"><input type="radio" name="payer" value="third_party"> 3-я сторона</label>
+          </div>
+          <div class="mapping-note">→ waybill.payer</div>
+        </div>
+        <div>
+          <label style="display:block; margin-bottom:6px;">Оплачено</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="radio" name="paid_status" value="paid"> Оплачено</label>
+            <label class="checkbox-label"><input type="radio" name="paid_status" value="not_paid"> Не оплачено</label>
+          </div>
+          <div class="mapping-note">→ waybill.payment.paid</div>
+        </div>
+        <div>
+          <label style="display:block; margin-bottom:6px;">Форма оплаты (расписка)</label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="radio" name="cash_form" value="cash"> Наличные</label>
+            <label class="checkbox-label"><input type="radio" name="cash_form" value="non_cash"> Безналичные</label>
+          </div>
+          <div class="mapping-note">→ waybill.payment.cash</div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- 9. Особые отметки -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Особые отметки и документы</div>
+    <div class="section-body">
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Особые отметки (доп. информация о грузе)</label>
+          <textarea id="special_marks" placeholder="Пример: хрупкий груз, не переворачивать..."></textarea>
+          <div class="mapping-note">→ cargo.special_marks</div>
+        </div>
+        <div class="field">
+          <label>Комментарий / Примечание</label>
+          <textarea id="comment" placeholder="Любые дополнительные сведения..."></textarea>
+          <div class="mapping-note">→ misc.comment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<div class="form-footer">
+  <button class="btn btn-ghost" onclick="clearForm()">Очистить форму</button>
+  <button class="btn" onclick="collectJSON()">👁 Просмотр JSON</button>
+  <button class="btn btn-primary" onclick="submitForm()">💾 Сохранить в Google Sheets</button>
+</div>
+
+<!-- JSON preview modal -->
+<div id="jsonModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:10px; max-width:760px; width:95%; max-height:80vh; overflow:auto; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <strong>JSON для записи в Google Sheets</strong>
+      <button class="btn btn-ghost" onclick="document.getElementById('jsonModal').style.display='none'">✕</button>
+    </div>
+    <pre id="jsonOutput" style="font-size:11px; background:#f8f9fb; border:1px solid #e4e7ec; border-radius:6px; padding:12px; overflow:auto; max-height:55vh; white-space:pre-wrap;"></pre>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn" onclick="copyJSON()">📋 Копировать</button>
+      <button class="btn btn-primary" onclick="submitForm()">💾 Записать в Sheets</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    function updateCalculations() {
-        const rows = document.querySelectorAll('#cargoBody tr');
-        const coeff = parseFloat(document.getElementById('volCoeff').value) || 0;
-        let totalP = 0, totalW = 0, totalV = 0, totalTariff = 0, totalPrice = 0;
+let rowCount = 1;
 
-        rows.forEach(row => {
-            let places = parseFloat(row.querySelector('.cargo-places')?.value) || 0;
-            let weight = parseFloat(row.querySelector('.cargo-weight')?.value) || 0;
-            let vol = parseFloat(row.querySelector('.cargo-vol')?.value) || 0;
-            let priceRow = parseFloat(row.querySelector('.cargo-price')?.value) || 0;
+function recalc(rowNum) {
+  const coef = parseFloat(document.getElementById('volume_coef').value) || 300;
+  const weight = parseFloat(document.getElementById(`cargo_weight_${rowNum}`)?.value) || 0;
+  const volume = parseFloat(document.getElementById(`cargo_volume_${rowNum}`)?.value) || 0;
+  const rate   = parseFloat(document.getElementById(`cargo_rate_${rowNum}`)?.value) || 0;
 
-            totalP += places;
-            totalW += weight;
-            totalV += vol;
-            const tariff = Math.max(weight, vol * coeff);
-            row.querySelector('.tariff-cell').innerText = tariff.toFixed(1);
-            totalTariff += tariff;
-            totalPrice += priceRow;
-        });
+  const tariffWeight = Math.max(weight, volume * coef);
+  const freight = tariffWeight * rate;
 
-        document.getElementById('totalPlaces').innerText = totalP;
-        document.getElementById('totalWeight').innerText = totalW.toFixed(1);
-        document.getElementById('totalVol').innerText = totalV.toFixed(3);
-        document.getElementById('totalTariff').innerText = totalTariff.toFixed(1);
-        let currSym = document.getElementById('currencyText').value;
-        document.getElementById('totalSum').innerHTML = totalPrice.toFixed(2);
-        document.getElementById('totalCurrSymbol').innerText = currSym;
-    }
+  const twEl = document.getElementById(`cargo_tariff_weight_${rowNum}`);
+  const frEl = document.getElementById(`cargo_freight_${rowNum}`);
+  if (twEl) twEl.value = tariffWeight > 0 ? tariffWeight.toFixed(1) : '';
+  if (frEl) frEl.value = freight > 0 ? freight.toFixed(2) : '';
 
-    function addRow() {
-        const tbody = document.getElementById('cargoBody');
-        const rowNum = tbody.children.length + 1;
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${rowNum}</td>
-            <td><input type="text" class="cargo-name" placeholder="Наименование"></td>
-            <td><input type="number" class="cargo-places" value="1"></td>
-            <td><input type="number" class="cargo-weight" value="0"></td>
-            <td><input type="number" step="0.01" class="cargo-vol" value="0"></td>
-            <td class="tariff-cell">0.0</td>
-            <td><input type="number" class="cargo-price" value="0"></td>
-            <td><button type="button" class="danger" onclick="removeRow(this)">✕</button></td>
-        `;
-        tbody.appendChild(newRow);
-        attachEventsToRow(newRow);
-        updateCalculations();
-    }
-
-    function attachEventsToRow(row) {
-        const inputs = row.querySelectorAll('input');
-        inputs.forEach(inp => inp.addEventListener('input', updateCalculations));
-    }
-
-    function removeRow(btn) {
-        const row = btn.closest('tr');
-        if (document.querySelectorAll('#cargoBody tr').length > 1) row.remove();
-        else alert("Должна быть хотя бы одна строка груза");
-        updateCalculations();
-    }
-
-    function generateAllDocumentsPreview() {
-    // === 1. Базовые реквизиты ===
-    const manifestNum = document.getElementById('manifestNum').value;
-    const manifestDate = document.getElementById('manifestDate').value;
-    const sender = document.getElementById('senderName').value;
-    const receiver = document.getElementById('receiverName').value;
-    const senderLegalAddress = document.getElementById('senderLegalAddress')?.value || 'не указан';
-    const receiverLegalAddress = document.getElementById('receiverLegalAddress')?.value || 'не указан';
-    const senderPhone = document.getElementById('senderPhone')?.value || 'не указан';
-    const receiverPhone = document.getElementById('receiverPhone')?.value || 'не указан';
-    const senderINN = document.getElementById('senderINN').value;
-    const receiverINN = document.getElementById('receiverINN').value;
-    const senderBIC = document.getElementById('senderBIC').value;
-    const receiverBIC = document.getElementById('receiverBIC').value;
-    const senderAccount = document.getElementById('senderAccount').value;
-    const receiverAccount = document.getElementById('receiverAccount').value;
-    const senderBank = document.getElementById('senderBank').value;
-    
-    // === 2. Финансовые параметры ===
-    const totalSum = document.getElementById('totalSum').innerText;
-    const curr = document.getElementById('currencyText').value;
-    const currCode = document.getElementById('currencyCode')?.value || '643';
-    const exchangeRate = document.getElementById('exchangeRate')?.value || '1';
-    const totalForeign = document.getElementById('totalForeign')?.value || '';
-    const vatRate = document.getElementById('vatRate').value;
-    const vatText = document.getElementById('vatRate').selectedOptions[0]?.text || "НДС 0%";
-    const paymentForm = document.getElementById('paymentForm')?.value || 'Безналичные';
-    const paymentStatus = document.querySelector('input[name="paymentStatus"]:checked')?.value || 'Не оплачено';
-    const paymentTerms = document.getElementById('paymentTerms').value;
-    
-    // === 3. Даты и номера ===
-    const supplyDate = document.getElementById('supplyDate')?.value || 'не указана';
-    const contractNum = document.getElementById('contractNum')?.value || 'не указан';
-    const requestNum = document.getElementById('requestNum')?.value || 'не указан';
-    const invoiceNumber = document.getElementById('invoiceNumber')?.value || 'не указан';
-    const invoiceDate = document.getElementById('invoiceDate')?.value || 'не указана';
-    const orderNum = document.getElementById('orderNum')?.value || 'не указан';
-    
-    // === 4. Транспорт и статус ===
-    const loadingAddress = document.getElementById('loadingAddress').value;
-    const unloadAddress = document.getElementById('unloadAddress').value;
-    const driverName = document.getElementById('driverName').value;
-    const vehicle = document.getElementById('vehicle').value;
-    const trailer = document.getElementById('trailer').value;
-    const cargoStatus = document.getElementById('cargoStatus').value;
-    
-    // === 5. Экспедиторская расписка ===
-    const taSeries = document.getElementById('taSeries')?.value || 'TA';
-    const taNumber = document.getElementById('taNumber')?.value || '';
-    const senderPassport = document.getElementById('senderPassport').value;
-    const receiverPassport = document.getElementById('receiverPassport').value;
-    const payer = document.getElementById('payer')?.value || 'Отправитель';
-    const senderPrr = document.getElementById('senderPrr')?.checked ? '✅ Да' : '❌ Нет';
-    const receiverPrr = document.getElementById('receiverPrr')?.checked ? '✅ Да' : '❌ Нет';
-    const senderDocs = document.getElementById('senderDocs')?.checked ? '✅ Да' : '❌ Нет';
-    const senderDelivery = document.getElementById('senderDelivery')?.checked ? '✅ Да' : '❌ Нет';
-    const insurance = document.getElementById('insurance')?.value || 'не указано';
-    
-    // === 6. Упаковка ===
-    let packaging = [];
-    if (document.getElementById('packCardboard')?.checked) packaging.push('картон');
-    if (document.getElementById('packBag')?.checked) packaging.push('мешок');
-    if (document.getElementById('packPlastic')?.checked) packaging.push('пластик');
-    if (document.getElementById('packWood')?.checked) packaging.push('дерево');
-    if (document.getElementById('packMetal')?.checked) packaging.push('металл');
-    if (document.getElementById('packPallet')?.checked) packaging.push('паллет');
-    const packagingText = packaging.length ? packaging.join(', ') : 'не указана';
-    
-    // === 7. Подписи ===
-    const signSender = document.getElementById('signSender').value;
-    const signReceiver = document.getElementById('signReceiver').value;
-    const signForwarder = document.getElementById('signForwarder').value;
-    const remarks = document.getElementById('remarks').value;
-    
-    // === 8. Строки груза ===
-    let cargoLines = [];
-    let totalWeight = 0;
-    let totalPlaces = 0;
-    let totalVolume = 0;
-    document.querySelectorAll('#cargoBody tr').forEach((tr, idx) => {
-        let name = tr.querySelector('.cargo-name')?.value || '';
-        let places = parseFloat(tr.querySelector('.cargo-places')?.value) || 0;
-        let weight = parseFloat(tr.querySelector('.cargo-weight')?.value) || 0;
-        let vol = parseFloat(tr.querySelector('.cargo-vol')?.value) || 0;
-        let price = parseFloat(tr.querySelector('.cargo-price')?.value) || 0;
-        let tariff = tr.querySelector('.tariff-cell')?.innerText || '0';
-        totalPlaces += places;
-        totalWeight += weight;
-        totalVolume += vol;
-        cargoLines.push(`${idx+1}. ${name} | мест: ${places} | вес: ${weight} кг | объём: ${vol} м³ | тариф.вес: ${tariff} | фрахт: ${price} ${curr}`);
-    });
-    
-    // === ФОРМИРУЕМ СООБЩЕНИЕ ===
-    let message = "╔════════════════════════════════════════════════════════════════════╗\n";
-    message += "║              ПРЕДПРОСМОТР ДОКУМЕНТОВ (СФ, расписка, заявка, акт)             ║\n";
-    message += "╚════════════════════════════════════════════════════════════════════╝\n\n";
-    
-    // ========== 1. СЧЕТ-ФАКТУРА (как в PDF 0429.pdf) ==========
-    message += "┌────────────────────────────────────────────────────────────────────┐\n";
-    message += "│  📄 СЧЕТ-ФАКТУРА (форма STI-008)                                    │\n";
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += `│ Номер: ${manifestNum}                                              │\n`;
-    message += `│ Дата оформления: ${manifestDate}                                   │\n`;
-    message += `│ Статус: первоначальный                                              │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПОСТАВЩИК:                                                          │\n";
-    message += `│   ${sender}                                                         │\n`;
-    message += `│   ИНН: ${senderINN}                                                 │\n`;
-    message += `│   Юр.адрес: ${senderLegalAddress}                                   │\n`;
-    message += `│   Банк: ${senderBank} (БИК: ${senderBIC})                           │\n`;
-    message += `│   Счёт: ${senderAccount}                                            │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПОКУПАТЕЛЬ:                                                         │\n";
-    message += `│   ${receiver}                                                       │\n`;
-    message += `│   ИНН: ${receiverINN}                                               │\n`;
-    message += `│   Юр.адрес: ${receiverLegalAddress}                                 │\n`;
-    message += `│   Банк БИК: ${receiverBIC}                                          │\n`;
-    message += `│   Счёт: ${receiverAccount}                                          │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ИНФОРМАЦИЯ О РЕАЛИЗАЦИИ:                                             │\n";
-    message += `│   Дата поставки: ${supplyDate}                                      │\n`;
-    message += `│   Вид поставки: ${vatText}                                          │\n`;
-    message += `│   Форма оплаты: ${paymentForm}                                      │\n`;
-    message += `│   Договор: №${contractNum}                                          │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ТАБЛИЦА УСЛУГ:                                                      │\n";
-    message += `│   Код валюты: ${currCode} (${curr}) | Курс: ${exchangeRate}         │\n`;
-    cargoLines.forEach(line => {
-        message += `│   ${line.substring(0, 68)}│\n`;
-    });
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += `│   Итого по счету-фактуре: ${totalSum} ${curr}                       │\n`;
-    if (totalForeign) {
-        message += `│   Итого в иностранной валюте: ${totalForeign}                      │\n`;
-    }
-    message += "└────────────────────────────────────────────────────────────────────┘\n\n";
-    
-    // ========== 2. ЭКСПЕДИТОРСКАЯ РАСПИСКА (как на фото) ==========
-    message += "┌────────────────────────────────────────────────────────────────────┐\n";
-    message += "│  📋 ЭКСПЕДИТОРСКАЯ РАСПИСКА                                         │\n";
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += `│ Серия ТА: ${taSeries}                    │ Номер: ${taNumber}                    │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ОТПРАВИТЕЛЬ:                                                        │\n";
-    message += `│   ${sender}                                                         │\n`;
-    message += `│   Паспорт: ${senderPassport.substring(0, 60)}                       │\n`;
-    message += `│   Адрес: ${senderLegalAddress.substring(0, 60)}                     │\n`;
-    message += `│   Телефон: ${senderPhone}                                           │\n`;
-    message += `│   Доп.услуги: ПРР:${senderPrr} | Док-ты:${senderDocs} | Доставка:${senderDelivery} │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПОЛУЧАТЕЛЬ:                                                         │\n";
-    message += `│   ${receiver}                                                       │\n`;
-    message += `│   Паспорт: ${receiverPassport.substring(0, 60)}                     │\n`;
-    message += `│   Адрес: ${receiverLegalAddress.substring(0, 60)}                   │\n`;
-    message += `│   Телефон: ${receiverPhone}                                         │\n`;
-    message += `│   Доп.услуги: ПРР:${receiverPrr}                                    │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПЛАТЕЛЬЩИК:                                                         │\n";
-    message += `│   ${payer}                                                          │\n`;
-    message += `│   Форма оплаты: ${paymentForm} | Статус: ${paymentStatus}           │\n`;
-    message += `│   Условия оплаты: ${paymentTerms}                                   │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ОПИСАНИЕ ОТПРАВЛЕНИЯ:                                               │\n";
-    message += `│   Мест: ${totalPlaces} | Вес: ${totalWeight.toFixed(1)} кг | Объём: ${totalVolume.toFixed(3)} м³ │\n`;
-    message += `│   Упаковка: ${packagingText}                                        │\n`;
-    message += `│   Страхование: ${insurance}                                         │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПОДПИСИ:                                                            │\n";
-    message += `│   Отправитель: ${signSender}                                        │\n`;
-    message += `│   Получатель: ${signReceiver}                                       │\n`;
-    message += `│   Экспедитор/Склад: ${signForwarder}                                │\n`;
-    message += "└────────────────────────────────────────────────────────────────────┘\n\n";
-    
-    // ========== 3. ЗАЯВКА / АКТ (как в DOCX) ==========
-    message += "┌────────────────────────────────────────────────────────────────────┐\n";
-    message += "│  🚛 ЗАЯВКА / ТРАНСПОРТНЫЙ ЗАКАЗ / АКТ                               │\n";
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += `│ Заявка №: ${requestNum}                      │ Дата: ${invoiceDate}              │\n`;
-    message += `│ Счёт №: ${invoiceNumber}                     │ Договор: №${contractNum}          │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += `│ ЗАКАЗЧИК: ${receiver}                                              │\n`;
-    message += `│ ИСПОЛНИТЕЛЬ: ${sender}                                              │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ МАРШРУТ:                                                            │\n";
-    message += `│   Погрузка: ${loadingAddress}                                       │\n`;
-    message += `│   Выгрузка: ${unloadAddress}                                        │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ТРАНСПОРТ:                                                          │\n";
-    message += `│   Водитель: ${driverName}                                           │\n`;
-    message += `│   Автомобиль: ${vehicle}                                            │\n`;
-    message += `│   Прицеп: ${trailer}                                                │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ГРУЗ:                                                               │\n";
-    cargoLines.slice(0, 5).forEach(line => {
-        message += `│   ${line.substring(0, 68)}│\n`;
-    });
-    if (cargoLines.length > 5) {
-        message += `│   ... и ещё ${cargoLines.length - 5} позиций                     │\n`;
-    }
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ИТОГО:                                                              │\n";
-    message += `│   Сумма: ${totalSum} ${curr}                                        │\n`;
-    message += `│   Статус груза: ${cargoStatus}                                      │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПРИМЕЧАНИЯ:                                                         │\n";
-    message += `│   ${remarks.substring(0, 68)}                                       │\n`;
-    message += "├────────────────────────────────────────────────────────────────────┤\n";
-    message += "│ ПОДПИСИ СТОРОН:                                                     │\n";
-    message += `│   Заказчик: ${signReceiver}          │ Исполнитель: ${signSender}   │\n`;
-    message += "│                                                                      │\n";
-    message += "│   М.П.                                М.П.                           │\n";
-    message += "└────────────────────────────────────────────────────────────────────┘\n\n";
-    
-    message += "═══════════════════════════════════════════════════════════════════════\n";
-    message += "✓ Данные готовы для печати официальных документов\n";
-    message += "✓ Все реквизиты заполнены\n";
-    message += "═══════════════════════════════════════════════════════════════════════\n";
-    
-    alert(message);
+  updateTotals();
 }
 
+document.getElementById('volume_coef').addEventListener('input', () => {
+  for (let i = 1; i <= rowCount; i++) recalc(i);
+});
 
-    function submitManifest() {
-        alert("Манифест сохранён. Все данные готовы для экспорта в JSON / печати документов.");
-        const allData = {
-            manifest: document.getElementById('manifestNum').value,
-            sender: document.getElementById('senderName').value,
-            receiver: document.getElementById('receiverName').value,
-            cargoLines: [],
-            total: document.getElementById('totalSum').innerText
-        };
-        document.querySelectorAll('#cargoBody tr').forEach(tr => {
-            allData.cargoLines.push({
-                name: tr.querySelector('.cargo-name')?.value,
-                weight: tr.querySelector('.cargo-weight')?.value,
-                price: tr.querySelector('.cargo-price')?.value
-            });
-        });
-        console.log(allData);
+function updateTotals() {
+  let places = 0, weight = 0, volume = 0, tariffW = 0, freight = 0;
+  for (let i = 1; i <= rowCount; i++) {
+    if (!document.getElementById(`cargo_name_${i}`)) continue;
+    places   += parseFloat(document.getElementById(`cargo_places_${i}`)?.value) || 0;
+    weight   += parseFloat(document.getElementById(`cargo_weight_${i}`)?.value) || 0;
+    volume   += parseFloat(document.getElementById(`cargo_volume_${i}`)?.value) || 0;
+    tariffW  += parseFloat(document.getElementById(`cargo_tariff_weight_${i}`)?.value) || 0;
+    freight  += parseFloat(document.getElementById(`cargo_freight_${i}`)?.value) || 0;
+  }
+  document.getElementById('tot_places').textContent  = places  || '—';
+  document.getElementById('tot_weight').textContent  = weight  ? weight.toFixed(1)  : '—';
+  document.getElementById('tot_volume').textContent  = volume  ? volume.toFixed(2)  : '—';
+  document.getElementById('tot_tariff_weight').textContent = tariffW ? tariffW.toFixed(1) : '—';
+  document.getElementById('tot_freight').textContent = freight ? freight.toLocaleString('ru-RU', {maximumFractionDigits:2}) + ' ₽' : '— ₽';
+
+  // Auto-fill payment amount
+  if (freight > 0) {
+    const pa = document.getElementById('payment_amount');
+    if (!pa.value) pa.value = freight.toFixed(2);
+  }
+}
+
+function addCargoRow() {
+  rowCount++;
+  const n = rowCount;
+  const tbody = document.getElementById('cargoRows');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="td-num">${n}</td>
+    <td><input type="text" id="cargo_name_${n}" placeholder="наименование" style="min-width:120px"></td>
+    <td><input type="number" id="cargo_places_${n}" placeholder="0" style="width:60px" oninput="recalc(${n})"></td>
+    <td><select id="cargo_places_unit_${n}" style="width:80px"><option>мешков</option><option>коробок</option><option>паллет</option><option>мест</option><option>штук</option></select></td>
+    <td><input type="number" id="cargo_weight_${n}" placeholder="0" style="width:70px" oninput="recalc(${n})"></td>
+    <td><input type="number" id="cargo_volume_${n}" placeholder="0.00" step="0.01" style="width:70px" oninput="recalc(${n})"></td>
+    <td><input type="number" id="cargo_tariff_weight_${n}" readonly style="width:70px;background:#f8f9fb;color:var(--accent);font-weight:600"></td>
+    <td><input type="number" id="cargo_rate_${n}" placeholder="45" style="width:64px" oninput="recalc(${n})"></td>
+    <td><select id="cargo_vat_${n}" style="width:60px"><option>0%</option><option>12%</option><option>20%</option></select></td>
+    <td><input type="number" id="cargo_freight_${n}" readonly style="width:80px;background:#f8f9fb;color:var(--accent);font-weight:700"></td>
+    <td><select id="cargo_payment_${n}" style="width:100px"><option>Предоплата</option><option>По скану АВР</option><option>По факту</option><option>Нал</option></select></td>
+    <td class="td-btn"><button type="button" class="btn-icon" onclick="removeRow(this)">×</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function removeRow(btn) {
+  const rows = document.querySelectorAll('#cargoRows tr');
+  if (rows.length <= 1) return;
+  btn.closest('tr').remove();
+  updateTotals();
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  if (el.type === 'checkbox') return el.checked;
+  if (el.type === 'radio') return el.checked ? el.value : undefined;
+  return el.value;
+}
+
+function collectJSON() {
+  const cargoItems = [];
+  for (let i = 1; i <= rowCount; i++) {
+    if (!document.getElementById(`cargo_name_${i}`)) continue;
+    const name = v(`cargo_name_${i}`);
+    if (!name) continue;
+    cargoItems.push({
+      name,
+      places: v(`cargo_places_${i}`),
+      places_unit: v(`cargo_places_unit_${i}`),
+      weight_kg: v(`cargo_weight_${i}`),
+      volume_m3: v(`cargo_volume_${i}`),
+      tariff_weight_kg: v(`cargo_tariff_weight_${i}`),
+      rate_per_kg: v(`cargo_rate_${i}`),
+      vat: v(`cargo_vat_${i}`),
+      freight_rub: v(`cargo_freight_${i}`),
+      payment_type: v(`cargo_payment_${i}`)
+    });
+  }
+
+  const payer = document.querySelector('input[name="payer"]:checked')?.value || '';
+  const paid  = document.querySelector('input[name="paid_status"]:checked')?.value || '';
+  const cashForm = document.querySelector('input[name="cash_form"]:checked')?.value || '';
+
+  const data = {
+    contract: { number: v('contract_number'), date: v('contract_date') },
+    order: { number: v('order_number'), date: v('order_date') },
+    customer: { type: v('customer_type'), name: v('customer_name'), inn: v('customer_inn') },
+    route: { from: v('route_from'), to: v('route_to') },
+    loading: { address: v('loading_address'), date: v('loading_date') },
+    unloading: { address: v('unloading_address'), date: v('unloading_date') },
+    cargo: cargoItems,
+    vehicle: {
+      driver_name: v('driver_name'), driver_phone: v('driver_phone'),
+      truck_number: v('truck_number'), gps_object: v('gps_object'),
+      cmr_number: v('cmr_number'), cargo_status: v('cargo_status')
+    },
+    payment: {
+      amount_rub: v('payment_amount'), currency: v('payment_currency'),
+      exchange_rate: v('exchange_rate'), form: v('payment_form'), terms: v('payment_terms')
+    },
+    invoice_kr: {
+      buyer_name: v('sf_buyer_name'), buyer_inn: v('sf_buyer_inn'),
+      buyer_country: v('sf_buyer_country'), buyer_address: v('sf_buyer_address'),
+      buyer_bank: v('sf_buyer_bank'), buyer_account: v('sf_buyer_account'),
+      contract: v('sf_contract'), contract_date: v('sf_contract_date'),
+      note: v('sf_note'), supply_type: v('sf_supply_type'),
+      amount_foreign: v('sf_amount_foreign'), exchange_rate: v('sf_exchange_rate'),
+      amount_kgs: v('sf_amount_kgs')
+    },
+    waybill: {
+      series: v('waybill_series'), number: v('waybill_number'), date: v('waybill_date'),
+      insurance_value: v('waybill_insurance'),
+      sender: { name: v('waybill_sender_name'), address: v('waybill_sender_address'), doc: v('waybill_sender_doc'), phone: v('waybill_sender_phone') },
+      receiver: { name: v('waybill_receiver_name'), address: v('waybill_receiver_address'), doc: v('waybill_receiver_doc'), phone: v('waybill_receiver_phone') },
+      services_sender: { prr: v('svc_prr_sender'), docs: v('svc_docs'), door: v('svc_door') },
+      services_receiver: { prr: v('svc_prr_receiver') },
+      packing: { access: v('pack_access'), none: v('pack_none'), cardboard: v('pack_cardboard'), bag: v('pack_bag'), plastic: v('pack_plastic'), wood: v('pack_wood'), metal: v('pack_metal') },
+      extra_packing: { refused_oppg: v('pack_refused_oppg'), hard: v('pack_hard'), box: v('pack_box'), sealed_bag: v('pack_sealed_bag'), strapping: v('pack_strapping'), pallet_board: v('pack_pallet_board'), pallet: v('pack_pallet'), stretch: v('pack_stretch'), palletizing: v('pack_palletizing') },
+      payer, paid_status: paid, payment_form: cashForm
+    },
+    misc: { special_marks: v('special_marks'), comment: v('comment') }
+  };
+
+  document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 2);
+  document.getElementById('jsonModal').style.display = 'flex';
+  return data;
+}
+
+function copyJSON() {
+  const text = document.getElementById('jsonOutput').textContent;
+  navigator.clipboard.writeText(text).then(() => alert('Скопировано в буфер обмена'));
+}
+
+async function submitForm() {
+  const data = collectJSON();
+  document.getElementById('jsonModal').style.display = 'none';
+
+  // Заглушка — здесь будет вызов Google Apps Script Web App / GitHub Actions
+  const WEBHOOK_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // TODO: заменить
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      alert('✅ Данные успешно записаны в Google Sheets!');
+    } else {
+      throw new Error(`HTTP ${res.status}`);
     }
+  } catch (e) {
+    alert('⚠️ Webhook не настроен. JSON скопирован — вставьте URL вашего Apps Script в WEBHOOK_URL.\n\n' + e.message);
+  }
+}
 
-    function bindAllEvents() {
-        const allInputs = document.querySelectorAll('input, select, textarea');
-        allInputs.forEach(el => el.addEventListener('input', updateCalculations));
-        document.getElementById('volCoeff').addEventListener('input', updateCalculations);
-        document.getElementById('currencyText').addEventListener('change', updateCalculations);
-        updateCalculations();
-    }
+function clearForm() {
+  if (!confirm('Очистить всю форму?')) return;
+  document.getElementById('mainForm').reset();
+  // Remove extra cargo rows
+  const tbody = document.getElementById('cargoRows');
+  while (tbody.children.length > 1) tbody.removeChild(tbody.lastChild);
+  rowCount = 1;
+  updateTotals();
+}
 
-    window.onload = () => {
-        bindAllEvents();
-        document.querySelectorAll('#cargoBody tr').forEach(row => attachEventsToRow(row));
-        updateCalculations();
-    };
+// Set today as default for dates
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('order_date').value = today;
+  document.getElementById('waybill_date').value = today;
+});
 </script>
 </body>
 </html>

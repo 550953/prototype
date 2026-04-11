@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Заявка на перевозку — ASTRUM</title>
+<title>Заявка на перевозку — ТЭК Аструм</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -337,6 +337,39 @@
     </div>
   </div>
 
+  <!-- 1b. Манифест TMS -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Манифест TMS (ASTRUM)</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Номер манифеста</label>
+          <input type="text" id="manifest_number" placeholder="AST-202604-00124">
+          <div class="mapping-note">→ manifest.number</div>
+        </div>
+        <div class="field">
+          <label>Дата манифеста</label>
+          <input type="date" id="manifest_date">
+          <div class="mapping-note">→ manifest.date</div>
+        </div>
+        <div class="field">
+          <label>Диспетчер</label>
+          <input type="text" id="manifest_dispatcher" placeholder="Иванова А.С.">
+          <div class="mapping-note">→ manifest.dispatcher</div>
+        </div>
+        <div class="field">
+          <label>Склад</label>
+          <select id="manifest_warehouse">
+            <option>Экспорт Бишкек</option>
+            <option>Импорт Москва</option>
+            <option>Транзит</option>
+          </select>
+          <div class="mapping-note">→ manifest.warehouse</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 2. Заказчик -->
   <div class="card">
     <div class="section-header"><span class="dot"></span>Заказчик</div>
@@ -366,7 +399,89 @@
     </div>
   </div>
 
-  <!-- 3. Маршрут и погрузка -->
+  <!-- 3. Исполнитель (реквизиты) -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Исполнитель — реквизиты (для счёта и АВР)</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Наименование</label>
+          <input type="text" id="executor_name" value="ОсОО «ТЭК Аструм»">
+          <div class="mapping-note">→ executor.company_name</div>
+        </div>
+        <div class="field">
+          <label>ИНН исполнителя</label>
+          <input type="text" id="executor_inn" value="00612201810097">
+          <div class="mapping-note">→ executor.inn</div>
+        </div>
+        <div class="field">
+          <label>Индекс</label>
+          <input type="text" id="executor_postal_code" value="725023">
+          <div class="mapping-note">→ executor.postal_code</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Адрес исполнителя</label>
+          <input type="text" id="executor_address" value="Кыргызстан, с. Ново-Покровка, ул. Октябрьская 16Б">
+          <div class="mapping-note">→ executor.address</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Директор (ФИО)</label>
+          <input type="text" id="executor_director" value="Шумаков В.Б.">
+          <div class="mapping-note">→ executor.director</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Главный бухгалтер (ФИО)</label>
+          <input type="text" id="executor_chief_accountant" value="Жарновникова З.Т.">
+          <div class="mapping-note">→ executor.chief_accountant</div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Банк исполнителя</label>
+          <input type="text" id="executor_bank_name" value="ОАО «БАКАЙ БАНК» г. Бишкек">
+          <div class="mapping-note">→ executor.bank.name</div>
+        </div>
+        <div class="field">
+          <label>БИК</label>
+          <input type="text" id="executor_bank_bik" value="124016">
+          <div class="mapping-note">→ executor.bank.bik</div>
+        </div>
+        <div class="field">
+          <label>Счёт № (исполнитель)</label>
+          <input type="text" id="executor_bank_account" value="1240340000038169">
+          <div class="mapping-note">→ executor.bank.account_number</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Банк-корреспондент</label>
+          <input type="text" id="executor_corr_bank_name" value="ПАО «МТС — Банк», Москва">
+          <div class="mapping-note">→ executor.bank.correspondent_bank.name</div>
+        </div>
+        <div class="field">
+          <label>ИНН банка-корр.</label>
+          <input type="text" id="executor_corr_bank_inn" value="7702045051">
+          <div class="mapping-note">→ correspondent_bank.inn</div>
+        </div>
+        <div class="field">
+          <label>БИК банка-корр.</label>
+          <input type="text" id="executor_corr_bank_bik" value="044525232">
+          <div class="mapping-note">→ correspondent_bank.bik</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Корр. счёт банка-корр.</label>
+          <input type="text" id="executor_corr_account" value="30101810600000000232">
+          <div class="mapping-note">→ correspondent_bank.corr_account</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Корр. счёт банка получателя</label>
+          <input type="text" id="executor_beneficiary_corr_account" value="30111810600000000006">
+          <div class="mapping-note">→ executor.bank.beneficiary_bank_corr_account</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Маршрут и погрузка -->
   <div class="card">
     <div class="section-header"><span class="dot"></span>Маршрут и погрузка</div>
     <div class="section-body">
@@ -381,7 +496,7 @@
           <input type="text" id="route_to" placeholder="г. Москва (РФ)">
           <div class="mapping-note">→ route.to</div>
         </div>
-        <div class="field col-span-3">
+        <div class="field col-span-2">
           <label>Адрес погрузки</label>
           <input type="text" id="loading_address" placeholder="ОсОО «Мастер Пласт», Бишкек">
           <div class="mapping-note">→ loading.address</div>
@@ -390,6 +505,16 @@
           <label>Дата погрузки</label>
           <input type="date" id="loading_date">
           <div class="mapping-note">→ loading.date</div>
+        </div>
+        <div class="field">
+          <label>Контактное лицо (загрузка)</label>
+          <input type="text" id="loading_contact_person" placeholder="ФИО контакта">
+          <div class="mapping-note">→ loading.contact_person</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Телефон (загрузка)</label>
+          <input type="tel" id="loading_contact_phone" placeholder="+996 700 000 000">
+          <div class="mapping-note">→ loading.contact_phone</div>
         </div>
         <div class="field col-span-3">
           <label>Адрес выгрузки</label>
@@ -400,6 +525,11 @@
           <label>Дата выгрузки</label>
           <input type="date" id="unloading_date">
           <div class="mapping-note">→ unloading.date</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Дополнительная информация (в заявку)</label>
+          <input type="text" id="cargo_additional_info" placeholder="стоимость перевозки 45 руб/кг (расчёт по наибольшему значению) НДС 0%">
+          <div class="mapping-note">→ cargo.additional_info_raw</div>
         </div>
       </div>
     </div>
@@ -568,11 +698,90 @@
     </div>
   </div>
 
+  <!-- 6b. Номера и даты закрывающих документов -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>Счёт на оплату и Акт (АВР)</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Счёт № <span class="req">*</span></label>
+          <input type="text" id="invoice_number" placeholder="0370">
+          <div class="mapping-note">→ invoice.number</div>
+        </div>
+        <div class="field">
+          <label>Дата счёта <span class="req">*</span></label>
+          <input type="date" id="invoice_date">
+          <div class="mapping-note">→ invoice.date</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Наименование услуги в счёте</label>
+          <input type="text" id="invoice_item_name" value="Доставка автотранспортом">
+          <div class="mapping-note">→ invoice.items[0].name</div>
+        </div>
+        <div class="field">
+          <label>Акт № <span class="req">*</span></label>
+          <input type="text" id="act_number" placeholder="0370">
+          <div class="mapping-note">→ acceptance_act.number</div>
+        </div>
+        <div class="field">
+          <label>Дата акта <span class="req">*</span></label>
+          <input type="date" id="act_date">
+          <div class="mapping-note">→ acceptance_act.date</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Наименование услуги в акте</label>
+          <input type="text" id="act_service_description" placeholder="Грузоперевозка: г. Бишкек (КР) — г. Москва (РФ)">
+          <div class="mapping-note">→ acceptance_act.services[0].description</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Сумма прописью (RUB)</label>
+          <input type="text" id="amount_text_rub" placeholder="Двадцать восемь тысяч четыреста восемьдесят пять">
+          <div class="mapping-note">→ invoice.total_rub_text / act.total_rub_text</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 7. Счёт-фактура (Сет-фактура) -->
   <div class="card">
     <div class="section-header"><span class="dot"></span>Счёт-фактура (КР)</div>
     <div class="section-body">
       <div class="grid grid-4">
+        <div class="field col-span-2">
+          <label>Номер сет-фактуры</label>
+          <input type="text" id="sf_number" placeholder="0002026-008-00253928">
+          <div class="mapping-note">→ invoice.number (КР)</div>
+        </div>
+        <div class="field">
+          <label>Дата оформления с/ф</label>
+          <input type="date" id="sf_issue_date">
+          <div class="mapping-note">→ invoice.issue_date</div>
+        </div>
+        <div class="field">
+          <label>Код налог. органа (поставщик)</label>
+          <input type="text" id="sf_tax_authority_code" placeholder="008">
+          <div class="mapping-note">→ supplier.tax_authority_code</div>
+        </div>
+        <div class="field">
+          <label>Код услуги (ОКЭД)</label>
+          <input type="text" id="sf_service_code" value="49.41.0">
+          <div class="mapping-note">→ items[0].service_code</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Наименование услуги (с/ф)</label>
+          <input type="text" id="sf_service_name" placeholder="Груз г.Бишкек (КР)-">
+          <div class="mapping-note">→ items[0].service_name</div>
+        </div>
+        <div class="field">
+          <label>Ед. измерения (с/ф)</label>
+          <input type="text" id="sf_uom" value="Штука">
+          <div class="mapping-note">→ items[0].uom</div>
+        </div>
+        <div class="field col-span-4">
+          <label>Филиал банка поставщика</label>
+          <input type="text" id="sf_supplier_branch" value="Бишкекский филиал «Исламский Финансовый Центр 1»">
+          <div class="mapping-note">→ supplier.bank.branch</div>
+        </div>
         <div class="field col-span-2">
           <label>Покупатель (ФИО / наименование)</label>
           <input type="text" id="sf_buyer_name" placeholder="ИП Шушакова Елена Викторовна">
@@ -663,6 +872,11 @@
           <label>Дата</label>
           <input type="date" id="waybill_date">
           <div class="mapping-note">→ waybill.date</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Стоимость доставки груза (расписка)</label>
+          <input type="number" id="waybill_delivery_cost" placeholder="0.00">
+          <div class="mapping-note">→ waybill.delivery_cost</div>
         </div>
         <div class="field col-span-2">
           <label>Объявленная стоимость груза (страхование)</label>
@@ -948,13 +1162,35 @@ function collectJSON() {
   const cashForm = document.querySelector('input[name="cash_form"]:checked')?.value || '';
 
   const data = {
+    manifest: {
+      number: v('manifest_number'), date: v('manifest_date'),
+      dispatcher: v('manifest_dispatcher'), warehouse: v('manifest_warehouse')
+    },
     contract: { number: v('contract_number'), date: v('contract_date') },
     order: { number: v('order_number'), date: v('order_date') },
     customer: { type: v('customer_type'), name: v('customer_name'), inn: v('customer_inn') },
+    executor: {
+      company_name: v('executor_name'), inn: v('executor_inn'),
+      postal_code: v('executor_postal_code'), address: v('executor_address'),
+      director: v('executor_director'), chief_accountant: v('executor_chief_accountant'),
+      bank: {
+        name: v('executor_bank_name'), bik: v('executor_bank_bik'),
+        account_number: v('executor_bank_account'),
+        correspondent_bank: {
+          name: v('executor_corr_bank_name'), inn: v('executor_corr_bank_inn'),
+          bik: v('executor_corr_bank_bik'), corr_account: v('executor_corr_account')
+        },
+        beneficiary_bank_corr_account: v('executor_beneficiary_corr_account')
+      }
+    },
     route: { from: v('route_from'), to: v('route_to') },
-    loading: { address: v('loading_address'), date: v('loading_date') },
+    loading: {
+      address: v('loading_address'), date: v('loading_date'),
+      contact_person: v('loading_contact_person'), contact_phone: v('loading_contact_phone')
+    },
     unloading: { address: v('unloading_address'), date: v('unloading_date') },
     cargo: cargoItems,
+    cargo_additional_info: v('cargo_additional_info'),
     vehicle: {
       driver_name: v('driver_name'), driver_phone: v('driver_phone'),
       truck_number: v('truck_number'), gps_object: v('gps_object'),
@@ -964,7 +1200,21 @@ function collectJSON() {
       amount_rub: v('payment_amount'), currency: v('payment_currency'),
       exchange_rate: v('exchange_rate'), form: v('payment_form'), terms: v('payment_terms')
     },
+    invoice: {
+      number: v('invoice_number'), date: v('invoice_date'),
+      item_name: v('invoice_item_name'),
+      total_rub_text: v('amount_text_rub')
+    },
+    acceptance_act: {
+      number: v('act_number'), date: v('act_date'),
+      service_description: v('act_service_description'),
+      total_rub_text: v('amount_text_rub')
+    },
     invoice_kr: {
+      number: v('sf_number'), issue_date: v('sf_issue_date'),
+      service_code: v('sf_service_code'), service_name: v('sf_service_name'),
+      uom: v('sf_uom'), tax_authority_code: v('sf_tax_authority_code'),
+      supplier_branch: v('sf_supplier_branch'),
       buyer_name: v('sf_buyer_name'), buyer_inn: v('sf_buyer_inn'),
       buyer_country: v('sf_buyer_country'), buyer_address: v('sf_buyer_address'),
       buyer_bank: v('sf_buyer_bank'), buyer_account: v('sf_buyer_account'),
@@ -975,6 +1225,7 @@ function collectJSON() {
     },
     waybill: {
       series: v('waybill_series'), number: v('waybill_number'), date: v('waybill_date'),
+      delivery_cost: v('waybill_delivery_cost'),
       insurance_value: v('waybill_insurance'),
       sender: { name: v('waybill_sender_name'), address: v('waybill_sender_address'), doc: v('waybill_sender_doc'), phone: v('waybill_sender_phone') },
       receiver: { name: v('waybill_receiver_name'), address: v('waybill_receiver_address'), doc: v('waybill_receiver_doc'), phone: v('waybill_receiver_phone') },

@@ -118,9 +118,12 @@
   .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
   .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
   .grid-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .grid-6 { grid-template-columns: repeat(6, 1fr); }
   .col-span-2 { grid-column: span 2; }
   .col-span-3 { grid-column: span 3; }
   .col-span-4 { grid-column: span 4; }
+  .col-span-5 { grid-column: span 5; }
+  .col-span-6 { grid-column: span 6; }
 
   .field { display: flex; flex-direction: column; gap: 3px; }
 
@@ -173,10 +176,10 @@
     background: var(--section-header);
   }
   table.cargo th {
-    padding: 7px 8px;
+    padding: 7px 4px;
     text-align: left;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: .3px;
     color: var(--text-muted);
@@ -184,17 +187,17 @@
     white-space: nowrap;
   }
   table.cargo td {
-    padding: 5px 6px;
+    padding: 5px 3px;
     border-bottom: 1px solid var(--border-light);
     vertical-align: middle;
   }
   table.cargo tbody tr:nth-child(even) td { background: var(--row-alt); }
   table.cargo td input, table.cargo td select {
-    padding: 4px 7px;
-    font-size: 12px;
+    padding: 4px 6px;
+    font-size: 11px;
   }
-  table.cargo td.td-num { width: 30px; color: var(--text-muted); text-align: center; }
-  table.cargo td.td-btn { width: 34px; text-align: center; }
+  table.cargo td.td-num { width: 25px; color: var(--text-muted); text-align: center; }
+  table.cargo td.td-btn { width: 30px; text-align: center; }
 
   .btn-icon {
     display: inline-flex;
@@ -266,7 +269,7 @@
   }
 
   .mapping-note {
-    font-size: 10px;
+    font-size: 9px;
     color: #9eb3d0;
     font-style: italic;
     margin-top: 1px;
@@ -281,8 +284,8 @@
 
   /* Responsive */
   @media (max-width: 768px) {
-    .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
-    .col-span-2, .col-span-3, .col-span-4 { grid-column: span 1; }
+    .grid-2, .grid-3, .grid-4, .grid-5, .grid-6 { grid-template-columns: 1fr; }
+    .col-span-2, .col-span-3, .col-span-4, .col-span-5, .col-span-6 { grid-column: span 1; }
     body { padding: 12px; }
   }
 
@@ -535,7 +538,7 @@
     </div>
   </div>
 
-  <!-- 4. Грузовые позиции -->
+  <!-- 4. Грузовые позиции (с габаритами) -->
   <div class="card">
     <div class="section-header">
       <span class="dot"></span>Грузовые позиции
@@ -549,9 +552,12 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Наименование груза</th>
+            <th>Наименование</th>
             <th>Мест</th>
             <th>Ед.уп.</th>
+            <th>Длина, м</th>
+            <th>Ширина, м</th>
+            <th>Высота, м</th>
             <th>Вес, кг</th>
             <th>Объём, м³</th>
             <th>Тар.вес, кг</th>
@@ -565,37 +571,19 @@
         <tbody id="cargoRows">
           <tr>
             <td class="td-num">1</td>
-            <td><input type="text" id="cargo_name_1" placeholder="текстиль" style="min-width:120px"></td>
-            <td><input type="number" id="cargo_places_1" placeholder="25" style="width:60px" oninput="recalc(1)"></td>
-            <td>
-              <select id="cargo_places_unit_1" style="width:80px">
-                <option>мешков</option>
-                <option>коробок</option>
-                <option>паллет</option>
-                <option>мест</option>
-                <option>штук</option>
-              </select>
-            </td>
-            <td><input type="number" id="cargo_weight_1" placeholder="633" style="width:70px" oninput="recalc(1)"></td>
-            <td><input type="number" id="cargo_volume_1" placeholder="0.00" step="0.01" style="width:70px" oninput="recalc(1)"></td>
-            <td><input type="number" id="cargo_tariff_weight_1" readonly style="width:70px; background:#f8f9fb; color:var(--accent); font-weight:600" placeholder="—"></td>
-            <td><input type="number" id="cargo_rate_1" placeholder="45" style="width:64px" oninput="recalc(1)"></td>
-            <td>
-              <select id="cargo_vat_1" style="width:60px">
-                <option>0%</option>
-                <option>12%</option>
-                <option>20%</option>
-              </select>
-            </td>
-            <td><input type="number" id="cargo_freight_1" readonly style="width:80px; background:#f8f9fb; color:var(--accent); font-weight:700" placeholder="—"></td>
-            <td>
-              <select id="cargo_payment_1" style="width:100px">
-                <option>Предоплата</option>
-                <option>По скану АВР</option>
-                <option>По факту</option>
-                <option>Нал</option>
-              </select>
-            </td>
+            <td><input type="text" id="cargo_name_1" placeholder="текстиль" style="min-width:100px"></td>
+            <td><input type="number" id="cargo_places_1" placeholder="25" style="width:55px" oninput="recalc(1)"></td>
+            <td><select id="cargo_places_unit_1" style="width:70px"><option>мешков</option><option>коробок</option><option>паллет</option><option>мест</option><option>штук</option></select></td>
+            <td><input type="number" id="cargo_length_1" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(1)"></td>
+            <td><input type="number" id="cargo_width_1" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(1)"></td>
+            <td><input type="number" id="cargo_height_1" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(1)"></td>
+            <td><input type="number" id="cargo_weight_1" placeholder="633" style="width:60px" oninput="recalc(1)"></td>
+            <td><input type="number" id="cargo_volume_1" placeholder="0.00" step="0.01" style="width:60px" oninput="recalc(1)"></td>
+            <td><input type="number" id="cargo_tariff_weight_1" readonly style="width:65px; background:#f8f9fb; color:var(--accent); font-weight:600"></td>
+            <td><input type="number" id="cargo_rate_1" placeholder="45" style="width:60px" oninput="recalc(1)"></td>
+            <td><select id="cargo_vat_1" style="width:55px"><option>0%</option><option>12%</option><option>20%</option></select></td>
+            <td><input type="number" id="cargo_freight_1" readonly style="width:75px; background:#f8f9fb; color:var(--accent); font-weight:700"></td>
+            <td><select id="cargo_payment_1" style="width:90px"><option>Предоплата</option><option>По скану АВР</option><option>По факту</option><option>Нал</option></select></td>
             <td class="td-btn"><button type="button" class="btn-icon" onclick="removeRow(this)">×</button></td>
           </tr>
         </tbody>
@@ -613,7 +601,86 @@
     </div>
   </div>
 
-  <!-- 5. Транспорт -->
+  <!-- НОВЫЙ БЛОК: Packing List (упаковочный лист) -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>📦 Packing List / Упаковочный лист</div>
+    <div class="section-body">
+      <div class="grid grid-4">
+        <div class="field">
+          <label>Packing List №</label>
+          <input type="text" id="packing_list_number" placeholder="PL-001">
+          <div class="mapping-note">→ packing_list.number</div>
+        </div>
+        <div class="field">
+          <label>Дата</label>
+          <input type="date" id="packing_list_date">
+          <div class="mapping-note">→ packing_list.date</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Отправитель (грузоотправитель)</label>
+          <input type="text" id="packing_list_sender" placeholder="ОсОО «Мастер Пласт»">
+          <div class="mapping-note">→ packing_list.sender</div>
+        </div>
+        <div class="field col-span-2">
+          <label>Получатель (грузополучатель)</label>
+          <input type="text" id="packing_list_receiver" placeholder="ИП Шушакова Е.В.">
+          <div class="mapping-note">→ packing_list.receiver</div>
+        </div>
+      </div>
+      <div class="cargo-table-wrap" style="margin-top:12px">
+        <table class="cargo" id="packingListTable">
+          <thead>
+            <tr><th>№</th><th>Артикул</th><th>Наименование</th><th>Кол-во</th><th>Ед.</th><th>Вес нетто, кг</th><th>Вес брутто, кг</th><th>Маркировка</th></tr>
+          </thead>
+          <tbody id="packingListRows">
+            <tr><td>1</td><td><input type="text" id="pl_sku_1" style="width:80px"></td><td><input type="text" id="pl_name_1" style="min-width:100px"></td><td><input type="number" id="pl_qty_1" style="width:60px"></td><td><select id="pl_unit_1" style="width:60px"><option>шт</option><option>кг</option><option>уп</option></select></td><td><input type="number" id="pl_net_1" style="width:70px"></td><td><input type="number" id="pl_gross_1" style="width:70px"></td><td><input type="text" id="pl_marking_1" style="min-width:100px"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:8px 0 0">
+        <button type="button" class="btn btn-ghost" style="font-size:12px" onclick="addPackingRow()">+ Добавить позицию в Packing List</button>
+      </div>
+      <div class="grid grid-2" style="margin-top:12px">
+        <div class="field"><label>Общий вес нетто, кг</label><input type="number" id="pl_total_net" readonly style="background:#f8f9fb"></div>
+        <div class="field"><label>Общий вес брутто, кг</label><input type="number" id="pl_total_gross" readonly style="background:#f8f9fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- НОВЫЙ БЛОК: CMR (международная накладная) -->
+  <div class="card">
+    <div class="section-header"><span class="dot"></span>📄 CMR — Международная товарно-транспортная накладная (КДПГ)</div>
+    <div class="section-body">
+      <div class="grid grid-6">
+        <div class="field col-span-6"><label>Графа 1. Отправитель (грузоотправитель)</label><input type="text" id="cmr_sender" placeholder="Наименование, адрес, страна, ИНН"><div class="mapping-note">→ cmr.sender</div></div>
+        <div class="field col-span-6"><label>Графа 2. Получатель (грузополучатель)</label><input type="text" id="cmr_receiver" placeholder="Наименование, адрес, страна, ИНН"><div class="mapping-note">→ cmr.receiver</div></div>
+        <div class="field col-span-3"><label>Графа 3. Место разгрузки</label><input type="text" id="cmr_unloading_place" placeholder="г. Москва, склад"><div class="mapping-note">→ cmr.unloading_place</div></div>
+        <div class="field col-span-3"><label>Графа 4. Место и дата погрузки</label><input type="text" id="cmr_loading_place_date" placeholder="г. Бишкек, 16.12.2025"><div class="mapping-note">→ cmr.loading_place_date</div></div>
+        <div class="field col-span-6"><label>Графа 5. Прилагаемые документы</label><input type="text" id="cmr_documents" placeholder="Инвойс №... , Packing List, Сертификат"><div class="mapping-note">→ cmr.accompanying_documents</div></div>
+        <div class="field"><label>Графа 6. Знаки и номера</label><input type="text" id="cmr_marks" placeholder="Маркировка"><div class="mapping-note">→ cmr.marks_numbers</div></div>
+        <div class="field"><label>Графа 7. Количество мест</label><input type="number" id="cmr_places" readonly style="background:#f8f9fb"><div class="mapping-note">→ cmr.number_of_packages</div></div>
+        <div class="field"><label>Графа 8. Вид упаковки</label><input type="text" id="cmr_packing_type" placeholder="мешки/коробки/паллеты"><div class="mapping-note">→ cmr.packing_type</div></div>
+        <div class="field col-span-2"><label>Графа 9. Наименование груза</label><input type="text" id="cmr_cargo_name" placeholder="Текстиль, одежда"><div class="mapping-note">→ cmr.nature_of_goods</div></div>
+        <div class="field"><label>Графа 10. Код ТН ВЭД</label><input type="text" id="cmr_hs_code" placeholder="6204.42"><div class="mapping-note">→ cmr.hs_code</div></div>
+        <div class="field"><label>Графа 11. Вес брутто, кг</label><input type="number" id="cmr_gross_weight" readonly style="background:#f8f9fb"><div class="mapping-note">→ cmr.gross_weight_kg</div></div>
+        <div class="field"><label>Графа 12. Объём, м³</label><input type="number" id="cmr_volume" readonly style="background:#f8f9fb"><div class="mapping-note">→ cmr.volume_m3</div></div>
+        <div class="field col-span-2"><label>Графа 13. Объявленная стоимость</label><input type="number" id="cmr_declared_value" placeholder="0.00"><div class="mapping-note">→ cmr.declared_value</div></div>
+        <div class="field col-span-2"><label>Графа 14. Инструкции отправителя</label><input type="text" id="cmr_instructions" placeholder="Особые отметки"><div class="mapping-note">→ cmr.senders_instructions</div></div>
+        <div class="field col-span-2"><label>Графа 15. Условия оплаты провоза</label><input type="text" id="cmr_payment_terms" placeholder="Предоплата / По факту"><div class="mapping-note">→ cmr.payment_terms</div></div>
+        <div class="field col-span-6"><label>Графа 16. Перевозчик (ОсОО «ТЭК Аструм»)</label><input type="text" id="cmr_carrier" value="ОсОО «ТЭК Аструм», Кыргызстан, с. Ново-Покровка, ул. Октябрьская 16Б, ИНН 00612201810097"><div class="mapping-note">→ cmr.carrier</div></div>
+        <div class="field"><label>Графа 17. Последующая перевозка</label><input type="text" id="cmr_successive_carrier" placeholder="при наличии"><div class="mapping-note">→ cmr.successive_carrier</div></div>
+        <div class="field"><label>Графа 18. Оговорки перевозчика</label><input type="text" id="cmr_carrier_reservations" placeholder=""><div class="mapping-note">→ cmr.carrier_reservations</div></div>
+        <div class="field"><label>Графа 19. Дата и номер CMR</label><input type="text" id="cmr_number_date" placeholder="CMR-001 от 16.12.2025"><div class="mapping-note">→ cmr.number_date</div></div>
+        <div class="field"><label>Графа 20. Подпись перевозчика</label><input type="text" id="cmr_carrier_signature" placeholder="Шумаков В.Б."><div class="mapping-note">→ cmr.carrier_signature</div></div>
+        <div class="field col-span-2"><label>Графа 21-22. Подпись отправителя/получателя</label><input type="text" id="cmr_sender_receiver_signature" placeholder=""><div class="mapping-note">→ cmr.sender_receiver_signature</div></div>
+        <div class="field col-span-3"><label>Графа 23. Подпись перевозчика при приёме</label><input type="text" id="cmr_carrier_receipt_signature" placeholder=""><div class="mapping-note">→ cmr.carrier_receipt_signature</div></div>
+        <div class="field col-span-3"><label>Графа 24. Подпись получателя при сдаче</label><input type="text" id="cmr_consignee_signature" placeholder=""><div class="mapping-note">→ cmr.consignee_signature</div></div>
+        <div class="field col-span-6"><label>Графа 25-29. Оговорки и особые отметки</label><textarea id="cmr_remarks" rows="2" placeholder="Повреждений нет, груз принят без замечаний..."></textarea><div class="mapping-note">→ cmr.remarks</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Транспорт и водитель -->
   <div class="card">
     <div class="section-header"><span class="dot"></span>Транспорт и водитель</div>
     <div class="section-body">
@@ -855,7 +922,7 @@
     </div>
   </div>
 
-  <!-- 8. Экспедиторская расписка -->
+  <!-- 8. Экспедиторская расписка (с подписями) -->
   <div class="card">
     <div class="section-header"><span class="dot"></span>Экспедиторская расписка (TA)</div>
     <div class="section-body">
@@ -1008,6 +1075,14 @@
           <div class="mapping-note">→ waybill.payment.cash</div>
         </div>
       </div>
+
+      <hr class="divider">
+
+      <div class="grid grid-3">
+        <div class="field"><label>Подпись отправителя (клиент)</label><input type="text" id="waybill_sender_signature" placeholder="ФИО / расшифровка"><div class="mapping-note">→ waybill.signatures.sender</div></div>
+        <div class="field"><label>Подпись экспедитора (Аструм)</label><input type="text" id="waybill_carrier_signature" placeholder="ФИО / расшифровка"><div class="mapping-note">→ waybill.signatures.carrier</div></div>
+        <div class="field"><label>Подпись склада / получателя</label><input type="text" id="waybill_warehouse_signature" placeholder="ФИО / расшифровка"><div class="mapping-note">→ waybill.signatures.warehouse</div></div>
+      </div>
     </div>
   </div>
 
@@ -1055,6 +1130,105 @@
 
 <script>
 let rowCount = 1;
+let packingRowCount = 1;
+
+// Функция для преобразования числа в сумму прописью (рубли и копейки)
+function numberToWordsRub(number) {
+    const num = parseFloat(number);
+    if (isNaN(num) || num === 0) return 'ноль рублей 00 копеек';
+    
+    const rubles = Math.floor(num);
+    const kopecks = Math.round((num - rubles) * 100);
+    
+    const rublesWords = rublesToWords(rubles);
+    const rublesStr = rublesWords + ' ' + rubleCase(rubles);
+    const kopecksStr = kopecks.toString().padStart(2, '0') + ' копеек';
+    
+    return rublesStr + ' ' + kopecksStr;
+}
+
+function rublesToWords(n) {
+    const units = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+    const unitsF = ['', 'одна', 'две', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+    const tens = ['', 'десять', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+    const teens = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+    const hundreds = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+    
+    function convert(n, isFemale) {
+        if (n === 0) return '';
+        let result = '';
+        if (n >= 100) {
+            result += hundreds[Math.floor(n / 100)] + ' ';
+            n %= 100;
+        }
+        if (n >= 20) {
+            result += tens[Math.floor(n / 10)] + ' ';
+            n %= 10;
+        }
+        if (n >= 10) {
+            result += teens[n - 10] + ' ';
+            n = 0;
+        }
+        if (n > 0) {
+            result += (isFemale ? unitsF[n] : units[n]) + ' ';
+        }
+        return result.trim();
+    }
+    
+    const billions = Math.floor(n / 1000000000);
+    const millions = Math.floor((n % 1000000000) / 1000000);
+    const thousands = Math.floor((n % 1000000) / 1000);
+    const rub = n % 1000;
+    
+    let result = '';
+    if (billions > 0) result += convert(billions, false) + ' миллиард' + billionCase(billions) + ' ';
+    if (millions > 0) result += convert(millions, false) + ' миллион' + millionCase(millions) + ' ';
+    if (thousands > 0) result += convert(thousands, true) + ' тысяча' + thousandCase(thousands) + ' ';
+    if (rub > 0) result += convert(rub, false);
+    
+    return result.trim();
+}
+
+function rubleCase(n) {
+    const lastDigit = n % 10;
+    const lastTwo = n % 100;
+    if (lastTwo >= 11 && lastTwo <= 14) return 'рублей';
+    if (lastDigit === 1) return 'рубль';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'рубля';
+    return 'рублей';
+}
+
+function millionCase(n) {
+    const lastDigit = n % 10;
+    const lastTwo = n % 100;
+    if (lastTwo >= 11 && lastTwo <= 14) return 'ов';
+    if (lastDigit === 1) return '';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'а';
+    return 'ов';
+}
+
+function billionCase(n) { return millionCase(n); }
+
+function thousandCase(n) {
+    const lastDigit = n % 10;
+    const lastTwo = n % 100;
+    if (lastTwo >= 11 && lastTwo <= 14) return '';
+    if (lastDigit === 1) return '';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'и';
+    return '';
+}
+
+function updateVolume(rowNum) {
+    const length = parseFloat(document.getElementById(`cargo_length_${rowNum}`)?.value) || 0;
+    const width = parseFloat(document.getElementById(`cargo_width_${rowNum}`)?.value) || 0;
+    const height = parseFloat(document.getElementById(`cargo_height_${rowNum}`)?.value) || 0;
+    const volume = length * width * height;
+    const volumeField = document.getElementById(`cargo_volume_${rowNum}`);
+    if (volumeField && volume > 0) {
+        volumeField.value = volume.toFixed(2);
+    }
+    recalc(rowNum);
+}
 
 function recalc(rowNum) {
   const coef = parseFloat(document.getElementById('volume_coef').value) || 300;
@@ -1097,7 +1271,18 @@ function updateTotals() {
   if (freight > 0) {
     const pa = document.getElementById('payment_amount');
     if (!pa.value) pa.value = freight.toFixed(2);
+    // Auto-fill amount in words
+    const amountWords = numberToWordsRub(freight);
+    const amountTextRub = document.getElementById('amount_text_rub');
+    if (amountTextRub && !amountTextRub.value) {
+        amountTextRub.value = amountWords.charAt(0).toUpperCase() + amountWords.slice(1);
+    }
   }
+  
+  // Update CMR fields
+  document.getElementById('cmr_places') && (document.getElementById('cmr_places').value = places || 0);
+  document.getElementById('cmr_gross_weight') && (document.getElementById('cmr_gross_weight').value = weight || 0);
+  document.getElementById('cmr_volume') && (document.getElementById('cmr_volume').value = volume ? volume.toFixed(2) : 0);
 }
 
 function addCargoRow() {
@@ -1107,16 +1292,19 @@ function addCargoRow() {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td class="td-num">${n}</td>
-    <td><input type="text" id="cargo_name_${n}" placeholder="наименование" style="min-width:120px"></td>
-    <td><input type="number" id="cargo_places_${n}" placeholder="0" style="width:60px" oninput="recalc(${n})"></td>
-    <td><select id="cargo_places_unit_${n}" style="width:80px"><option>мешков</option><option>коробок</option><option>паллет</option><option>мест</option><option>штук</option></select></td>
-    <td><input type="number" id="cargo_weight_${n}" placeholder="0" style="width:70px" oninput="recalc(${n})"></td>
-    <td><input type="number" id="cargo_volume_${n}" placeholder="0.00" step="0.01" style="width:70px" oninput="recalc(${n})"></td>
-    <td><input type="number" id="cargo_tariff_weight_${n}" readonly style="width:70px;background:#f8f9fb;color:var(--accent);font-weight:600"></td>
-    <td><input type="number" id="cargo_rate_${n}" placeholder="45" style="width:64px" oninput="recalc(${n})"></td>
-    <td><select id="cargo_vat_${n}" style="width:60px"><option>0%</option><option>12%</option><option>20%</option></select></td>
-    <td><input type="number" id="cargo_freight_${n}" readonly style="width:80px;background:#f8f9fb;color:var(--accent);font-weight:700"></td>
-    <td><select id="cargo_payment_${n}" style="width:100px"><option>Предоплата</option><option>По скану АВР</option><option>По факту</option><option>Нал</option></select></td>
+    <td><input type="text" id="cargo_name_${n}" placeholder="наименование" style="min-width:100px"></td>
+    <td><input type="number" id="cargo_places_${n}" placeholder="0" style="width:55px" oninput="recalc(${n})"></td>
+    <td><select id="cargo_places_unit_${n}" style="width:70px"><option>мешков</option><option>коробок</option><option>паллет</option><option>мест</option><option>штук</option></select></td>
+    <td><input type="number" id="cargo_length_${n}" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(${n})"></td>
+    <td><input type="number" id="cargo_width_${n}" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(${n})"></td>
+    <td><input type="number" id="cargo_height_${n}" placeholder="0.00" step="0.01" style="width:55px" oninput="updateVolume(${n})"></td>
+    <td><input type="number" id="cargo_weight_${n}" placeholder="0" style="width:60px" oninput="recalc(${n})"></td>
+    <td><input type="number" id="cargo_volume_${n}" placeholder="0.00" step="0.01" style="width:60px" oninput="recalc(${n})"></td>
+    <td><input type="number" id="cargo_tariff_weight_${n}" readonly style="width:65px;background:#f8f9fb;color:var(--accent);font-weight:600"></td>
+    <td><input type="number" id="cargo_rate_${n}" placeholder="45" style="width:60px" oninput="recalc(${n})"></td>
+    <td><select id="cargo_vat_${n}" style="width:55px"><option>0%</option><option>12%</option><option>20%</option></select></td>
+    <td><input type="number" id="cargo_freight_${n}" readonly style="width:75px;background:#f8f9fb;color:var(--accent);font-weight:700"></td>
+    <td><select id="cargo_payment_${n}" style="width:90px"><option>Предоплата</option><option>По скану АВР</option><option>По факту</option><option>Нал</option></select></td>
     <td class="td-btn"><button type="button" class="btn-icon" onclick="removeRow(this)">×</button></td>
   `;
   tbody.appendChild(tr);
@@ -1127,6 +1315,35 @@ function removeRow(btn) {
   if (rows.length <= 1) return;
   btn.closest('tr').remove();
   updateTotals();
+}
+
+function addPackingRow() {
+    packingRowCount++;
+    const n = packingRowCount;
+    const tbody = document.getElementById('packingListRows');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${n}</td>
+        <td><input type="text" id="pl_sku_${n}" style="width:80px"></td>
+        <td><input type="text" id="pl_name_${n}" style="min-width:100px"></td>
+        <td><input type="number" id="pl_qty_${n}" style="width:60px" oninput="updatePackingTotals()"></td>
+        <td><select id="pl_unit_${n}" style="width:60px"><option>шт</option><option>кг</option><option>уп</option></select></td>
+        <td><input type="number" id="pl_net_${n}" style="width:70px" oninput="updatePackingTotals()"></td>
+        <td><input type="number" id="pl_gross_${n}" style="width:70px" oninput="updatePackingTotals()"></td>
+        <td><input type="text" id="pl_marking_${n}" style="min-width:100px"></td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function updatePackingTotals() {
+    let totalNet = 0, totalGross = 0;
+    for (let i = 1; i <= packingRowCount; i++) {
+        if (!document.getElementById(`pl_net_${i}`)) continue;
+        totalNet += parseFloat(document.getElementById(`pl_net_${i}`)?.value) || 0;
+        totalGross += parseFloat(document.getElementById(`pl_gross_${i}`)?.value) || 0;
+    }
+    document.getElementById('pl_total_net') && (document.getElementById('pl_total_net').value = totalNet.toFixed(2));
+    document.getElementById('pl_total_gross') && (document.getElementById('pl_total_gross').value = totalGross.toFixed(2));
 }
 
 function v(id) {
@@ -1147,6 +1364,9 @@ function collectJSON() {
       name,
       places: v(`cargo_places_${i}`),
       places_unit: v(`cargo_places_unit_${i}`),
+      length_m: v(`cargo_length_${i}`),
+      width_m: v(`cargo_width_${i}`),
+      height_m: v(`cargo_height_${i}`),
       weight_kg: v(`cargo_weight_${i}`),
       volume_m3: v(`cargo_volume_${i}`),
       tariff_weight_kg: v(`cargo_tariff_weight_${i}`),
@@ -1154,6 +1374,22 @@ function collectJSON() {
       vat: v(`cargo_vat_${i}`),
       freight_rub: v(`cargo_freight_${i}`),
       payment_type: v(`cargo_payment_${i}`)
+    });
+  }
+
+  const packingItems = [];
+  for (let i = 1; i <= packingRowCount; i++) {
+    if (!document.getElementById(`pl_name_${i}`)) continue;
+    const name = v(`pl_name_${i}`);
+    if (!name) continue;
+    packingItems.push({
+      sku: v(`pl_sku_${i}`),
+      name,
+      quantity: v(`pl_qty_${i}`),
+      unit: v(`pl_unit_${i}`),
+      net_weight_kg: v(`pl_net_${i}`),
+      gross_weight_kg: v(`pl_gross_${i}`),
+      marking: v(`pl_marking_${i}`)
     });
   }
 
@@ -1191,6 +1427,41 @@ function collectJSON() {
     unloading: { address: v('unloading_address'), date: v('unloading_date') },
     cargo: cargoItems,
     cargo_additional_info: v('cargo_additional_info'),
+    packing_list: {
+      number: v('packing_list_number'),
+      date: v('packing_list_date'),
+      sender: v('packing_list_sender'),
+      receiver: v('packing_list_receiver'),
+      items: packingItems,
+      total_net_weight_kg: v('pl_total_net'),
+      total_gross_weight_kg: v('pl_total_gross')
+    },
+    cmr: {
+      sender: v('cmr_sender'),
+      receiver: v('cmr_receiver'),
+      unloading_place: v('cmr_unloading_place'),
+      loading_place_date: v('cmr_loading_place_date'),
+      accompanying_documents: v('cmr_documents'),
+      marks_numbers: v('cmr_marks'),
+      number_of_packages: v('cmr_places'),
+      packing_type: v('cmr_packing_type'),
+      nature_of_goods: v('cmr_cargo_name'),
+      hs_code: v('cmr_hs_code'),
+      gross_weight_kg: v('cmr_gross_weight'),
+      volume_m3: v('cmr_volume'),
+      declared_value: v('cmr_declared_value'),
+      senders_instructions: v('cmr_instructions'),
+      payment_terms: v('cmr_payment_terms'),
+      carrier: v('cmr_carrier'),
+      successive_carrier: v('cmr_successive_carrier'),
+      carrier_reservations: v('cmr_carrier_reservations'),
+      number_date: v('cmr_number_date'),
+      carrier_signature: v('cmr_carrier_signature'),
+      sender_receiver_signature: v('cmr_sender_receiver_signature'),
+      carrier_receipt_signature: v('cmr_carrier_receipt_signature'),
+      consignee_signature: v('cmr_consignee_signature'),
+      remarks: v('cmr_remarks')
+    },
     vehicle: {
       driver_name: v('driver_name'), driver_phone: v('driver_phone'),
       truck_number: v('truck_number'), gps_object: v('gps_object'),
@@ -1233,7 +1504,12 @@ function collectJSON() {
       services_receiver: { prr: v('svc_prr_receiver') },
       packing: { access: v('pack_access'), none: v('pack_none'), cardboard: v('pack_cardboard'), bag: v('pack_bag'), plastic: v('pack_plastic'), wood: v('pack_wood'), metal: v('pack_metal') },
       extra_packing: { refused_oppg: v('pack_refused_oppg'), hard: v('pack_hard'), box: v('pack_box'), sealed_bag: v('pack_sealed_bag'), strapping: v('pack_strapping'), pallet_board: v('pack_pallet_board'), pallet: v('pack_pallet'), stretch: v('pack_stretch'), palletizing: v('pack_palletizing') },
-      payer, paid_status: paid, payment_form: cashForm
+      payer, paid_status: paid, payment_form: cashForm,
+      signatures: {
+        sender: v('waybill_sender_signature'),
+        carrier: v('waybill_carrier_signature'),
+        warehouse: v('waybill_warehouse_signature')
+      }
     },
     misc: { special_marks: v('special_marks'), comment: v('comment') }
   };
@@ -1252,8 +1528,7 @@ async function submitForm() {
   const data = collectJSON();
   document.getElementById('jsonModal').style.display = 'none';
 
-  // Заглушка — здесь будет вызов Google Apps Script Web App / GitHub Actions
-  const WEBHOOK_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // TODO: заменить
+  const WEBHOOK_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
   try {
     const res = await fetch(WEBHOOK_URL, {
@@ -1274,18 +1549,21 @@ async function submitForm() {
 function clearForm() {
   if (!confirm('Очистить всю форму?')) return;
   document.getElementById('mainForm').reset();
-  // Remove extra cargo rows
   const tbody = document.getElementById('cargoRows');
   while (tbody.children.length > 1) tbody.removeChild(tbody.lastChild);
   rowCount = 1;
+  const packingTbody = document.getElementById('packingListRows');
+  while (packingTbody.children.length > 1) packingTbody.removeChild(packingTbody.lastChild);
+  packingRowCount = 1;
   updateTotals();
+  updatePackingTotals();
 }
 
-// Set today as default for dates
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('order_date').value = today;
   document.getElementById('waybill_date').value = today;
+  document.getElementById('packing_list_date').value = today;
 });
 </script>
 </body>

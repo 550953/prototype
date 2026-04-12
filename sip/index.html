@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM — Звонки (SIP/WebRTC прототип)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f6f9; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }
+    button { padding: 10px 20px; margin: 5px; border: none; border-radius: 6px; cursor: pointer; }
+    .call-btn { background: #28a745; color: white; font-size: 16px; }
+    .end-btn { background: #dc3545; color: white; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; width: 380px; }
+    .status { font-size: 18px; margin: 15px 0; }
+    .timer { font-size: 24px; font-weight: bold; color: #007bff; }
+    .history { margin-top: 30px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Настройки SIP (админка)</h2>
+  <label>WebSocket URL (WSS):</label><br>
+  <input id="ws" type="text" value="wss://your-sip-server:8089/ws" style="width:100%; padding:8px;"><br><br>
+  
+  <label>SIP Логин (Extension):</label><br>
+  <input id="login" type="text" value="1001" style="width:100%; padding:8px;"><br><br>
+  
+  <label>SIP Пароль:</label><br>
+  <input id="password" type="password" value="secret123" style="width:100%; padding:8px;"><br><br>
+  
+  <button onclick="connectSIP()">Подключить SIP UA</button>
+  <p id="connection-status" style="color:gray;">Статус: отключено</p>
+
+  <hr>
+  <h2>Карточка контакта</h2>
+  <p><strong>Контакт:</strong> Иван Иванов (+7 999 123-45-67)</p>
+  <button class="call-btn" onclick="makeCall('+79991234567')"> Позвонить</button>
+</div>
+
+<!-- Модальное окно активного звонка -->
+<div id="call-modal" class="modal">
+  <div class="modal-content">
+    <h3 id="call-title">Исходящий звонок...</h3>
+    <div class="status" id="call-status">Звоню...</div>
+    <div class="timer" id="timer">00:00</div>
+    <p id="remote-number"></p>
+    
+    <button class="end-btn" onclick="endCall()">Сбросить</button>
+    <button onclick="muteCall()" style="background:#ffc107;">🔇 Без звука</button>
+  </div>
+</div>
+
+<div class="card history">
+  <h2>История звонков</h2>
+  <table id="call-history">
+    <thead><tr><th>Дата</th><th>Номер</th><th>Статус</th><th>Длительность</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jssip/3.10.0/jssip.min.js"></script>
+<!-- Альтернатива: <script src="https://cdnjs.cloudflare.com/ajax/libs/sip.js/0.21.2/sip.min.js"></script> -->
+
+<script>
+  let ua = null;
+  let currentSession = null;
+  let timerInterval = null;
+  let seconds = 0;
+  let isMuted = false;
+
+  function connectSIP() {
+    const ws = document.getElementById('ws').value;
+    const login = document.getElementById('login').value;
+    const password = document.getElementById('password').value;
+
+    const socket = new JsSIP.WebSocketInterface(ws);
+
+    const configuration = {
+      sockets: [socket],
+      uri: `sip:${login}@your-domain.com`,
+      password: password,
+      register: true,
+      sessionTimers: true
+    };
+
+    ua = new JsSIP.UA(configuration);
+
+    ua.on('connected', () => {
+      document.getElementById('connection-status').innerHTML = '✅ Подключено';
+      document.getElementById('connection-status').style.color = 'green';
+    });
+
+    ua.on('disconnected', () => {
+      document.getElementById('connection-status').innerHTML = '❌ Отключено';
+      document.getElementById('connection-status').style.color = 'red';
+    });
+
+    ua.on('newRTCSession', (e) => {
+      currentSession = e.session;
+      handleSession(currentSession);
+    });
+
+    ua.start();
+  }
+
+  function makeCall(number) {
+    if (!ua || !ua.isConnected()) {
+      alert('Сначала подключите SIP!');
+      return;
+    }
+    const options = {
+      mediaConstraints: { audio: true, video: false },
+      pcConfig: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          // Добавьте свой TURN позже
+          { urls: 'turn:your-turn-server:3478', username: 'user', credential: 'pass' }
+        ]
+      }
+    };
+
+    currentSession = ua.call(`sip:${number.replace('+','')}@your-domain.com`, options);
+    document.getElementById('call-modal').style.display = 'flex';
+    document.getElementById('call-title').textContent = 'Исходящий звонок';
+    document.getElementById('remote-number').textContent = number;
+    startTimer();
+  }
+
+  function handleSession(session) {
+    session.on('progress', () => {
+      document.getElementById('call-status').textContent = 'Звоню... (Прогресс)';
+    });
+    session.on('accepted', () => {
+      document.getElementById('call-status').textContent = '✅ Соединено';
+      startTimer();
+    });
+    session.on('ended', (e) => {
+      document.getElementById('call-status').textContent = `Завершён (${e.cause})`;
+      addToHistory(session, e.cause);
+      endCallUI();
+    });
+    session.on('failed', (e) => {
+      document.getElementById('call-status').textContent = `Ошибка: ${e.cause}`;
+      addToHistory(session, 'Failed');
+      endCallUI();
+    });
+
+    // Входящий звонок
+    if (session.direction === 'incoming') {
+      document.getElementById('call-modal').style.display = 'flex';
+      document.getElementById('call-title').textContent = 'Входящий звонок';
+      document.getElementById('call-status').textContent = 'Звонит...';
+      // Здесь можно автоматически открыть карточку контакта по номеру
+      session.answer({ mediaConstraints: { audio: true, video: false } });
+    }
+  }
+
+  function startTimer() {
+    seconds = 0;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      seconds++;
+      const min = String(Math.floor(seconds/60)).padStart(2,'0');
+      const sec = String(seconds%60).padStart(2,'0');
+      document.getElementById('timer').textContent = `${min}:${sec}`;
+    }, 1000);
+  }
+
+  function endCall() {
+    if (currentSession) currentSession.terminate();
+    endCallUI();
+  }
+
+  function endCallUI() {
+    clearInterval(timerInterval);
+    document.getElementById('call-modal').style.display = 'none';
+    document.getElementById('timer').textContent = '00:00';
+  }
+
+  function muteCall() {
+    isMuted = !isMuted;
+    if (currentSession && currentSession.connection) {
+      // Простая имитация (в реальности используйте RTCPeerConnection)
+      alert(isMuted ? 'Микрофон отключён' : 'Микрофон включён');
+    }
+  }
+
+  function addToHistory(session, cause) {
+    const tbody = document.querySelector('#call-history tbody');
+    const row = document.createElement('tr');
+    const now = new Date().toLocaleString('ru-RU');
+    const duration = document.getElementById('timer').textContent || '00:00';
+    
+    row.innerHTML = `
+      <td>${now}</td>
+      <td>${session.remote_identity.display_name || session.remote_identity.uri.user}</td>
+      <td>${cause || 'Завершён'}</td>
+      <td>${duration}</td>
+    `;
+    tbody.prepend(row);
+  }
+
+  // Симуляция входящего звонка (для теста)
+  setTimeout(() => {
+    if (ua && ua.isConnected()) {
+      alert('📲 Входящий звонок от +7 999 111-22-33 (симуляция)');
+      // В реальности событие newRTCSession с incoming
+    }
+  }, 8000);
+</script>
+
+</body>
+</html>

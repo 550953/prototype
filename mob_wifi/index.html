@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Эскизный проект — Мобильная Wi-Fi станция 4G/LTE IP67</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #2a3048;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #39ff6e;
+    --text: #e8ecf4;
+    --muted: #7a8399;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+  }
+  .header-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .doc-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 0.1em;
+  }
+  .doc-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* HERO */
+  .hero {
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'ЭП-01';
+    position: absolute;
+    right: 48px;
+    top: 32px;
+    font-family: var(--mono);
+    font-size: 120px;
+    font-weight: 700;
+    color: var(--surface2);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .doc-type {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .doc-type::after {
+    content: '';
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    max-width: 640px;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+  .tag.a { border-color: var(--accent); color: var(--accent); }
+  .tag.b { border-color: var(--accent2); color: var(--accent2); }
+  .tag.c { border-color: var(--accent3); color: var(--accent3); }
+
+  /* LAYOUT */
+  .main {
+    padding: 0 48px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label span {
+    color: var(--accent);
+    font-size: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section h2 {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
+
+  /* PROBLEM GRID */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 0;
+  }
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent2);
+  }
+  .problem-num {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--surface2);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .problem-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .problem-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+  }
+  .arch-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .arch-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .arch-layer {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-layer:last-child { border-bottom: none; }
+
+  .layer-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: right;
+    padding-right: 16px;
+    border-right: 2px solid var(--border);
+  }
+  .layer-label.input { border-color: var(--accent3); color: var(--accent3); }
+  .layer-label.storage { border-color: var(--accent); color: var(--accent); }
+  .layer-label.control { border-color: #a855f7; color: #a855f7; }
+  .layer-label.load { border-color: var(--accent2); color: var(--accent2); }
+
+  .layer-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    position: relative;
+    white-space: nowrap;
+  }
+  .node-name {
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .node-spec {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    margin-top: 2px;
+  }
+  .node.green { border-color: var(--accent3); }
+  .node.green .node-name { color: var(--accent3); }
+  .node.blue { border-color: var(--accent); }
+  .node.blue .node-name { color: var(--accent); }
+  .node.purple { border-color: #a855f7; }
+  .node.purple .node-name { color: #a855f7; }
+  .node.orange { border-color: var(--accent2); }
+  .node.orange .node-name { color: var(--accent2); }
+
+  .arrow {
+    font-size: 14px;
+    color: var(--border);
+    font-family: var(--mono);
+  }
+
+  /* ENERGY CALC */
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .calc-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .calc-block-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .calc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--surface2);
+    font-size: 12px;
+    gap: 8px;
+  }
+  .calc-row:last-child { border-bottom: none; }
+  .calc-label { color: var(--muted); flex: 1; min-width: 0; }
+  .calc-val {
+    font-family: var(--mono);
+    color: var(--text);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .calc-val.accent { color: var(--accent); }
+  .calc-val.green { color: var(--accent3); }
+  .calc-val.orange { color: var(--accent2); }
+
+  .calc-result {
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 48px;
+    align-items: center;
+  }
+  .result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .result-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .result-val {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .result-val span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .result-formula {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* SPEC TABLE */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .spec-table thead tr {
+    border-bottom: 2px solid var(--border);
+  }
+  .spec-table th {
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .spec-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--surface2);
+    vertical-align: top;
+  }
+  .spec-table tr:hover td { background: var(--surface2); }
+  .spec-table tr:last-child td { border-bottom: none; }
+  .spec-num {
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .spec-name { color: var(--text); font-weight: 600; }
+  .spec-model { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .spec-role {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    border: 1px solid;
+  }
+  .role-net { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .role-power { color: var(--accent3); border-color: var(--accent3); background: rgba(57,255,110,0.05); }
+  .role-ctrl { color: #a855f7; border-color: #a855f7; background: rgba(168,85,247,0.05); }
+  .role-sense { color: var(--accent2); border-color: var(--accent2); background: rgba(255,107,53,0.05); }
+  .spec-qty {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .spec-note { color: var(--muted); font-size: 11px; }
+
+  /* CONNECTION DIAGRAM */
+  .conn-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+  }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .flow-row {
+    display: grid;
+    grid-template-columns: 200px 40px 1fr;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--surface2);
+    gap: 0;
+  }
+  .flow-row:last-child { border-bottom: none; }
+  .flow-source {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+    padding-right: 16px;
+  }
+  .flow-arrow {
+    text-align: center;
+    color: var(--border);
+    font-size: 18px;
+  }
+  .flow-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 16px;
+  }
+  .flow-target {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+  }
+  .flow-wire {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    padding-left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wire-tag {
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: var(--mono);
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .footer-contact {
+    color: var(--accent);
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  /* ANIMATIONS */
+  .section { opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s forwards; }
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+  .section:nth-child(5) { animation-delay: 0.5s; }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .header, .hero, .main, .footer { padding-left: 24px; padding-right: 24px; }
+    .problem-grid, .calc-grid { grid-template-columns: 1fr; }
+    .hero::before { display: none; }
+    .calc-result { flex-direction: column; gap: 16px; }
+    .arch-layer { grid-template-columns: 80px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">Шикин Н.Н. // shikinn.com</div>
+  <div class="doc-status">ЭСКИЗНЫЙ ПРОЕКТ АКТУАЛЕН</div>
+  <div class="header-meta">ЭП-МWS-01 &nbsp;|&nbsp; Ред. 1.0 &nbsp;|&nbsp; 2025</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="doc-type"><span>ЭП-МWS-01</span> Эскизный проект</div>
+  <h1>Мобильная <span>Wi-Fi станция</span><br>4G/LTE с автономным питанием</h1>
+  <p class="hero-sub">Отказоустойчивая точка доступа для удалённых объектов, полевых штабов и передвижных лабораторий. Класс защиты IP67, работа 24/7 от солнца, авто и сети.</p>
+  <div class="hero-tags">
+    <span class="tag a">IP67</span>
+    <span class="tag a">LiFePO4 / 12V 20Ah</span>
+    <span class="tag a">36ч автономность</span>
+    <span class="tag b">MikroTik LtAP mini</span>
+    <span class="tag b">MPPT зарядка</span>
+    <span class="tag c">ESP32 мониторинг</span>
+    <span class="tag">–20°C … +60°C</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: ПРОБЛЕМА -->
+  <div class="section">
+    <div class="section-label"><span>01</span> Постановка задачи</div>
+    <h2>Почему «бытовуха» не работает</h2>
+    <p class="section-desc">Стандартные потребительские решения имеют три системных недостатка, делающих их непригодными для профессиональной эксплуатации.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-num">01</div>
+        <div class="problem-title">Температурный шок</div>
+        <p class="problem-desc">Li-Ion вздувается на солнце (+70°C), теряет до 40% ёмкости при морозе. Обычный диапазон: 0…+45°C.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">02</div>
+        <div class="problem-title">Конфликты питания</div>
+        <p class="problem-desc">Переключение между зарядкой и отдачей даёт просадки напряжения, приводящие к перезагрузке роутера.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-num">03</div>
+        <div class="problem-title">Нет мониторинга</div>
+        <p class="problem-desc">Система «умирает» без предупреждения. Нет данных по заряду, температуре, потреблению в реальном времени.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: АРХИТЕКТУРА -->
+  <div class="section">
+    <div class="section-label"><span>02</span> Системная архитектура</div>
+    <h2>Четыре функциональных слоя</h2>
+    <p class="section-desc">Система строится по топологии «Общая шина питания» с интеллектуальным управлением нагрузкой через ESP32.</p>
+    <div class="arch-diagram">
+      <div class="arch-title">
+        <span>ПРИНЦИПИАЛЬНАЯ СТРУКТУРА СИСТЕМЫ</span>
+        <span>ЭП-МWS-01 / Лист 1</span>
+      </div>
+      <div class="arch-layers">
+
+        <div class="arch-layer">
+          <div class="layer-label input">Ввод<br>энергии</div>
+          <div class="layer-nodes">
+            <div class="node green">
+              <div class="node-name">Солнечная панель</div>
+              <span class="node-spec">80–100 Вт / 18–21 В</span>
+            </div>
+            <div class="arrow">→</div>
+            <div class="node green">
+              <div class="node-name">Epever Tracer 1206AN</div>
+              <span class="node-spec">MPPT контроллер / 10А</span>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node">
+              <div class="node-name">Mean Well DDR-15G-12</div>
+              <span class="node-spec">Резервный ввод 220В AC</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="layer-label storage">Накопитель</div>
+          <div class="layer-nodes">
+            <div class="node blue">
+              <div class="node-name">LiFePO4 32700 4S</div>
+              <span class="node-spec">12.8В / 20Ач / 256 Вт·ч</span>
+            </div>
+            <div class="arrow">←→</div>
+            <div class="node blue">
+              <div class="node-name">Daly BMS 4S 15А</div>
+              <span class="node-spec">Балансировка + защита ячеек</span>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node">
+              <div class="node-name">GX16 Aviation</div>
+              <span class="node-spec">Внешние разъёмы IP67</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="layer-label control">Управление</div>
+          <div class="layer-nodes">
+            <div class="node purple">
+              <div class="node-name">ESP32-WROOM-32</div>
+              <span class="node-spec">Прошивка управления питанием</span>
+            </div>
+            <div class="arrow">←</div>
+            <div class="node purple">
+              <div class="node-name">INA219</div>
+              <span class="node-spec">Ток / напряжение / I²C</span>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node purple">
+              <div class="node-name">DS18B20</div>
+              <span class="node-spec">Температура / 1-Wire</span>
+            </div>
+            <div class="arrow">→</div>
+            <div class="node purple">
+              <div class="node-name">Relay/MOSFET</div>
+              <span class="node-spec">Отсечка нагрузки</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-layer">
+          <div class="layer-label load">Нагрузка</div>
+          <div class="layer-nodes">
+            <div class="node orange">
+              <div class="node-name">MikroTik LtAP mini LTE</div>
+              <span class="node-spec">4G роутер / 4–9 Вт / 12В</span>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node">
+              <div class="node-name">4G MIMO Antenna</div>
+              <span class="node-spec">Внешняя антенна</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: ЭНЕРГЕТИЧЕСКИЙ РАСЧЁТ -->
+  <div class="section">
+    <div class="section-label"><span>03</span> Энергетический расчёт</div>
+    <h2>Баланс системы</h2>
+    <p class="section-desc">Расчёт выполнен по пессимистичному сценарию: пиковое потребление + разряд до 10% номинала.</p>
+    <div class="calc-grid">
+      <div class="calc-block">
+        <div class="calc-block-title">Потребление (нагрузка)</div>
+        <div class="calc-row">
+          <span class="calc-label">MikroTik LtAP (LTE активен)</span>
+          <span class="calc-val">6 Вт</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">ESP32 + INA219</span>
+          <span class="calc-val">0.75 Вт</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Потери BMS / проводка</span>
+          <span class="calc-val">0.25 Вт</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label" style="color:var(--text);font-weight:600">Итого среднее</span>
+          <span class="calc-val orange">~7 Вт</span>
+        </div>
+      </div>
+
+      <div class="calc-block">
+        <div class="calc-block-title">Запас энергии (АКБ)</div>
+        <div class="calc-row">
+          <span class="calc-label">Тип</span>
+          <span class="calc-val">LiFePO4 4S</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Напряжение</span>
+          <span class="calc-val">12.8 В</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Ёмкость</span>
+          <span class="calc-val">20 Ач</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label" style="color:var(--text);font-weight:600">Запас энергии</span>
+          <span class="calc-val accent">256 Вт·ч</span>
+        </div>
+      </div>
+
+      <div class="calc-block">
+        <div class="calc-block-title">Зарядка (солнце)</div>
+        <div class="calc-row">
+          <span class="calc-label">Контроллер</span>
+          <span class="calc-val">Tracer 1206AN</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Макс. ток заряда</span>
+          <span class="calc-val">10 А</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Рек. панель</span>
+          <span class="calc-val">80–100 Вт</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label" style="color:var(--text);font-weight:600">Полная зарядка</span>
+          <span class="calc-val green">5–6 ч солнца</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-result">
+      <div class="result-item">
+        <div class="result-label">Автономность без солнца</div>
+        <div class="result-val">36<span>часов</span></div>
+        <div class="result-formula">256 Вт·ч ÷ 7 Вт × 0.9</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Температурный диапазон</div>
+        <div class="result-val" style="color: var(--accent3)">–20 / +60<span>°C</span></div>
+        <div class="result-formula">LiFePO4 vs Li-Ion</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Защита корпуса</div>
+        <div class="result-val" style="color: var(--accent2)">IP67<span></span></div>
+        <div class="result-formula">РИФ IP67 кейс</div>
+      </div>
+      <div class="result-item">
+        <div class="result-label">Цикловой ресурс АКБ</div>
+        <div class="result-val" style="color: #a855f7">2000+<span>цикл.</span></div>
+        <div class="result-formula">LiFePO4 @ 80% DoD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: СХЕМА СОЕДИНЕНИЙ -->
+  <div class="section">
+    <div class="section-label"><span>04</span> Схема соединений</div>
+    <h2>Принципиальные связи компонентов</h2>
+    <p class="section-desc">Топология «Общая шина 12В» с измерительным узлом после АКБ и управлением нагрузкой через ESP32.</p>
+    <div class="conn-diagram">
+      <div class="flow">
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: var(--accent3)">Солнечная панель<br><span style="font-size:9px;color:var(--muted)">80–100 Вт / 18–21 В</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:var(--accent3);color:var(--accent3)">Epever Tracer 1206AN</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">+/– solar</span> через GX16 разъём, сечение 4 мм²</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: var(--accent3)">Epever Tracer 1206AN<br><span style="font-size:9px;color:var(--muted)">MPPT контроллер</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:var(--accent);color:var(--accent)">LiFePO4 4S → Daly BMS</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">BAT+/BAT–</span> 14.6В макс. зарядное, 4 мм²</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: var(--accent)">LiFePO4 + Daly BMS<br><span style="font-size:9px;color:var(--muted)">12.8В / 20Ач</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:#a855f7;color:#a855f7">INA219 (разрыв «+»)</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">B+</span> плюсовой провод через шунт INA219, 2.5 мм²</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: #a855f7">INA219<br><span style="font-size:9px;color:var(--muted)">I²C → ESP32</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:#a855f7;color:#a855f7">ESP32-WROOM-32</div>
+              <div class="flow-target" style="border-color:#a855f7;color:#a855f7">DS18B20</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">I²C SDA/SCL</span> и <span class="wire-tag">1-Wire</span> данные на GPIO ESP32</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: #a855f7">ESP32<br><span style="font-size:9px;color:var(--muted)">GPIO управление</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:#a855f7;color:#a855f7">Relay/MOSFET модуль</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">GPIO HIGH/LOW</span> управляет отсечкой нагрузки при критическом разряде</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: var(--accent2)">Relay/MOSFET → шина 12В<br><span style="font-size:9px;color:var(--muted)">управляемый выход</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:var(--accent2);color:var(--accent2)">Mean Well DDR-15G-12</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">12В стаб.</span> стабильное питание MikroTik, защита от просадок АКБ</div>
+          </div>
+        </div>
+
+        <div class="flow-row">
+          <div class="flow-source" style="color: var(--accent2)">Mean Well DDR-15G-12<br><span style="font-size:9px;color:var(--muted)">12В / 1.25А стаб.</span></div>
+          <div class="flow-arrow">→</div>
+          <div>
+            <div class="flow-targets">
+              <div class="flow-target" style="border-color:var(--accent2);color:var(--accent2)">MikroTik LtAP mini LTE</div>
+              <div class="flow-target" style="border-color:var(--accent2);color:var(--accent2)">4G MIMO Antenna</div>
+            </div>
+            <div class="flow-wire"><span class="wire-tag">DC 12В</span> стандартный barrel-разъём MikroTik</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: СПЕЦИФИКАЦИЯ -->
+  <div class="section">
+    <div class="section-label"><span>05</span> Спецификация компонентов</div>
+    <h2>Перечень элементов</h2>
+    <p class="section-desc">Все компоненты — промышленного класса или проверенные производственные серии. Замена аналогами согласуется отдельно.</p>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Компонент</th>
+          <th>Роль</th>
+          <th>Кол.</th>
+          <th>Ключевые параметры</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="spec-num">01</td>
+          <td><div class="spec-name">MikroTik LtAP mini LTE kit</div><div class="spec-model">RouterOS / LTE Cat 4</div></td>
+          <td><span class="spec-role role-net">СВЯЗЬ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">4G/LTE + Wi-Fi 2.4 ГГц, 9–30В, IP54, –40…+70°C</td>
+        </tr>
+        <tr>
+          <td class="spec-num">02</td>
+          <td><div class="spec-name">LiFePO4 32700</div><div class="spec-model">Сборка 4S / 12В 20Ач</div></td>
+          <td><span class="spec-role role-power">ПИТАНИЕ</span></td>
+          <td class="spec-qty">4</td>
+          <td class="spec-note">256 Вт·ч, –20…+60°C, 2000+ циклов @ 80% DoD</td>
+        </tr>
+        <tr>
+          <td class="spec-num">03</td>
+          <td><div class="spec-name">Daly BMS 4S 12В 15А</div><div class="spec-model">Smart BMS w/ UART</div></td>
+          <td><span class="spec-role role-power">ПИТАНИЕ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">Балансировка, защита от КЗ / переразряда / перегрева</td>
+        </tr>
+        <tr>
+          <td class="spec-num">04</td>
+          <td><div class="spec-name">Epever Tracer 1206AN</div><div class="spec-model">MPPT Solar Controller</div></td>
+          <td><span class="spec-role role-power">ПИТАНИЕ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">10А, 12В, MPPT, LiFePO4 профиль, RS-485</td>
+        </tr>
+        <tr>
+          <td class="spec-num">05</td>
+          <td><div class="spec-name">ESP32-WROOM-32</div><div class="spec-model">Espressif / 240 МГц</div></td>
+          <td><span class="spec-role role-ctrl">КОНТРОЛЬ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">Wi-Fi + BT, GPIO управление, прошивка мониторинга</td>
+        </tr>
+        <tr>
+          <td class="spec-num">06</td>
+          <td><div class="spec-name">INA219</div><div class="spec-model">Sensor Module / I²C</div></td>
+          <td><span class="spec-role role-sense">ДАТЧИК</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">Ток ±3.2А, напряжение 0–26В, 12-бит ADC</td>
+        </tr>
+        <tr>
+          <td class="spec-num">07</td>
+          <td><div class="spec-name">DS18B20</div><div class="spec-model">1-Wire Temp Sensor</div></td>
+          <td><span class="spec-role role-sense">ДАТЧИК</span></td>
+          <td class="spec-qty">2</td>
+          <td class="spec-note">–55…+125°C, ±0.5°C, монтаж на АКБ и в корпусе</td>
+        </tr>
+        <tr>
+          <td class="spec-num">08</td>
+          <td><div class="spec-name">Mean Well DDR-15G-12</div><div class="spec-model">AC/DC DIN Rail</div></td>
+          <td><span class="spec-role role-power">ПИТАНИЕ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">220В AC → 12В DC, 1.25А, стабилизированный выход</td>
+        </tr>
+        <tr>
+          <td class="spec-num">09</td>
+          <td><div class="spec-name">РИФ IP67 Кейс</div><div class="spec-model">Защитный корпус</div></td>
+          <td><span class="spec-role role-ctrl">КОРПУС</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">IP67, ударопрочный ABS, монтажные рейки внутри</td>
+        </tr>
+        <tr>
+          <td class="spec-num">10</td>
+          <td><div class="spec-name">GX16 Aviation Connectors</div><div class="spec-model">4-pin, 6-pin</div></td>
+          <td><span class="spec-role role-ctrl">КОРПУС</span></td>
+          <td class="spec-qty">4</td>
+          <td class="spec-note">Внешние разъёмы: солнечная панель, зарядка авто, выход</td>
+        </tr>
+        <tr>
+          <td class="spec-num">11</td>
+          <td><div class="spec-name">4G MIMO Antenna</div><div class="spec-model">SMA / внешняя</div></td>
+          <td><span class="spec-role role-net">СВЯЗЬ</span></td>
+          <td class="spec-qty">2</td>
+          <td class="spec-note">Два диполя MIMO для LTE Band 3/7/20, усиление 3–5 dBi</td>
+        </tr>
+        <tr>
+          <td class="spec-num">12</td>
+          <td><div class="spec-name">Relay / MOSFET Module</div><div class="spec-model">High Side Switch</div></td>
+          <td><span class="spec-role role-ctrl">КОНТРОЛЬ</span></td>
+          <td class="spec-qty">1</td>
+          <td class="spec-note">GPIO управление от ESP32, отсечка нагрузки при 10% АКБ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    <div>Документ: ЭП-МWS-01 &nbsp;·&nbsp; Редакция 1.0 &nbsp;·&nbsp; 2025</div>
+    <div>Разработчик: Шикин Николай &nbsp;·&nbsp; shikinn.com</div>
+  </div>
+  <div class="footer-right">
+    <div>Нужна конфигурация под ваш объект?</div>
+    <div class="footer-contact">→ t.me/snik550950</div>
+  </div>
+</footer>
+
+</body>
+</html>

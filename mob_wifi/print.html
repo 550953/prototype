@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Опросный лист_Энергосистема_связи_v1.0.pdf</title>
+    <style>
+        /* Строгий инженерный стиль — без иконок, анимаций и «украшательств» */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #e0e0e0; /* Серый фон для экрана, на печать не влияет */
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.2;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Лист А4 */
+        .document {
+            max-width: 1100px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 45px 55px;
+            margin: 0 auto;
+        }
+
+        /* Типографика */
+        h1 {
+            font-size: 24pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            font-family: inherit;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #000;
+            font-family: inherit;
+        }
+        .subtitle {
+            font-size: 12pt;
+            font-weight: normal;
+            border-bottom: 1px solid #aaa;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .section-header {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            background-color: #f1f1f1;
+            padding: 6px 8px;
+            border-left: 4px solid #000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 11pt;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px 8px;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            text-align: center;
+        }
+        .checkbox-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .checkbox-item span {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .dashed-line {
+            border-bottom: 1px dashed #000;
+            display: inline-block;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .sign-field {
+            margin-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #000;
+            padding-top: 20px;
+            font-size: 10pt;
+        }
+        .note {
+            font-size: 9pt;
+            margin-top: 25px;
+            color: #333;
+            border-top: 1px solid #ccc;
+            padding-top: 12px;
+        }
+        .footer-page {
+            font-size: 9pt;
+            text-align: center;
+            margin-top: 35px;
+            color: #555;
+        }
+        .small-mono {
+            font-family: 'Courier New', monospace;
+            font-size: 9pt;
+        }
+        hr {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="document">
+
+    <!-- ШАПКА -->
+    <h1>ОПРОСНЫЙ ЛИСТ</h1>
+    <div class="subtitle">
+        <span>Для проектирования системы автономного питания (24/7/365)</span>
+        <span>Версия 1.0 от 16.04.2026</span>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <strong>Объект:</strong> _________________________________________________<br>
+        <strong>Заказчик (представитель):</strong> _______________________________<br>
+        <strong>Должность:</strong> _____________________________________________<br>
+        <strong>Дата заполнения:</strong> «___» _______________ 202__ г.
+    </div>
+
+    <!-- РАЗДЕЛ 1 -->
+    <h2>1. Энергопотребление оборудования (нагрузка)</h2>
+    <table>
+        <thead>
+            <tr><th>№</th><th>Тип оборудования</th><th>Модель</th><th>Напряжение питания</th><th>Потребление (рабочее/пик), Вт</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>PoE-коммутатор</td><td>_______________</td><td>___ В</td><td>____ / ____</td></tr>
+            <tr><td>2</td><td>Оптический свитч</td><td>_______________</td><td>___ В</td><td>____ / ____</td></tr>
+            <tr><td>3</td><td>Базовая станция (mANTBox)</td><td>_______________</td><td>___ В</td><td>____ / ____</td></tr>
+            <tr><td>4</td><td>Видеокамера</td><td>_______________</td><td>___ В</td><td>____ / ____</td></tr>
+            <tr><td>5</td><td>Прочее (указать)</td><td>_______________</td><td>___ В</td><td>____ / ____</td></tr>
+        </tbody>
+    </table>
+    <div class="checkbox-item"><span>□</span> Замеры потребления произведены (приложить протокол)</div>
+    <div class="checkbox-item"><span>□</span> Данные взяты из документации (даташит)</div>
+
+    <!-- РАЗДЕЛ 2 -->
+    <h2>2. Характеристики генератора (основной источник)</h2>
+    <table>
+        <tr><td style="width: 40%;">Модель генератора</td><td colspan="2">_______________________________________</td></tr>
+        <tr><td>Номинальная мощность, кВт</td><td colspan="2">_______________</td></tr>
+        <tr><td>Тип запуска</td><td colspan="2"><div class="checkbox-item"><span>□</span> Ручной (верёвка/ключ)</div><div class="checkbox-item"><span>□</span> Электростартер</div><div class="checkbox-item"><span>□</span> Автоматический (АВР/сухой контакт)</div></td></tr>
+        <tr><td>Наличие клемм для дистанционного пуска</td><td colspan="2"><div class="checkbox-item"><span>□</span> Да, двухпроводная схема</div><div class="checkbox-item"><span>□</span> Нет</div><div class="checkbox-item"><span>□</span> Неизвестно (требуется проверка)</div></td></tr>
+        <tr><td>Качество выходного напряжения</td><td colspan="2"><div class="checkbox-item"><span>□</span> Чистый синус</div><div class="checkbox-item"><span>□</span> Модифицированный синус (меандр)</div></td></tr>
+    </table>
+
+    <!-- РАЗДЕЛ 3 -->
+    <h2>3. Аккумуляторная батарея (АКБ)</h2>
+    <table>
+        <tr><td style="width: 40%;">Тип АКБ</td><td colspan="2"><div class="checkbox-item"><span>□</span> AGM / GEL</div><div class="checkbox-item"><span>□</span> LiFePO4</div><div class="checkbox-item"><span>□</span> Стартерная (не рекомендуется)</div><div class="checkbox-item"><span>□</span> Иное: ___________</div></td></tr>
+        <tr><td>Номинальное напряжение системы</td><td colspan="2"><div class="checkbox-item"><span>□</span> 12 В</div><div class="checkbox-item"><span>□</span> 24 В</div><div class="checkbox-item"><span>□</span> 48 В</div></td></tr>
+        <tr><td>Общая ёмкость (А·ч)</td><td colspan="2">_______________</td></tr>
+        <tr><td>Количество параллельных/последовательных ветвей</td><td colspan="2">____ последовательно / ____ параллельно</td></tr>
+        <tr><td>BMS (система управления батареей)</td><td colspan="2"><div class="checkbox-item"><span>□</span> Есть, с интерфейсом RS485 / CAN</div><div class="checkbox-item"><span>□</span> Есть, аналоговая защита (только отключение)</div><div class="checkbox-item"><span>□</span> Отсутствует</div></td></tr>
+    </table>
+
+    <!-- РАЗДЕЛ 4 -->
+    <h2>4. Режим работы и климатические условия</h2>
+    <table>
+        <tr><td style="width: 40%;">Требуемая автономность (без генератора)</td><td colspan="2">____ часов / ____ дней</td></tr>
+        <tr><td>Периодичность обслуживания объекта</td><td colspan="2"><div class="checkbox-item"><span>□</span> Ежедневно</div><div class="checkbox-item"><span>□</span> 1 раз в 3 дня</div><div class="checkbox-item"><span>□</span> 1 раз в неделю</div><div class="checkbox-item"><span>□</span> Реже 1 раза в месяц</div></td></tr>
+        <tr><td>Минимальная температура воздуха зимой, °C</td><td colspan="2">_______________</td></tr>
+        <tr><td>Максимальная температура воздуха летом, °C</td><td colspan="2">_______________</td></tr>
+        <tr><td>Тип шкафа / укрытия</td><td colspan="2"><div class="checkbox-item"><span>□</span> Герметичный IP67 (нет вентиляции)</div><div class="checkbox-item"><span>□</span> Вентилируемый уличный шкаф</div><div class="checkbox-item"><span>□</span> Помещение (неотапливаемое)</div><div class="checkbox-item"><span>□</span> Отапливаемое помещение</div></td></tr>
+    </table>
+
+    <!-- РАЗДЕЛ 5 -->
+    <h2>5. Мониторинг и удалённое управление</h2>
+    <table>
+        <tr><td style="width: 40%;">Необходим ли удалённый сбор данных?</td><td colspan="2"><div class="checkbox-item"><span>□</span> Да</div><div class="checkbox-item"><span>□</span> Нет</div></td></tr>
+        <tr><td>Способ передачи телеметрии</td><td colspan="2"><div class="checkbox-item"><span>□</span> MQTT (через существующий канал связи)</div><div class="checkbox-item"><span>□</span> Telegram-бот</div><div class="checkbox-item"><span>□</span> SNMP (через MikroTik)</div><div class="checkbox-item"><span>□</span> Иное: ___________</div></td></tr>
+        <tr><td>Требуется ли автоматический запуск генератора</td><td colspan="2"><div class="checkbox-item"><span>□</span> Да, обязательно</div><div class="checkbox-item"><span>□</span> Желательно, но не критично</div><div class="checkbox-item"><span>□</span> Нет, запуск ручной</div></td></tr>
+        <tr><td>Бюджет на систему управления (контроллер + датчики)</td><td colspan="2">___________ руб. (указать ориентир)</td></tr>
+    </table>
+
+    <div class="section-header">Дополнительные замечания и схемы (эскиз размещения)</div>
+    <div style="border: 1px solid #000; min-height: 100px; padding: 10px; margin: 10px 0;">
+        _________________________________________________________________<br>
+        _________________________________________________________________<br>
+        _________________________________________________________________<br>
+        _________________________________________________________________
+    </div>
+
+    <!-- Подписи -->
+    <div class="sign-field">
+        <div>Инженер (Заказчик): _________________________ / расшифровка _______</div>
+        <div>Дата: «___» _________ 202__ г.</div>
+    </div>
+    <div class="sign-field">
+        <div>Разработчик (Проектировщик): _________________________ / ________</div>
+        <div>Дата: «___» _________ 202__ г.</div>
+    </div>
+
+    <div class="note">
+        Примечание: опросный лист является неотъемлемой частью технического задания. Без заполнения всех разделов проектирование не начинается. Допускается приложение дополнительных листов с исходными данными (фото, однолинейные схемы).
+    </div>
+    <div class="footer-page">
+        Страница 1 из 1 | ООО «ПроектСвязьЭнерго» / Форма ОЛ-ЭС-01
+    </div>
+
+</div>
+</body>
+</html>

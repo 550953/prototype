@@ -5,547 +5,306 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CreditFlow AI</title>
 <style>
-  :root {
-    --bg: #f9f9f8;
-    --surface: #ffffff;
-    --border: rgba(0,0,0,.08);
-    --border-med: rgba(0,0,0,.13);
-    --text: #111;
-    --muted: #888;
-    --faint: #bbb;
-    --green: #1a9e6e;
-    --green-bg: #edf7f2;
-    --green-border: #a3dfc3;
-    --amber: #b07010;
-    --amber-bg: #fdf4e3;
-    --amber-border: #f0c96a;
-    --red: #c0392b;
-    --red-bg: #fdf0ef;
-    --red-border: #f5b4ae;
-    --blue: #1a6bc0;
-    --blue-bg: #eef4fd;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --font: 'Inter', system-ui, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; min-height: 100vh; }
+:root{
+  --bg:#f7f7f6;--surface:#fff;--border:rgba(0,0,0,.08);--border-med:rgba(0,0,0,.13);
+  --text:#111;--muted:#888;--faint:#ccc;
+  --green:#1a9e6e;--green-bg:#edf7f2;--green-b:#a3dfc3;
+  --amber:#a07010;--amber-bg:#fdf4e3;--amber-b:#f0c96a;
+  --red:#c0392b;--red-bg:#fdf0ef;--red-b:#f5b4ae;
+  --blue:#1a6bc0;--blue-bg:#eef4fd;
+  --r:10px;--rs:6px;--font:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.topbar{height:50px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;padding:0 18px;gap:10px;flex-shrink:0}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pu 2s infinite;flex-shrink:0}
+@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+.brand{font-size:14px;font-weight:700;letter-spacing:-.4px}
+.brand-tag{font-size:11px;color:var(--muted)}
+.tbar-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.agent-pill{font-size:11px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-b);border-radius:999px;padding:3px 10px;display:flex;align-items:center;gap:5px}
+.feed-wrap{padding:6px 18px;border-bottom:1px solid var(--border);background:var(--surface);overflow:hidden;flex-shrink:0}
+.feed-track{display:flex;gap:10px;white-space:nowrap}
+.fi{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);flex-shrink:0}
+.fd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.fg{background:var(--green)}.fa{background:var(--amber)}.fr{background:var(--red)}.fb{background:var(--blue)}
 
-  /* ── LOCK SCREEN ── */
-  #lock { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; }
-  .lock-box { width: 360px; text-align: center; }
-  .lock-logo { font-size: 17px; font-weight: 600; letter-spacing: -.4px; margin-bottom: 6px; }
-  .lock-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
-  .lock-box input {
-    width: 100%; padding: 10px 14px; border: 1px solid var(--border-med);
-    border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font);
-    background: var(--surface); color: var(--text); outline: none; margin-bottom: 8px;
-    letter-spacing: .05em;
-  }
-  .lock-box input:focus { border-color: var(--green); }
-  .lock-btn {
-    width: 100%; padding: 10px; background: var(--text); color: #fff;
-    border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
-    cursor: pointer; font-family: var(--font);
-  }
-  .lock-btn:hover { opacity: .85; }
-  .lock-hint { font-size: 11px; color: var(--faint); margin-top: 10px; }
+.body{display:grid;grid-template-columns:220px 1fr 300px;flex:1;overflow:hidden}
 
-  /* ── LAYOUT ── */
-  #app { display: none; min-height: 100vh; }
-  .topbar {
-    height: 52px; border-bottom: 1px solid var(--border);
-    background: var(--surface); display: flex; align-items: center;
-    padding: 0 20px; gap: 12px; position: sticky; top: 0; z-index: 10;
-  }
-  .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; flex-shrink: 0; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
-  .brand { font-size: 14px; font-weight: 600; letter-spacing: -.3px; }
-  .brand-tag { font-size: 11px; color: var(--muted); }
-  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-  .agent-badge {
-    font-size: 11px; background: var(--green-bg); color: var(--green);
-    border: 1px solid var(--green-border); border-radius: 999px;
-    padding: 3px 10px; display: flex; align-items: center; gap: 5px;
-  }
+/* LEFT */
+.lp{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--surface)}
+.ph{padding:10px 12px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cpill{background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:1px 7px;font-size:10px}
+.queue{overflow-y:auto;flex:1}
+.qi{padding:9px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.qi:hover{background:var(--bg)}
+.qi.on{background:var(--green-bg);border-left:2px solid var(--green)}
+.qi-name{font-size:12px;font-weight:600}
+.qi-r{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+.qi-amt{font-size:11px;color:var(--muted)}
+.qidot{width:7px;height:7px;border-radius:50%}
+.qi-s{font-size:10px;margin-top:2px}
 
-  /* FEED */
-  .feed-wrap { padding: 8px 20px; border-bottom: 1px solid var(--border); background: var(--surface); overflow: hidden; }
-  .feed-track { display: flex; gap: 8px; white-space: nowrap; transition: none; }
-  .feed-item {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--muted); flex-shrink: 0;
-    padding: 3px 0;
-  }
-  .fdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .fg { background: var(--green); } .fa { background: var(--amber); } .fr { background: var(--red); } .fb { background: var(--blue); }
+/* CENTER */
+.cp{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
 
-  /* MAIN */
-  .main { display: grid; grid-template-columns: 240px 1fr 320px; height: calc(100vh - 90px); }
+.v-eye{font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;font-weight:700}
+.v-word{font-size:42px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.v-pct{font-size:60px;font-weight:800;letter-spacing:-.04em;line-height:1;margin:4px 0 2px}
+.v-sub{font-size:11px;color:var(--muted)}
+.vg{color:var(--green)}.va{color:var(--amber)}.vr{color:var(--red)}
+.src-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+.src{font-size:10px;padding:2px 7px;border-radius:999px;border:1px solid}
+.sok{background:var(--green-bg);color:var(--green);border-color:var(--green-b)}
+.sno{background:var(--red-bg);color:var(--red);border-color:var(--red-b)}
+.saving{margin-top:8px;padding:7px 10px;background:var(--blue-bg);border-radius:var(--rs);font-size:11px;color:var(--blue)}
 
-  /* LEFT */
-  .left-panel { border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-  .panel-head { padding: 12px 14px 8px; font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .cnt-pill { background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; font-size: 11px; color: var(--muted); }
-  .queue { overflow-y: auto; flex: 1; }
-  .qi {
-    padding: 10px 14px; border-bottom: 1px solid var(--border);
-    cursor: pointer; transition: background .1s;
-  }
-  .qi:hover { background: var(--bg); }
-  .qi.on { background: var(--green-bg); border-left: 2px solid var(--green); }
-  .qi-name { font-size: 12px; font-weight: 500; }
-  .qi-row { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
-  .qi-amt { font-size: 11px; color: var(--muted); }
-  .qi-dot { width: 7px; height: 7px; border-radius: 50%; }
-  .qi-status { font-size: 10px; margin-top: 3px; }
+.steps-row{display:flex;align-items:center}
+.step{display:flex;flex-direction:column;align-items:center;flex:1}
+.sc{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1px solid var(--border);color:var(--faint);background:var(--bg)}
+.sc.done{background:var(--green-bg);color:var(--green);border-color:var(--green-b)}
+.sc.cur{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 0 0 3px var(--green-bg)}
+.sc.cwarn{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-bg)}
+.sc.cdanger{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 0 0 3px var(--red-bg)}
+.sl{font-size:9px;color:var(--muted);margin-top:4px;text-align:center}
+.sline{flex:1;height:1px;background:var(--border);margin-bottom:18px}
+.sline.done{background:var(--green-b)}
 
-  /* CENTER */
-  .center-panel { overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.ct{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
+.ck-row{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:12px;border-bottom:1px solid var(--border)}
+.ck-row:last-child{border-bottom:none}
+.ck{font-size:13px;font-weight:700}
+.cok{color:var(--green)}.cwn{color:var(--amber)}.cfail{color:var(--red)}
 
-  .verdict-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px 24px 20px;
-    text-align: center;
-  }
-  .v-eyebrow { font-size: 10px; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
-  .v-word { font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
-  .v-pct { font-size: 64px; font-weight: 700; letter-spacing: -.04em; line-height: 1; margin: 4px 0 2px; }
-  .v-sub { font-size: 12px; color: var(--muted); }
-  .vg { color: var(--green); } .va { color: var(--amber); } .vr { color: var(--red); }
+.act-row{display:flex;gap:7px}
+.btn-m{flex:1;background:#111;color:#fff;border:none;border-radius:var(--rs);padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.btn-m:hover{background:#333}
+.btn-s{background:transparent;color:var(--text);border:1px solid var(--border-med);border-radius:var(--rs);padding:10px 12px;font-size:12px;cursor:pointer;font-family:var(--font)}
+.btn-s:hover{background:var(--bg)}
 
-  .steps-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 20px;
-  }
-  .steps-row { display: flex; align-items: center; }
-  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .step-circle {
-    width: 26px; height: 26px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 600; border: 1px solid var(--border); color: var(--faint);
-    background: var(--bg);
-  }
-  .step-circle.done { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
-  .step-circle.cur { background: var(--green); color: #fff; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-bg); }
-  .step-circle.cwarn { background: var(--amber); color: #fff; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-bg); }
-  .step-circle.cdanger { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 0 0 0 3px var(--red-bg); }
-  .step-label { font-size: 9px; color: var(--muted); margin-top: 5px; text-align: center; }
-  .step-line { flex: 1; height: 1px; background: var(--border); margin-bottom: 18px; }
-  .step-line.done { background: var(--green-border); }
-
-  .checks-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 20px;
-  }
-  .checks-title { font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--muted); margin-bottom: 10px; }
-  .check-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
-  .check-row:last-child { border-bottom: none; }
-  .ck { font-size: 14px; }
-  .cok { color: var(--green); } .cwarn { color: var(--amber); } .cfail { color: var(--red); }
-
-  .actions-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px 20px;
-    display: flex; gap: 8px;
-  }
-  .btn-main { flex: 1; background: #111; color: #fff; border: none; border-radius: var(--radius-sm); padding: 10px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
-  .btn-main:hover { background: #333; }
-  .btn-sec { background: transparent; color: var(--text); border: 1px solid var(--border-med); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; cursor: pointer; font-family: var(--font); }
-  .btn-sec:hover { background: var(--bg); }
-
-  /* RIGHT — AI CHAT */
-  .right-panel { border-left: 1px solid var(--border); display: flex; flex-direction: column; background: var(--surface); }
-  .chat-head { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .chat-head .pulse { width: 6px; height: 6px; }
-  .chat-msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-  .msg { max-width: 88%; padding: 8px 11px; font-size: 12px; line-height: 1.5; border-radius: var(--radius); }
-  .msg-ai { background: var(--bg); color: var(--text); border: 1px solid var(--border); align-self: flex-start; }
-  .msg-user { background: #111; color: #fff; align-self: flex-end; }
-  .msg-typing { background: var(--bg); border: 1px solid var(--border); align-self: flex-start; padding: 8px 14px; border-radius: var(--radius); }
-  .dots span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); margin: 0 1px; animation: dot 1.2s infinite; }
-  .dots span:nth-child(2) { animation-delay: .2s; }
-  .dots span:nth-child(3) { animation-delay: .4s; }
-  @keyframes dot { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
-  .chat-input-wrap { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 6px; }
-  .chat-inp {
-    flex: 1; padding: 8px 11px; border: 1px solid var(--border-med);
-    border-radius: var(--radius-sm); font-size: 12px; font-family: var(--font);
-    background: var(--bg); color: var(--text); outline: none; resize: none;
-  }
-  .chat-inp:focus { border-color: var(--green); background: #fff; }
-  .send-btn {
-    background: #111; color: #fff; border: none; border-radius: var(--radius-sm);
-    padding: 8px 12px; cursor: pointer; font-size: 14px; font-family: var(--font);
-  }
-  .send-btn:hover { background: #333; }
-  .send-btn:disabled { background: var(--border-med); cursor: default; }
-
-  .sources-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
-  .src { font-size: 10px; padding: 2px 8px; border-radius: 999px; border: 1px solid; }
-  .src-ok { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
-  .src-no { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
-
-  .saving-row { margin-top: 10px; padding: 8px 11px; background: var(--blue-bg); border-radius: var(--radius-sm); font-size: 11px; color: var(--blue); border: 1px solid rgba(26,107,192,.15); }
+/* RIGHT */
+.rp{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface)}
+.chat-head{padding:11px 13px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px}
+.msg{max-width:90%;padding:8px 11px;font-size:12px;line-height:1.5;border-radius:var(--r)}
+.msg-ai{background:var(--bg);color:var(--text);border:1px solid var(--border);align-self:flex-start}
+.msg-user{background:#111;color:#fff;align-self:flex-end}
+.typing-wrap{background:var(--bg);border:1px solid var(--border);align-self:flex-start;padding:9px 14px;border-radius:var(--r)}
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--muted);margin:0 1px;animation:dot 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}
+.chat-inp-wrap{padding:8px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0}
+.cinp{flex:1;padding:8px 10px;border:1px solid var(--border-med);border-radius:var(--rs);font-size:12px;font-family:var(--font);background:var(--bg);color:var(--text);outline:none;resize:none}
+.cinp:focus{border-color:var(--green);background:#fff}
+.sbtn{background:#111;color:#fff;border:none;border-radius:var(--rs);padding:8px 12px;cursor:pointer;font-size:14px}
+.sbtn:hover{background:#333}
 </style>
 </head>
 <body>
 
-<!-- LOCK -->
-<div id="lock">
-  <div class="lock-box">
-    <div class="lock-logo">⬡ CreditFlow AI</div>
-    <div class="lock-sub">Автоматическая обработка кредитных заявок</div>
-    <input type="password" id="api-key" placeholder="Anthropic API key (sk-ant-…)" autocomplete="off" />
-    <button class="lock-btn" onclick="unlock()">Войти</button>
-    <div class="lock-hint">Ключ хранится только в памяти браузера</div>
+<div class="topbar">
+  <div class="pulse"></div>
+  <div class="brand">CreditFlow AI</div>
+  <div class="brand-tag">Автоматическая обработка кредитных заявок</div>
+  <div class="tbar-r">
+    <div class="agent-pill"><div class="pulse"></div>Агент активен</div>
+    <div style="font-size:11px;color:var(--muted)" id="qcnt">24 заявки в очереди</div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="topbar">
-    <div class="pulse"></div>
-    <div class="brand">CreditFlow AI</div>
-    <div class="brand-tag">Автоматическая обработка кредитных заявок</div>
-    <div class="topbar-right">
-      <div class="agent-badge"><div class="pulse"></div>Агент активен</div>
-      <div id="queue-count" style="font-size:12px;color:var(--muted)">24 заявки</div>
-    </div>
+<div class="feed-wrap">
+  <div class="feed-track" id="feed"></div>
+</div>
+
+<div class="body">
+  <div class="lp">
+    <div class="ph">Очередь <span class="cpill">5</span></div>
+    <div class="queue" id="queue"></div>
   </div>
-
-  <div class="feed-wrap">
-    <div class="feed-track" id="feed"></div>
+  <div class="cp">
+    <div class="card" id="vc" style="text-align:center"></div>
+    <div class="card" id="stc"></div>
+    <div class="card" id="chc"></div>
+    <div class="card" id="ac" style="padding:12px 16px"></div>
   </div>
-
-  <div class="main">
-    <!-- LEFT -->
-    <div class="left-panel">
-      <div class="panel-head">Очередь <span class="cnt-pill" id="cnt">5</span></div>
-      <div class="queue" id="queue"></div>
-    </div>
-
-    <!-- CENTER -->
-    <div class="center-panel">
-      <div class="verdict-card" id="verdict-card"></div>
-      <div class="steps-card" id="steps-card"></div>
-      <div class="checks-card" id="checks-card"></div>
-      <div class="actions-card" id="actions-card"></div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="right-panel">
-      <div class="chat-head"><div class="pulse"></div>AI Агент — чат</div>
-      <div class="chat-msgs" id="chat-msgs"></div>
-      <div class="chat-input-wrap">
-        <textarea class="chat-inp" id="chat-inp" rows="2" placeholder="Спросите агента о заявке…"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendChat()">↑</button>
-      </div>
+  <div class="rp">
+    <div class="chat-head"><div class="pulse"></div>AI Агент — чат</div>
+    <div class="chat-msgs" id="msgs"></div>
+    <div class="chat-inp-wrap">
+      <textarea class="cinp" id="cinp" rows="2" placeholder="Спросите агента о заявке…"></textarea>
+      <button class="sbtn" onclick="sendChat()">↑</button>
     </div>
   </div>
 </div>
 
 <script>
-let API_KEY = '';
-let active = 0;
-
-const clients = [
-  {
-    name: 'Иван Петров', id: '8451', amt: '450 000 ₽', term: '36 мес.',
-    word: 'APPROVE', wc: 'vg', pct: 87, stage: 3,
-    stageType: 'cur',
-    checks: [
-      ['cok','✓','Паспорт распознан — данные совпадают'],
-      ['cok','✓','Справка о доходах верифицирована (ФНС)'],
-      ['cok','✓','Телефон подтверждён'],
-      ['cok','✓','Кредитная история: без замечаний'],
-      ['cok','✓','Данные совпадают с БКИ'],
-    ],
-    sources: [['ok','БКИ'],['ok','ФНС'],['ok','Документы'],['ok','CRM'],['ok','Email']],
-    saving: '~12 минут сэкономлено сотруднику',
-    summary: 'Иван Петров, 450 000 ₽, 36 мес. Паспорт и доходы подтверждены, история чистая, нагрузка 28%.',
-  },
-  {
-    name: 'Анна Сидорова', id: '8452', amt: '180 000 ₽', term: '24 мес.',
-    word: 'REVIEW', wc: 'va', pct: 54, stage: 1,
-    stageType: 'cwarn',
-    checks: [
-      ['cok','✓','Паспорт распознан'],
-      ['cfail','✗','Справка о доходах отсутствует'],
-      ['cok','✓','Телефон подтверждён'],
-      ['cwarn','!','Неполный пакет документов (3 из 5)'],
-    ],
-    sources: [['ok','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['ok','Email']],
-    saving: '~8 минут сэкономлено сотруднику',
-    summary: 'Анна Сидорова, 180 000 ₽, 24 мес. Справка о доходах отсутствует. Нужны дополнительные документы.',
-  },
-  {
-    name: 'Сергей Иванов', id: '8453', amt: '700 000 ₽', term: '60 мес.',
-    word: 'DECLINE', wc: 'vr', pct: 22, stage: 2,
-    stageType: 'cdanger',
-    checks: [
-      ['cok','✓','Паспорт распознан'],
-      ['cfail','✗','Расхождение в справке о доходах'],
-      ['cfail','✗','Телефон не подтверждён'],
-      ['cfail','✗','Долговая нагрузка: 72% от дохода'],
-      ['cwarn','!','3 активных кредита в БКИ'],
-    ],
-    sources: [['ok','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['no','Телефон']],
-    saving: '~20 минут сэкономлено сотруднику',
-    summary: 'Сергей Иванов, 700 000 ₽, 60 мес. Высокая нагрузка 72%, расхождение данных, телефон не подтверждён.',
-  },
-  {
-    name: 'Мария Козлова', id: '8454', amt: '95 000 ₽', term: '12 мес.',
-    word: 'APPROVE', wc: 'vg', pct: 91, stage: 4,
-    stageType: 'done',
-    checks: [
-      ['cok','✓','Все документы в порядке'],
-      ['cok','✓','Доход подтверждён, нагрузка 18%'],
-      ['cok','✓','Кредитная история: отлично'],
-      ['cok','✓','БКИ и ФНС совпадают'],
-    ],
-    sources: [['ok','БКИ'],['ok','ФНС'],['ok','Документы'],['ok','CRM'],['ok','Email']],
-    saving: '~15 минут сэкономлено сотруднику',
-    summary: 'Мария Козлова, 95 000 ₽, 12 мес. Идеальный профиль. Рекомендовано автоматическое одобрение.',
-  },
-  {
-    name: 'Дмитрий Орлов', id: '8455', amt: '320 000 ₽', term: '48 мес.',
-    word: 'REVIEW', wc: 'va', pct: 41, stage: 0,
-    stageType: 'cwarn',
-    checks: [
-      ['cfail','✗','Паспорт не загружен'],
-      ['cfail','✗','Справка о доходах отсутствует'],
-      ['cok','✓','Телефон подтверждён'],
-      ['cwarn','!','БКИ: запрос отправлен, ожидание'],
-    ],
-    sources: [['no','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['ok','Email']],
-    saving: '~6 минут сэкономлено сотруднику',
-    summary: 'Дмитрий Орлов, 320 000 ₽, 48 мес. Паспорт и справка о доходах не загружены. Заявка приостановлена.',
-  },
+const C=[
+  {name:'Иван Петров',id:'8451',amt:'450 000 ₽',term:'36 мес.',word:'APPROVE',wc:'vg',pct:87,stage:3,st:'cur',
+   checks:[['cok','✓','Паспорт распознан — данные совпадают'],['cok','✓','Справка о доходах верифицирована (ФНС)'],['cok','✓','Телефон подтверждён'],['cok','✓','БКИ: кредитная история чистая'],['cok','✓','Долговая нагрузка: 28% — норма']],
+   sources:[['ok','БКИ'],['ok','ФНС'],['ok','Документы'],['ok','CRM'],['ok','Email']],saving:'~12 минут сэкономлено',
+   replies:['Заявка #8451 — отличный профиль. Все проверки пройдены, нагрузка 28%, история чистая. Рекомендую одобрить.','Документы полные, расхождений нет. Доход подтверждён по ФНС — 87 000 ₽/мес.','Следующий шаг: передать на согласование менеджеру. Уведомление в CRM и Telegram отправлено.','Риск минимальный. Вероятность дефолта по модели — 4%.']},
+  {name:'Анна Сидорова',id:'8452',amt:'180 000 ₽',term:'24 мес.',word:'REVIEW',wc:'va',pct:54,stage:1,st:'cwarn',
+   checks:[['cok','✓','Паспорт распознан'],['cfail','✗','Справка о доходах отсутствует'],['cok','✓','Телефон подтверждён'],['cwn','!','Неполный пакет: 3 из 5 документов']],
+   sources:[['ok','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['ok','Email']],saving:'~8 минут сэкономлено',
+   replies:['Заявка #8452 приостановлена — не хватает справки о доходах и выписки по счёту.','Запрос клиенту отправлен через Telegram. Ожидаем ответ в течение 48 часов.','ФНС ещё не подтверждена. Остальные данные в норме — можно одобрить после загрузки документов.','Рекомендую не затягивать: клиент активный, отвечает быстро.']},
+  {name:'Сергей Иванов',id:'8453',amt:'700 000 ₽',term:'60 мес.',word:'DECLINE',wc:'vr',pct:22,stage:2,st:'cdanger',
+   checks:[['cok','✓','Паспорт распознан'],['cfail','✗','Расхождение в справке о доходах'],['cfail','✗','Телефон не подтверждён'],['cfail','✗','Долговая нагрузка: 72% — критично'],['cwn','!','3 активных кредита в БКИ']],
+   sources:[['ok','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['no','Телефон']],saving:'~20 минут сэкономлено',
+   replies:['Заявка #8453 — высокий риск. Нагрузка 72%, три активных кредита, расхождение данных.','Рекомендую отклонить. Даже при подтверждении дохода нагрузка превысит норму.','Телефон не подтверждён — возможна верификация через Email, но это удлинит процесс.','Если клиент настаивает — предложить меньшую сумму: до 200 000 ₽ на 24 месяца.']},
+  {name:'Мария Козлова',id:'8454',amt:'95 000 ₽',term:'12 мес.',word:'APPROVE',wc:'vg',pct:91,stage:4,st:'done',
+   checks:[['cok','✓','Все документы в порядке'],['cok','✓','Доход подтверждён, нагрузка 18%'],['cok','✓','Кредитная история: без замечаний'],['cok','✓','БКИ и ФНС совпадают']],
+   sources:[['ok','БКИ'],['ok','ФНС'],['ok','Документы'],['ok','CRM'],['ok','Email']],saving:'~15 минут сэкономлено',
+   replies:['Заявка #8454 — идеальный профиль. Нагрузка 18%, история чистая, все источники подтверждены.','Одобрение прошло автоматически. Клиент уведомлён через Telegram.','Рекомендую предложить увеличение лимита — клиент надёжный.','Выдача готова к оформлению.']},
+  {name:'Дмитрий Орлов',id:'8455',amt:'320 000 ₽',term:'48 мес.',word:'REVIEW',wc:'va',pct:41,stage:0,st:'cwarn',
+   checks:[['cfail','✗','Паспорт не загружен'],['cfail','✗','Справка о доходах отсутствует'],['cok','✓','Телефон подтверждён'],['cwn','!','БКИ: запрос отправлен, ожидание']],
+   sources:[['no','БКИ'],['no','ФНС'],['no','Документы'],['ok','CRM'],['ok','Email']],saving:'~6 минут сэкономлено',
+   replies:['Заявка #8455 не может быть обработана — паспорт и справка о доходах не загружены.','Отправил клиенту напоминание через Email и Telegram. Повторное уведомление через 24 часа.','Как только документы поступят — агент запустит проверку автоматически.','БКИ запрошен, ждём ответа.']}
 ];
 
-const stageLabels = ['Получение','Документы','Анализ AI','Решение','Выдача'];
-
-const feedPool = [
-  {c:'fg', t:'Документы Петрова проверены'},
-  {c:'fa', t:'Запрошены документы у Сидоровой'},
-  {c:'fr', t:'Расхождение в справке Иванова'},
-  {c:'fg', t:'Козлова — одобрено автоматически'},
-  {c:'fb', t:'БКИ: получены 3 новых ответа'},
-  {c:'fa', t:'Орлов: паспорт не загружен'},
-  {c:'fg', t:'Новая заявка: Ковалёва 250 000 ₽'},
-  {c:'fb', t:'ФНС подтвердила доход Петрова'},
-  {c:'fr', t:'Иванов: нагрузка превышает норму'},
-  {c:'fg', t:'Скоринг Козловой завершён: 91%'},
+const stageLabels=['Получение','Документы','Анализ AI','Решение','Выдача'];
+const feedPool=[
+  {c:'fg',t:'Документы Петрова проверены'},
+  {c:'fa',t:'Запрошены документы у Сидоровой'},
+  {c:'fr',t:'Расхождение в справке Иванова'},
+  {c:'fg',t:'Козлова — одобрено автоматически'},
+  {c:'fb',t:'БКИ: получены 3 новых ответа'},
+  {c:'fa',t:'Орлов: паспорт не загружен'},
+  {c:'fg',t:'Новая заявка: Ковалёва 250 000 ₽'},
+  {c:'fb',t:'ФНС подтвердила доход Петрова'},
+  {c:'fr',t:'Иванов: нагрузка превышает норму'},
+  {c:'fg',t:'Скоринг Козловой: 91%'},
 ];
-let feedIdx = 0;
-let feedItems = [...feedPool];
+let feedIdx=4, active=0;
 
-function buildFeed() {
-  const track = document.getElementById('feed');
-  feedItems.slice(0, 8).forEach(f => {
-    const el = document.createElement('div');
-    el.className = 'feed-item';
-    el.innerHTML = `<div class="fdot ${f.c}"></div>${f.t}`;
-    track.appendChild(el);
+function buildFeed(){
+  const t=document.getElementById('feed');
+  feedPool.slice(0,7).forEach(f=>{
+    const e=document.createElement('div');
+    e.className='fi';
+    e.innerHTML=`<div class="fd ${f.c}"></div>${f.t}`;
+    t.appendChild(e);
   });
 }
-
-function addFeedItem() {
-  const track = document.getElementById('feed');
-  const f = feedPool[feedIdx % feedPool.length];
-  feedIdx++;
-  const el = document.createElement('div');
-  el.className = 'feed-item';
-  el.innerHTML = `<div class="fdot ${f.c}"></div>${f.t} <span style="color:var(--faint);margin-left:4px">только что</span>`;
-  el.style.opacity = '0';
-  track.insertBefore(el, track.firstChild);
-  setTimeout(() => { el.style.transition = 'opacity .4s'; el.style.opacity = '1'; }, 50);
-  if (track.children.length > 12) track.removeChild(track.lastChild);
+function addFeed(){
+  const t=document.getElementById('feed');
+  const f=feedPool[feedIdx%feedPool.length]; feedIdx++;
+  const e=document.createElement('div');
+  e.className='fi'; e.style.opacity='0';
+  e.innerHTML=`<div class="fd ${f.c}"></div>${f.t} <span style="color:var(--faint);margin-left:3px">только что</span>`;
+  t.insertBefore(e,t.firstChild);
+  setTimeout(()=>{e.style.transition='opacity .5s';e.style.opacity='1';},30);
+  if(t.children.length>10)t.removeChild(t.lastChild);
 }
 
-function buildQueue() {
-  const el = document.getElementById('queue');
-  el.innerHTML = '';
-  const colorMap = {vg:'var(--green)',va:'var(--amber)',vr:'var(--red)'};
-  const labelMap = {vg:'Одобрить',va:'Проверить',vr:'Отклонить'};
-  clients.forEach((c, i) => {
-    const d = document.createElement('div');
-    d.className = 'qi' + (i === active ? ' on' : '');
-    d.onclick = () => pick(i);
-    d.innerHTML = `
-      <div class="qi-name">${c.name}</div>
-      <div class="qi-row">
-        <span class="qi-amt">${c.amt}</span>
-        <div class="qi-dot" style="background:${colorMap[c.wc]}"></div>
-      </div>
-      <div class="qi-status" style="color:${colorMap[c.wc]}">${c.pct}% · ${labelMap[c.wc]}</div>
-    `;
+function buildQueue(){
+  const el=document.getElementById('queue'); el.innerHTML='';
+  const cm={vg:'var(--green)',va:'var(--amber)',vr:'var(--red)'};
+  const lm={vg:'Одобрить',va:'Проверить',vr:'Отклонить'};
+  C.forEach((c,i)=>{
+    const d=document.createElement('div');
+    d.className='qi'+(i===active?' on':'');
+    d.onclick=()=>pick(i);
+    d.innerHTML=`<div class="qi-name">${c.name}</div>
+      <div class="qi-r"><span class="qi-amt">${c.amt}</span><div class="qidot" style="background:${cm[c.wc]}"></div></div>
+      <div class="qi-s" style="color:${cm[c.wc]}">${c.pct}% · ${lm[c.wc]}</div>`;
     el.appendChild(d);
   });
 }
 
-function renderCenter() {
-  const c = clients[active];
-  const colorMap = {vg:'var(--green)',va:'var(--amber)',vr:'var(--red)'};
-
+function renderCenter(){
+  const c=C[active];
   // verdict
-  document.getElementById('verdict-card').innerHTML = `
-    <div class="v-eyebrow">AI RECOMMENDATION · #${c.id}</div>
+  document.getElementById('vc').innerHTML=`
+    <div class="v-eye">AI RECOMMENDATION · #${c.id}</div>
     <div class="v-word ${c.wc}">${c.word}</div>
     <div class="v-pct ${c.wc}">${c.pct}%</div>
     <div class="v-sub">${c.name} · ${c.amt} · ${c.term}</div>
-    <div class="sources-row">${c.sources.map(s=>`<div class="src src-${s[0]}">${s[1]}</div>`).join('')}</div>
-    <div class="saving-row">⏱ ${c.saving}</div>
-  `;
-
+    <div class="src-row">${c.sources.map(s=>`<div class="src s${s[0]}">${s[1]}</div>`).join('')}</div>
+    <div class="saving">⏱ ${c.saving}</div>`;
   // steps
-  let stepsHtml = '<div class="steps-row">';
-  stageLabels.forEach((lbl, i) => {
-    let cls = '';
-    if (i < c.stage) cls = 'done';
-    else if (i === c.stage) cls = c.stageType;
-    stepsHtml += `<div class="step">
-      <div class="step-circle ${cls}">${i+1}</div>
-      <div class="step-label">${lbl}</div>
-    </div>`;
-    if (i < stageLabels.length - 1) {
-      stepsHtml += `<div class="step-line ${i < c.stage ? 'done' : ''}"></div>`;
-    }
+  let h='<div class="steps-row">';
+  stageLabels.forEach((l,i)=>{
+    let cls=i<c.stage?'done':i===c.stage?c.st:'';
+    h+=`<div class="step"><div class="sc ${cls}">${i+1}</div><div class="sl">${l}</div></div>`;
+    if(i<4)h+=`<div class="sline${i<c.stage?' done':''}"></div>`;
   });
-  stepsHtml += '</div>';
-  document.getElementById('steps-card').innerHTML = stepsHtml;
-
+  document.getElementById('stc').innerHTML=h+'</div>';
   // checks
-  const checksHtml = c.checks.map(ch =>
-    `<div class="check-row"><span class="ck ${ch[0]}">${ch[1]}</span><span>${ch[2]}</span></div>`
-  ).join('');
-  document.getElementById('checks-card').innerHTML = `
-    <div class="checks-title">Вывод агента · Заявка #${c.id}</div>
-    ${checksHtml}
-  `;
-
+  document.getElementById('chc').innerHTML=`<div class="ct">ВЫВОД АГЕНТА · ЗАЯВКА #${c.id}</div>`+
+    c.checks.map(ch=>`<div class="ck-row"><span class="ck ${ch[0]}">${ch[1]}</span><span>${ch[2]}</span></div>`).join('');
   // actions
-  const actionLabels = {vg:'Одобрить заявку', va:'Запросить документы', vr:'Отклонить заявку'};
-  document.getElementById('actions-card').innerHTML = `
-    <button class="btn-main" onclick="actionClick()">${actionLabels[clients[active].wc]} →</button>
-    <button class="btn-sec" onclick="askAgent('Объясни подробнее причины рекомендации по заявке #${c.id}')">Спросить агента</button>
-    <button class="btn-sec" onclick="askAgent('Что нужно сделать дальше по заявке #${c.id} клиента ${c.name}?')">Что дальше?</button>
-  `;
+  const al={vg:'Одобрить заявку →',va:'Запросить документы →',vr:'Отклонить заявку →'};
+  document.getElementById('ac').innerHTML=`<div class="act-row">
+    <button class="btn-m" onclick="doAction()">${al[C[active].wc]}</button>
+    <button class="btn-s" onclick="fakeChat('Объясни рекомендацию по заявке #${c.id}')">Спросить</button>
+    <button class="btn-s" onclick="fakeChat('Что дальше по заявке #${c.id}?')">Что дальше?</button>
+  </div>`;
 }
 
-function pick(i) {
-  active = i;
-  document.querySelectorAll('.qi').forEach((el, j) => el.classList.toggle('on', j === i));
+function pick(i){
+  active=i;
+  document.querySelectorAll('.qi').forEach((el,j)=>el.classList.toggle('on',j===i));
   renderCenter();
-  // автоматически спрашиваем агента при переключении
-  askAgent(`Дай краткую оценку заявки #${clients[i].id}: ${clients[i].summary}`);
+  fakeChat(`Дай оценку заявки #${C[i].id}`);
 }
 
-function actionClick() {
-  const c = clients[active];
-  const msgs = {vg:`Подтверждаю одобрение заявки #${c.id} клиента ${c.name} на ${c.amt}. Следующие шаги?`, va:`Отправь запрос документов клиенту ${c.name} по заявке #${c.id}`, vr:`Подтверждаю отклонение заявки #${c.id} клиента ${c.name}. Какое обоснование указать?`};
-  askAgent(msgs[c.wc]);
+function doAction(){
+  const c=C[active];
+  const m={vg:`Подтверждаю одобрение #${c.id}`,va:`Запрашиваю документы у ${c.name}`,vr:`Отклоняю заявку #${c.id}`};
+  fakeChat(m[c.wc]);
 }
 
-// ── CHAT ──
-let chatHistory = [];
-
-function addMsg(role, text) {
-  chatHistory.push({ role, content: text });
-  const msgs = document.getElementById('chat-msgs');
-  const el = document.createElement('div');
-  el.className = role === 'user' ? 'msg msg-user' : 'msg msg-ai';
-  el.textContent = text;
+// ── МУЛяЖ ЧАТА ──
+let replyIdx=0;
+function addMsg(role,text){
+  const el=document.createElement('div');
+  el.className=role==='user'?'msg msg-user':'msg msg-ai';
+  el.textContent=text;
+  const msgs=document.getElementById('msgs');
   msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
 }
-
-function showTyping() {
-  const msgs = document.getElementById('chat-msgs');
-  const el = document.createElement('div');
-  el.className = 'msg-typing';
-  el.id = 'typing';
-  el.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
+function showTyping(){
+  const el=document.createElement('div');
+  el.className='typing-wrap'; el.id='typing';
+  el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  const msgs=document.getElementById('msgs');
+  msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight;
 }
+function removeTyping(){const e=document.getElementById('typing');if(e)e.remove();}
 
-function removeTyping() {
-  const el = document.getElementById('typing');
-  if (el) el.remove();
-}
-
-async function askAgent(userText) {
-  if (!userText.trim()) return;
-  addMsg('user', userText);
+function fakeChat(userText){
+  addMsg('user',userText);
   showTyping();
-  document.getElementById('send-btn').disabled = true;
-
-  const c = clients[active];
-  const system = `Ты — AI-агент кредитного брокера CreditFlow AI. Отвечаешь коротко, по-деловому, на русском языке. Текущая заявка: клиент ${c.name}, сумма ${c.amt}, срок ${c.term}, вероятность одобрения ${c.pct}%, рекомендация агента: ${c.word}. Источники проверки: ${c.sources.map(s=>s[1]).join(', ')}. Экономия времени: ${c.saving}. Отвечай как ассистент менеджера — конкретно и кратко, 2-4 предложения.`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 300,
-        system,
-        messages: chatHistory.filter(m => m.role === 'user' || m.role === 'assistant').slice(-8),
-      }),
-    });
-    const data = await resp.json();
+  const delay=900+Math.random()*600;
+  setTimeout(()=>{
     removeTyping();
-    const text = data.content?.[0]?.text || 'Нет ответа от агента.';
-    addMsg('assistant', text);
-  } catch (e) {
-    removeTyping();
-    addMsg('assistant', 'Ошибка соединения с агентом. Проверьте API ключ.');
-  }
-  document.getElementById('send-btn').disabled = false;
+    const replies=C[active].replies;
+    addMsg('ai',replies[replyIdx%replies.length]);
+    replyIdx++;
+  },delay);
 }
 
-function sendChat() {
-  const inp = document.getElementById('chat-inp');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
-  askAgent(text);
+function sendChat(){
+  const inp=document.getElementById('cinp');
+  const t=inp.value.trim(); if(!t)return;
+  inp.value='';
+  fakeChat(t);
 }
-
-document.getElementById('chat-inp').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+document.getElementById('cinp').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}
 });
 
-function unlock() {
-  const key = document.getElementById('api-key').value.trim();
-  if (!key.startsWith('sk-ant-')) {
-    document.getElementById('api-key').style.borderColor = 'var(--red)';
-    return;
-  }
-  API_KEY = key;
-  document.getElementById('lock').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  init();
-}
-
-function init() {
-  buildFeed();
-  buildQueue();
-  renderCenter();
-  setInterval(addFeedItem, 3500);
-  // приветствие агента
-  setTimeout(() => {
-    addMsg('assistant', `Агент активен. Загружено ${clients.length} заявок. Рекомендую начать с заявки #${clients[active].id} — ${clients[active].name}. Вероятность одобрения ${clients[active].pct}%.`);
-  }, 800);
-}
+// init
+buildFeed();
+buildQueue();
+renderCenter();
+setInterval(addFeed,3500);
+setTimeout(()=>{
+  addMsg('ai',`Агент активен. Загружено ${C.length} заявок. Рекомендую начать с заявки #${C[active].id} — ${C[active].name}. Вероятность одобрения ${C[active].pct}%.`);
+},600);
 </script>
 </body>
 </html>

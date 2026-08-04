@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чек-лист безопасности Google</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            color: #0f172a;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 22px;
+            margin-top: 0;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+        h2 {
+            font-size: 16px;
+            color: #334155;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-left: 4px solid #2563eb;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f8fafc;
+            font-size: 13px;
+            color: #64748b;
+        }
+        td.name {
+            font-weight: 600;
+            width: 40%;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Панель проверки безопасности Google Аккаунтов</h1>
+        
+        <h2>1. Безопасность и пароли</h2>
+        <table>
+            <tr>
+                <td class="name">Пароль аккаунта</td>
+                <td><a href="https://myaccount.google.com/intro/signinoptions/password?hl=ru" target="_blank" class="btn">Открыть пароль</a></td>
+            </tr>
+            <tr>
+                <td class="name">Ключи доступа (Passkeys)</td>
+                <td><a href="https://myaccount.google.com/signinoptions/passkeys" target="_blank" class="btn">Открыть Passkeys</a></td>
+            </tr>
+            <tr>
+                <td class="name">Двухэтапная аутентификация</td>
+                <td><a href="https://myaccount.google.com/signinoptions/twosv" target="_blank" class="btn">Открыть 2FA</a></td>
+            </tr>
+            <tr>
+                <td class="name">Резервные коды 2FA</td>
+                <td><a href="https://myaccount.google.com/two-step-verification/backup-codes" target="_blank" class="btn">Резервные коды</a></td>
+            </tr>
+            <tr>
+                <td class="name">Пароли приложений</td>
+                <td><a href="https://myaccount.google.com/apppasswords" target="_blank" class="btn">Пароли приложений</a></td>
+            </tr>
+        </table>
+
+        <h2>2. Устройства и поиск</h2>
+        <table>
+            <tr>
+                <td class="name">Активные устройства</td>
+                <td><a href="https://myaccount.google.com/device-activity" target="_blank" class="btn">Список устройств</a></td>
+            </tr>
+            <tr>
+                <td class="name">Поиск устройства (Find My Device)</td>
+                <td><a href="https://www.google.com/android/find/" target="_blank" class="btn">Карта и поиск</a></td>
+            </tr>
+            <tr>
+                <td class="name">Устройства в Google Play</td>
+                <td><a href="https://play.google.com/library/devices" target="_blank" class="btn">Устройства Play</a></td>
+            </tr>
+        </table>
+
+        <h2>3. Почта Gmail (Пересылка и правила)</h2>
+        <table>
+            <tr>
+                <td class="name">Пересылка и POP/IMAP</td>
+                <td><a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank" class="btn">Проверить пересылку</a></td>
+            </tr>
+            <tr>
+                <td class="name">Фильтры и заблокированные адреса</td>
+                <td><a href="https://mail.google.com/mail/u/0/#settings/filters" target="_blank" class="btn">Проверить фильтры</a></td>
+            </tr>
+            <tr>
+                <td class="name">Импорт и делегирование</td>
+                <td><a href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" class="btn">Импорт почты</a></td>
+            </tr>
+        </table>
+
+        <h2>4. Активность и сторонний доступ</h2>
+        <table>
+            <tr>
+                <td class="name">Уведомления о безопасности</td>
+                <td><a href="https://myaccount.google.com/notifications" target="_blank" class="btn">Логи безопасности</a></td>
+            </tr>
+            <tr>
+                <td class="name">Моя активность (My Activity)</td>
+                <td><a href="https://myactivity.google.com/myactivity" target="_blank" class="btn">История активности</a></td>
+            </tr>
+            <tr>
+                <td class="name">Связанные приложения (OAuth)</td>
+                <td><a href="https://myaccount.google.com/connections" target="_blank" class="btn">Доступ приложений</a></td>
+            </tr>
+            <tr>
+                <td class="name">Регион Google Play</td>
+                <td><a href="https://play.google.com/settings" target="_blank" class="btn">Настройки региона</a></td>
+            </tr>
+        </table>
+
+        <h2>5. Контакты и Family Link</h2>
+        <table>
+            <tr>
+                <td class="name">Резервный Email</td>
+                <td><a href="https://myaccount.google.com/recovery/email" target="_blank" class="btn">Резервная почта</a></td>
+            </tr>
+            <tr>
+                <td class="name">Все Email-адреса</td>
+                <td><a href="https://myaccount.google.com/email" target="_blank" class="btn">Список всех email</a></td>
+            </tr>
+            <tr>
+                <td class="name">Family Link: Сайты</td>
+                <td><a href="https://familylink.google.com/member/1/setting/resource/94" target="_blank" class="btn">Ограничения сайтов</a></td>
+            </tr>
+            <tr>
+                <td class="name">Family Link: Разработчик</td>
+                <td><a href="https://familylink.google.com/member/1/device/aannnppahekidhzfp5luufhzmpia3fa3bvma6r7mbijq/settings" target="_blank" class="btn">Режим разработчика</a></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

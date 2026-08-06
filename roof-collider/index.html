@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROOFCOLLIDER — Кровля, которая работает на тебя</title>
+
+<!-- ==================== ШРИФТЫ ==================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ==================== ВНЕШНИЕ БИБЛИОТЕКИ (CSS) ==================== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/aos.css" onerror="this.remove()">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+
+<style>
+/* =========================================================================
+   ROOFCOLLIDER — ТОКЕНЫ ДИЗАЙНА
+   Палитра: графит #17150F, терракота #D2601F, крем #F5F1E6, медь #B8763B
+   Дисплей-шрифт: Unbounded (жирный, геометричный — «инженерный» характер)
+   Текстовый шрифт: Manrope
+   ========================================================================= */
+:root{
+  --graphite:#17150F;
+  --graphite-2:#211E17;
+  --cream:#F5F1E6;
+  --cream-dim:#E7E0CE;
+  --terracotta:#D2601F;
+  --terracotta-2:#F07A34;
+  --copper:#B8763B;
+  --copper-dim:#8C5A2B;
+  --muted:#9A9384;
+  --line: rgba(245,241,230,0.12);
+  --ff-display:'Unbounded', sans-serif;
+  --ff-body:'Manrope', sans-serif;
+  --container: 1240px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--graphite);
+  color:var(--cream);
+  font-family:var(--ff-body);
+  font-weight:400;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%; display:block;}
+a{text-decoration:none; color:inherit;}
+.wrap{max-width:var(--container); margin:0 auto; padding:0 32px;}
+h1,h2,h3,h4{font-family:var(--ff-display); margin:0; letter-spacing:-0.01em; line-height:1.05;}
+.eyebrow{
+  font-family:var(--ff-body); text-transform:uppercase; letter-spacing:.18em;
+  font-size:12px; color:var(--terracotta-2); font-weight:700; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{content:''; width:24px; height:2px; background:var(--terracotta-2); display:inline-block;}
+.btn-rc{
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--terracotta); color:var(--cream); border:none;
+  font-family:var(--ff-body); font-weight:700; font-size:14px; letter-spacing:.02em;
+  padding:16px 30px; border-radius:100px; cursor:pointer; transition:.35s ease;
+  text-transform:uppercase;
+}
+.btn-rc:hover{background:var(--terracotta-2); transform:translateY(-2px); color:var(--cream);}
+.btn-ghost{
+  display:inline-flex; align-items:center; gap:10px;
+  background:transparent; color:var(--cream); border:1.5px solid var(--line);
+  font-family:var(--ff-body); font-weight:700; font-size:14px;
+  padding:15px 28px; border-radius:100px; cursor:pointer; transition:.35s ease;
+  text-transform:uppercase;
+}
+.btn-ghost:hover{border-color:var(--terracotta-2); color:var(--terracotta-2);}
+section{position:relative;}
+.sec-pad{padding:140px 0;}
+@media(max-width:900px){.sec-pad{padding:90px 0;} .wrap{padding:0 20px;}}
+
+/* Placeholder-изображения: подписанные цветные плашки вместо реальных фото */
+.ph{
+  position:relative; overflow:hidden; border-radius:20px;
+  background:linear-gradient(135deg, var(--graphite-2), #2b271c);
+  display:flex; align-items:flex-end;
+  border:1px solid var(--line);
+}
+.ph::after{
+  content: attr(data-caption);
+  position:absolute; left:0; right:0; bottom:0;
+  padding:16px 18px; font-size:12px; color:var(--cream-dim);
+  background:linear-gradient(0deg, rgba(0,0,0,.65), transparent);
+  font-family:var(--ff-body);
+}
+.ph img{width:100%; height:100%; object-fit:cover; opacity:.85;}
+
+/* =========================== ХЕДЕР =========================== */
+header.rc-header{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  padding:22px 0; background:linear-gradient(180deg, rgba(23,21,15,.92), rgba(23,21,15,0));
+  backdrop-filter:blur(6px);
+  transition:.3s ease;
+}
+header.rc-header.scrolled{ background:rgba(23,21,15,.92); border-bottom:1px solid var(--line); padding:14px 0;}
+.rc-nav{display:flex; align-items:center; justify-content:space-between;}
+.rc-logo{font-family:var(--ff-display); font-weight:800; font-size:20px; letter-spacing:.02em;}
+.rc-logo span{color:var(--terracotta-2);}
+.rc-menu{display:flex; gap:34px; list-style:none; margin:0; padding:0;}
+.rc-menu a{font-size:14px; font-weight:600; color:var(--cream-dim); transition:.25s;}
+.rc-menu a:hover{color:var(--terracotta-2);}
+.rc-actions{display:flex; align-items:center; gap:16px;}
+.rc-cart{
+  width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; position:relative; cursor:pointer;
+}
+.rc-cart span{position:absolute; top:-4px; right:-4px; background:var(--terracotta); color:var(--cream); font-size:10px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+.burger{display:none; flex-direction:column; gap:5px; cursor:pointer;}
+.burger div{width:24px; height:2px; background:var(--cream);}
+@media(max-width:980px){ .rc-menu{display:none;} .burger{display:flex;} }
+
+/* =========================== HERO =========================== */
+.hero{
+  min-height:100vh; display:flex; align-items:center; position:relative;
+  padding-top:140px;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(210,96,31,.18), transparent 55%),
+    var(--graphite);
+}
+.hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:center;}
+@media(max-width:980px){ .hero-grid{grid-template-columns:1fr;} }
+.hero h1{font-size:clamp(40px, 6vw, 78px); font-weight:800;}
+.hero h1 .split-word{display:inline-block; overflow:hidden;}
+.hero .accent-word{color:var(--terracotta-2);}
+.hero-sub{font-size:18px; color:var(--cream-dim); max-width:480px; margin:28px 0 40px; line-height:1.6;}
+.hero-cta-row{display:flex; gap:16px; flex-wrap:wrap;}
+.hero-visual{position:relative;}
+.hero-visual .ph{aspect-ratio:4/5;}
+.drone-badge{
+  position:absolute; top:-24px; right:-24px; background:var(--terracotta); color:var(--cream);
+  padding:16px 20px; border-radius:16px; font-family:var(--ff-display); font-size:13px; font-weight:700;
+  box-shadow:0 20px 40px rgba(210,96,31,.35);
+}
+.scroll-cue{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--muted); font-size:11px; letter-spacing:.15em; text-transform:uppercase;}
+.scroll-cue .line{width:1px; height:40px; background:linear-gradient(180deg, var(--terracotta-2), transparent);}
+
+/* =========================== РЕШЕНИЯ (карточки) =========================== */
+.solutions-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:60px; flex-wrap:wrap; gap:20px;}
+.solutions-head h2{font-size:clamp(30px,4vw,52px);}
+.sol-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+@media(max-width:980px){.sol-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){.sol-grid{grid-template-columns:1fr;}}
+.sol-card{
+  background:var(--graphite-2); border:1px solid var(--line); border-radius:22px; padding:26px;
+  display:flex; flex-direction:column; transition:.4s ease; position:relative;
+}
+.sol-card:hover{transform:translateY(-8px); border-color:var(--terracotta);}
+.sol-card .ph{aspect-ratio:4/3; margin-bottom:20px;}
+.sol-rating{position:absolute; top:44px; right:44px; background:rgba(23,21,15,.8); border:1px solid var(--line); padding:6px 12px; border-radius:100px; font-size:12px; font-weight:700;}
+.sol-card h3{font-size:20px; margin-bottom:10px;}
+.sol-card p{color:var(--cream-dim); font-size:14px; line-height:1.6; flex:1;}
+.sol-foot{display:flex; justify-content:space-between; align-items:center; margin-top:18px;}
+.sol-price{font-family:var(--ff-display); font-size:15px; color:var(--terracotta-2);}
+.sol-link{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--terracotta-2); color:var(--terracotta-2);}
+
+/* =========================== СЕКЦИЯ «РАБОТАЕТ» + РАЗРЕЗ КРЫШИ (СИГНАТУРА) =========================== */
+.works-section{background:var(--cream); color:var(--graphite);}
+.works-head{text-align:center; max-width:720px; margin:0 auto 40px;}
+.works-head h2{font-size:clamp(32px,5vw,58px); color:var(--graphite);}
+.works-head .eyebrow{color:var(--copper-dim);}
+.works-head .eyebrow::before{background:var(--copper-dim);}
+
+/* Пин-секция: разрез кровли, который «собирается» слой за слоем при скролле (GSAP ScrollTrigger, scrub) */
+.roof-pin{
+  height:340vh; position:relative;
+}
+.roof-pin-inner{
+  position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.roof-svg-wrap{width:min(880px, 90vw); position:relative;}
+.roof-svg-wrap svg{width:100%; height:auto; display:block;}
+.roof-layer{opacity:0; transform:translateY(40px);}
+.roof-label{
+  position:absolute; font-family:var(--ff-body); font-size:13px; font-weight:700; color:var(--graphite);
+  background:var(--cream); border:1px solid rgba(23,21,15,.15); padding:6px 12px; border-radius:100px; opacity:0;
+  white-space:nowrap;
+}
+.roof-caption{text-align:center; margin-top:26px; font-size:14px; color:#6b6455;}
+
+.advantages{display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:rgba(23,21,15,.1); border-radius:24px; overflow:hidden; margin-top:40px;}
+@media(max-width:900px){.advantages{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.advantages{grid-template-columns:1fr;}}
+.adv-item{background:var(--cream); padding:36px 30px;}
+.adv-item .num{font-family:var(--ff-display); font-size:13px; color:var(--copper-dim); margin-bottom:16px;}
+.adv-item h4{font-size:19px; color:var(--graphite); margin-bottom:10px;}
+.adv-item p{font-size:14px; color:#6b6455; line-height:1.6; margin:0;}
+
+/* =========================== ROOF BLEND =========================== */
+.blend-section{background:var(--graphite);}
+.blend-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:60px; align-items:center;}
+@media(max-width:980px){.blend-grid{grid-template-columns:1fr;}}
+.blend-grid h2{font-size:clamp(30px,4.5vw,50px); margin-bottom:20px;}
+.blend-grid > div > p{color:var(--cream-dim); font-size:16px; line-height:1.7; max-width:480px;}
+.blend-components{display:flex; flex-direction:column; gap:18px; margin-top:30px;}
+.blend-comp{
+  display:flex; gap:20px; align-items:flex-start; padding:22px; border:1px solid var(--line); border-radius:18px;
+  transition:.3s;
+}
+.blend-comp:hover{border-color:var(--copper);}
+.blend-comp .ico{
+  width:48px; height:48px; border-radius:12px; background:rgba(184,118,59,.15); color:var(--copper);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:20px;
+}
+.blend-comp h4{font-size:16px; margin-bottom:6px;}
+.blend-comp p{font-size:13.5px; color:var(--muted); margin:0; line-height:1.5;}
+.blend-visual .ph{aspect-ratio:1/1.1;}
+
+/* =========================== HUMANS OF ROOFVERSE =========================== */
+.humans-section{background:var(--graphite-2);}
+.humans-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+@media(max-width:900px){.humans-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.humans-grid{grid-template-columns:1fr;}}
+.human-card{border-radius:20px; overflow:hidden; position:relative; aspect-ratio:3/4; cursor:pointer;}
+.human-card .ph{position:absolute; inset:0; border-radius:0; border:none;}
+.human-play{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+}
+.human-play span{
+  width:64px; height:64px; border-radius:50%; background:rgba(245,241,230,.92); color:var(--graphite);
+  display:flex; align-items:center; justify-content:center; font-size:20px; transition:.3s;
+}
+.human-card:hover .human-play span{background:var(--terracotta); color:var(--cream); transform:scale(1.08);}
+.human-name{position:absolute; left:18px; bottom:18px; z-index:2;}
+.human-name b{display:block; font-size:15px;}
+.human-name span{font-size:12px; color:var(--cream-dim);}
+
+/* =========================== ОТЗЫВЫ (SLICK) =========================== */
+.reviews-section{background:var(--graphite);}
+.review-card{
+  background:var(--graphite-2); border:1px solid var(--line); border-radius:22px; padding:34px; margin:0 12px; height:100%;
+}
+.review-stars{color:var(--terracotta-2); font-size:15px; margin-bottom:16px; letter-spacing:2px;}
+.review-card p{color:var(--cream-dim); font-size:15px; line-height:1.7; min-height:120px;}
+.review-who{display:flex; align-items:center; gap:12px; margin-top:20px;}
+.review-who .av{width:44px; height:44px; border-radius:50%; background:var(--copper-dim); display:flex; align-items:center; justify-content:center; font-family:var(--ff-display); font-size:13px;}
+.review-who b{display:block; font-size:14px;}
+.review-who span{font-size:12px; color:var(--muted);}
+.slick-dots{bottom:-46px;}
+.slick-dots li button:before{color:var(--cream-dim); opacity:.4;}
+.slick-dots li.slick-active button:before{color:var(--terracotta-2); opacity:1;}
+.slick-slide{padding:6px 0;}
+
+/* =========================== US VS THEM =========================== */
+.compare-section{background:var(--cream); color:var(--graphite);}
+.compare-table{width:100%; border-collapse:collapse; margin-top:20px; font-size:14px;}
+.compare-table th, .compare-table td{padding:20px 18px; text-align:center; border-bottom:1px solid rgba(23,21,15,.1);}
+.compare-table th{font-family:var(--ff-display); font-size:13px; text-transform:uppercase; letter-spacing:.04em;}
+.compare-table td:first-child, .compare-table th:first-child{text-align:left; font-weight:700;}
+.compare-table thead th.us{background:var(--terracotta); color:var(--cream); border-radius:14px 14px 0 0;}
+.compare-table tbody td.us{background:rgba(210,96,31,.08); font-weight:700; color:var(--terracotta);}
+.compare-table .check{color:#3f8f5f; font-weight:800;}
+.compare-table .cross{color:#b04b3d;}
+.compare-scroll{overflow-x:auto;}
+@media(max-width:700px){.compare-table{min-width:640px;}}
+
+/* =========================== FAQ =========================== */
+.faq-section{background:var(--graphite);}
+.faq-list{max-width:820px; margin:0 auto;}
+.faq-item{border-bottom:1px solid var(--line); padding:26px 0; cursor:pointer;}
+.faq-q{display:flex; justify-content:space-between; align-items:center; font-family:var(--ff-display); font-size:17px; gap:20px;}
+.faq-q .plus{font-size:22px; color:var(--terracotta-2); transition:.3s; flex-shrink:0;}
+.faq-item.open .plus{transform:rotate(45deg);}
+.faq-a{max-height:0; overflow:hidden; transition:.35s ease; color:var(--cream-dim); font-size:14.5px; line-height:1.7;}
+.faq-item.open .faq-a{max-height:200px; padding-top:14px;}
+
+/* =========================== ФИНАЛЬНЫЙ CTA + ФОРМА =========================== */
+.cta-section{
+  background:linear-gradient(135deg, var(--terracotta) 0%, #a94418 100%);
+  color:var(--cream); border-radius:32px; margin:0 24px; overflow:hidden; position:relative;
+}
+.cta-inner{padding:90px 60px; display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; position:relative; z-index:2;}
+@media(max-width:900px){.cta-inner{grid-template-columns:1fr; padding:60px 30px;}}
+.cta-inner h2{font-size:clamp(30px,4.5vw,46px); margin-bottom:16px;}
+.cta-inner p{opacity:.9; font-size:15px; max-width:420px;}
+.rc-form{display:flex; flex-direction:column; gap:14px;}
+.rc-form input, .rc-form select{
+  width:100%; padding:16px 18px; border-radius:14px; border:1.5px solid rgba(245,241,230,.35);
+  background:rgba(245,241,230,.08); color:var(--cream); font-family:var(--ff-body); font-size:14px;
+}
+.rc-form input::placeholder{color:rgba(245,241,230,.65);}
+.rc-form button{
+  background:var(--graphite); color:var(--cream); border:none; padding:17px; border-radius:14px;
+  font-family:var(--ff-body); font-weight:700; text-transform:uppercase; letter-spacing:.04em; cursor:pointer; transition:.3s;
+}
+.rc-form button:hover{background:#000;}
+.rc-form small{opacity:.75; font-size:11.5px;}
+
+/* =========================== FOOTER =========================== */
+footer.rc-footer{padding:80px 0 30px; background:var(--graphite);}
+.footer-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:50px; border-bottom:1px solid var(--line);}
+@media(max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;}}
+.footer-grid h5{font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:18px;}
+.footer-grid ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px;}
+.footer-grid a{font-size:14px; color:var(--cream-dim);}
+.footer-grid a:hover{color:var(--terracotta-2);}
+.footer-bottom{display:flex; justify-content:space-between; padding-top:26px; font-size:12.5px; color:var(--muted); flex-wrap:wrap; gap:10px;}
+
+/* Числовой счётчик (GSAP) */
+.counter-num{font-family:var(--ff-display); font-weight:800;}
+</style>
+</head>
+<body>
+
+<!-- ==================== ХЕДЕР ==================== -->
+<header class="rc-header" id="rcHeader">
+  <div class="wrap rc-nav">
+    <a href="#" class="rc-logo">ROOF<span>COLLIDER</span></a>
+    <ul class="rc-menu">
+      <li><a href="#solutions">Решения</a></li>
+      <li><a href="#works">Технологии</a></li>
+      <li><a href="#blend">Roof Blend</a></li>
+      <li><a href="#reviews">Отзывы</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="rc-actions">
+      <button class="btn-rc" style="padding:12px 22px;">Рассчитать кровлю</button>
+      <div class="rc-cart">🧾<span>2</span></div>
+      <div class="burger"><div></div><div></div><div></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow" data-aos="fade-up">Кровля нового поколения</div>
+      <h1 id="heroTitle">Кровля, которая<br><span class="accent-word">работает на тебя</span></h1>
+      <p class="hero-sub" data-aos="fade-up" data-aos-delay="200">
+        Без протечек. Без головной боли. Дрон-диагностика, 3D-проектирование
+        и умная вентиляция — вместо шифера «на глазок» и бригады, которая пропала после аванса.
+      </p>
+      <div class="hero-cta-row" data-aos="fade-up" data-aos-delay="300">
+        <button class="btn-rc">Получить 3D-проект бесплатно</button>
+        <button class="btn-ghost">▶ Как это работает</button>
+      </div>
+    </div>
+    <div class="hero-visual" data-aos="fade-left">
+      <!-- Заглушка: видео дрона, сканирующего крышу дома с тепловизионной сеткой -->
+      <div class="ph" data-caption="Видео: дрон сканирует кровлю, накладывается тепловая карта">
+        <img src="https://picsum.photos/seed/roofdrone/900/1100" alt="Дрон сканирует крышу">
+      </div>
+      <div class="drone-badge">DRONE<br>SCAN™</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Листай вниз</span><div class="line"></div></div>
+</section>
+
+<!-- ==================== РЕШЕНИЯ ==================== -->
+<section class="sec-pad" id="solutions">
+  <div class="wrap">
+    <div class="solutions-head">
+      <div>
+        <div class="eyebrow" data-aos="fade-up">Наши решения</div>
+        <h2 data-aos="fade-up">Пять систем.<br>Одна философия — без протечек.</h2>
+      </div>
+      <p style="max-width:340px; color:var(--cream-dim); font-size:14.5px;" data-aos="fade-up">
+        Каждая кровля проектируется под конкретный дом с помощью 3D-модели и подбирается под климат, нагрузку и бюджет.
+      </p>
+    </div>
+
+    <div class="sol-grid">
+      <!-- Карточка 1 -->
+      <div class="sol-card" data-aos="fade-up">
+        <div class="sol-rating">★ 4.9</div>
+        <div class="ph" data-caption="Фото: дом с металлочерепицей медного оттенка сверху">
+          <img src="https://picsum.photos/seed/metalroof/500/400" alt="Металлическая кровля Premium">
+        </div>
+        <h3>Металлическая кровля Premium</h3>
+        <p>Фальцевая сталь с полимерным покрытием, устойчивая к граду и УФ. Срок службы — до 50 лет.</p>
+        <div class="sol-foot"><span class="sol-price">от 2 400 ₽/м²</span><span class="sol-link">Подробнее</span></div>
+      </div>
+      <!-- Карточка 2 -->
+      <div class="sol-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="sol-rating">★ 4.8</div>
+        <div class="ph" data-caption="Фото: гибкая черепица крупным планом, текстура гонта">
+          <img src="https://picsum.photos/seed/shingle/500/400" alt="Гибкая черепица Smart">
+        </div>
+        <h3>Гибкая черепица Smart</h3>
+        <p>Битумная черепица с самоклеящимся слоем и датчиками влажности под кровлей.</p>
+        <div class="sol-foot"><span class="sol-price">от 1 650 ₽/м²</span><span class="sol-link">Подробнее</span></div>
+      </div>
+      <!-- Карточка 3 -->
+      <div class="sol-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="sol-rating">★ 5.0</div>
+        <div class="ph" data-caption="Фото: фальцевая крыша с четкими вертикальными линиями стыков">
+          <img src="https://picsum.photos/seed/falts/500/400" alt="Фальцевая кровля">
+        </div>
+        <h3>Фальцевая кровля</h3>
+        <p>Ручной и механический фальц. Идеальна для сложных архитектурных форм и коттеджей.</p>
+        <div class="sol-foot"><span class="sol-price">от 2 900 ₽/м²</span><span class="sol-link">Подробнее</span></div>
+      </div>
+      <!-- Карточка 4 -->
+      <div class="sol-card" data-aos="fade-up">
+        <div class="sol-rating">★ 4.7</div>
+        <div class="ph" data-caption="Фото: плоская крыша с зелёными растениями и дорожкой">
+          <img src="https://picsum.photos/seed/greenroof/500/400" alt="Плоская кровля с зелёным покрытием">
+        </div>
+        <h3>Плоская кровля с зелёным покрытием</h3>
+        <p>Эксплуатируемая кровля с дренажной системой и живым растительным слоем.</p>
+        <div class="sol-foot"><span class="sol-price">от 3 300 ₽/м²</span><span class="sol-link">Подробнее</span></div>
+      </div>
+      <!-- Карточка 5 -->
+      <div class="sol-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="sol-rating">★ 4.9</div>
+        <div class="ph" data-caption="Фото: команда монтажников и дрон на объекте, вид сверху">
+          <img src="https://picsum.photos/seed/turnkey/500/400" alt="Комплекс «Под ключ»">
+        </div>
+        <h3>Комплекс «Под ключ»</h3>
+        <p>Диагностика, проект, монтаж, вентиляция и гарантийное обслуживание в одном пакете.</p>
+        <div class="sol-foot"><span class="sol-price">от 3 800 ₽/м²</span><span class="sol-link">Подробнее</span></div>
+      </div>
+      <!-- Карточка 6: акцентная -->
+      <div class="sol-card" data-aos="fade-up" data-aos-delay="200" style="background:linear-gradient(160deg, var(--terracotta), #a94418); border:none;">
+        <h3 style="margin-top:auto; font-size:24px;">Не знаешь, что выбрать?</h3>
+        <p style="color:rgba(245,241,230,.85);">Соберём индивидуальный пакет по фото твоей крыши за 24 часа.</p>
+        <button class="btn-ghost" style="border-color:rgba(245,241,230,.5); margin-top:16px; align-self:flex-start;">Собрать пакет</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== «КРОВЛЯ, КОТОРАЯ РАБОТАЕТ» + РАЗРЕЗ КРЫШИ ==================== -->
+<section class="works-section" id="works">
+  <div class="wrap sec-pad" style="padding-bottom:0;">
+    <div class="works-head">
+      <div class="eyebrow" style="justify-content:center;">Технология RoofCollider</div>
+      <h2>Кровля, которая работает,<br>пока ты о ней не думаешь</h2>
+    </div>
+  </div>
+
+  <!-- Пин-секция: слои крыши последовательно проявляются при скролле (GSAP ScrollTrigger + pin + scrub) -->
+  <div class="roof-pin" id="roofPin">
+    <div class="roof-pin-inner">
+      <div class="roof-svg-wrap">
+        <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+          <!-- Слой 1: стропильная система -->
+          <g class="roof-layer" id="layer1">
+            <polygon points="120,300 400,90 680,300" fill="none" stroke="#8C5A2B" stroke-width="6"/>
+            <line x1="180" y1="260" x2="620" y2="260" stroke="#8C5A2B" stroke-width="4"/>
+            <line x1="400" y1="90" x2="400" y2="300" stroke="#8C5A2B" stroke-width="4"/>
+          </g>
+          <!-- Слой 2: изоляционная мембрана -->
+          <g class="roof-layer" id="layer2">
+            <polygon points="140,290 400,110 660,290" fill="#D2601F" fill-opacity=".18" stroke="#D2601F" stroke-width="3" stroke-dasharray="8 6"/>
+          </g>
+          <!-- Слой 3: финишное покрытие -->
+          <g class="roof-layer" id="layer3">
+            <polygon points="125,298 400,95 675,298" fill="none" stroke="#17150F" stroke-width="10" stroke-linecap="round"/>
+          </g>
+          <!-- Слой 4: вентиляционный канал -->
+          <g class="roof-layer" id="layer4">
+            <rect x="386" y="130" width="28" height="130" rx="6" fill="#B8763B"/>
+            <circle cx="400" cy="120" r="16" fill="#B8763B"/>
+          </g>
+          <!-- Слой 5: датчики / диагностика -->
+          <g class="roof-layer" id="layer5">
+            <circle cx="260" cy="220" r="7" fill="#F07A34"/>
+            <circle cx="530" cy="220" r="7" fill="#F07A34"/>
+            <circle cx="400" cy="170" r="7" fill="#F07A34"/>
+          </g>
+        </svg>
+        <div class="roof-label" id="lbl1" style="top:58%; left:6%;">Стропильная система</div>
+        <div class="roof-label" id="lbl2" style="top:44%; left:2%;">Изоляционная мембрана</div>
+        <div class="roof-label" id="lbl3" style="top:18%; left:60%;">Финишное покрытие</div>
+        <div class="roof-label" id="lbl4" style="top:26%; left:56%;">Умная вентиляция</div>
+        <div class="roof-label" id="lbl5" style="top:44%; left:70%;">Датчики диагностики</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding:0 32px 120px;">
+    <p class="roof-caption">Разрез кровли RoofCollider — каждый слой виден, каждый слой контролируется</p>
+
+    <!-- 6 преимуществ -->
+    <div class="advantages">
+      <div class="adv-item" data-aos="fade-up"><div class="num">01</div><h4>Дрон-диагностика</h4><p>Термосъёмка и 3D-скан кровли за 20 минут — находим протечки до того, как они появятся.</p></div>
+      <div class="adv-item" data-aos="fade-up" data-aos-delay="80"><div class="num">02</div><h4>3D-проектирование</h4><p>Точная цифровая модель дома с раскроем материала — без «на глазок» и лишних отходов.</p></div>
+      <div class="adv-item" data-aos="fade-up" data-aos-delay="160"><div class="num">03</div><h4>Гарантия 25–50 лет</h4><p>Официальная гарантия на материал и монтаж, зафиксированная в цифровом паспорте кровли.</p></div>
+      <div class="adv-item" data-aos="fade-up"><div class="num">04</div><h4>Умная вентиляция</h4><p>Адаптивные каналы регулируют влажность подкровельного пространства круглый год.</p></div>
+      <div class="adv-item" data-aos="fade-up" data-aos-delay="80"><div class="num">05</div><h4>Экологичные материалы</h4><p>Перерабатываемые сплавы и мембраны с минимальным углеродным следом.</p></div>
+      <div class="adv-item" data-aos="fade-up" data-aos-delay="160"><div class="num">06</div><h4>Без протечек и головной боли</h4><p>Круглосуточный мониторинг и сервис — мы приезжаем раньше, чем ты заметишь проблему.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ROOF BLEND ==================== -->
+<section class="sec-pad" id="blend">
+  <div class="wrap blend-grid">
+    <div>
+      <div class="eyebrow">Фирменная технология</div>
+      <h2>Roof Blend</h2>
+      <p>Это не просто материал — это сочетание сплава, мембраны и цифрового контроля,
+      которое проектируется под конкретный дом. Каждый компонент Roof Blend работает
+      как часть единой системы, а не отдельная деталь на крыше.</p>
+
+      <div class="blend-components">
+        <div class="blend-comp" data-aos="fade-up">
+          <div class="ico">⬡</div>
+          <div><h4>Высокопрочный сплав</h4><p>Алюминиево-цинковое покрытие стали, устойчивое к коррозии и перепадам температур от −50°C до +80°C.</p></div>
+        </div>
+        <div class="blend-comp" data-aos="fade-up" data-aos-delay="100">
+          <div class="ico">◈</div>
+          <div><h4>Адаптивная мембрана</h4><p>Пароизоляция с переменной паропроницаемостью — «дышит» летом, защищает зимой.</p></div>
+        </div>
+        <div class="blend-comp" data-aos="fade-up" data-aos-delay="200">
+          <div class="ico">◎</div>
+          <div><h4>Интеллектуальная вентиляция</h4><p>Датчики температуры и влажности автоматически регулируют воздушный поток в подкровельном пространстве.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="blend-visual" data-aos="fade-left">
+      <!-- Заглушка: макро-фото среза кровельного пирога с подписанными слоями -->
+      <div class="ph" data-caption="Фото: макросъёмка среза кровельного пирога Roof Blend">
+        <img src="https://picsum.photos/seed/roofblend/700/780" alt="Roof Blend">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== HUMANS OF ROOFVERSE ==================== -->
+<section class="humans-section sec-pad">
+  <div class="wrap">
+    <div class="eyebrow">Humans of the Roofverse</div>
+    <h2 style="font-size:clamp(28px,4vw,44px); margin-bottom:40px;">Люди, которые больше не думают о крыше</h2>
+
+    <div class="humans-grid">
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="human-card glightbox" data-aos="fade-up">
+        <!-- Заглушка: видео-отзыв клиента у своего дома -->
+        <div class="ph" data-caption="Видео-отзыв: Марина у дома с новой металлочерепицей">
+          <img src="https://picsum.photos/seed/human1/500/650" alt="Отзыв Марины">
+        </div>
+        <div class="human-play"><span>▶</span></div>
+        <div class="human-name"><b>Марина К.</b><span>@marina.doma</span></div>
+      </a>
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="human-card glightbox" data-aos="fade-up" data-aos-delay="100">
+        <div class="ph" data-caption="Видео-отзыв: Игорь показывает 3D-проект на планшете">
+          <img src="https://picsum.photos/seed/human2/500/650" alt="Отзыв Игоря">
+        </div>
+        <div class="human-play"><span>▶</span></div>
+        <div class="human-name"><b>Игорь П.</b><span>@igor.build</span></div>
+      </a>
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="human-card glightbox" data-aos="fade-up" data-aos-delay="200">
+        <div class="ph" data-caption="Видео-отзыв: семья на террасе под зелёной кровлей">
+          <img src="https://picsum.photos/seed/human3/500/650" alt="Отзыв семьи Волковых">
+        </div>
+        <div class="human-play"><span>▶</span></div>
+        <div class="human-name"><b>Семья Волковых</b><span>@volkov.family</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ОТЗЫВЫ (SLICK CAROUSEL) ==================== -->
+<section class="reviews-section sec-pad" id="reviews">
+  <div class="wrap">
+    <div class="eyebrow">Отзывы</div>
+    <h2 style="font-size:clamp(28px,4vw,44px); margin-bottom:50px;">Что говорят о нас</h2>
+
+    <div class="reviews-slider">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p>Дрон отсканировал крышу за 15 минут и показал место будущей протечки у трубы — мы даже не знали о проблеме. Починили за один день.</p>
+        <div class="review-who"><div class="av">АС</div><div><b>Алексей С.</b><span>Металлочерепица Premium</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p>Понравилась цифровая модель дома до начала работ — видно было раскрой материала и стыки. Никаких сюрпризов по смете.</p>
+        <div class="review-who"><div class="av">ЕВ</div><div><b>Елена В.</b><span>Гибкая черепица Smart</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★☆</div>
+        <p>Зелёная кровля выглядит потрясающе, соседи спрашивают, где заказывали. Монтаж занял чуть больше времени, чем обещали, но результат стоит того.</p>
+        <div class="review-who"><div class="av">ДМ</div><div><b>Дмитрий М.</b><span>Зелёная кровля</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p>Вентиляция реально «умная» — зимой на чердаке сухо, летом не жарко. Гарантия зафиксирована в приложении, это удобно.</p>
+        <div class="review-who"><div class="av">ОК</div><div><b>Ольга К.</b><span>Комплекс «Под ключ»</span></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p>Фальцевая кровля на сложной кровле мансардного типа — сделали идеально ровные линии стыков. Профессионалы своего дела.</p>
+        <div class="review-who"><div class="av">ПН</div><div><b>Павел Н.</b><span>Фальцевая кровля</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== US VS THEM ==================== -->
+<section class="compare-section sec-pad">
+  <div class="wrap">
+    <div class="eyebrow">Сравнение</div>
+    <h2 style="font-size:clamp(28px,4vw,44px); margin-bottom:20px; color:var(--graphite);">RoofCollider против остальных</h2>
+    <div class="compare-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Критерий</th>
+            <th class="us">RoofCollider</th>
+            <th>Обычные кровельщики</th>
+            <th>«Дешёвые» бригады</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Диагностика перед работой</td><td class="us check">Дрон + термосъёмка</td><td>Визуальный осмотр</td><td class="cross">Отсутствует</td></tr>
+          <tr><td>Проектирование</td><td class="us check">3D-модель дома</td><td>Эскиз на бумаге</td><td class="cross">«На глазок»</td></tr>
+          <tr><td>Гарантия</td><td class="us check">25–50 лет, в цифровом виде</td><td>5–10 лет, на бумаге</td><td class="cross">Не предоставляется</td></tr>
+          <tr><td>Вентиляция</td><td class="us check">Адаптивная, с датчиками</td><td>Стандартная</td><td class="cross">Отсутствует</td></tr>
+          <tr><td>Эстетика</td><td class="us check">Индивидуальный подбор</td><td>Ограниченный каталог</td><td>Что есть на складе</td></tr>
+          <tr><td>Цена владения (10 лет)</td><td class="us check">Ниже за счёт долговечности</td><td>Средняя</td><td class="cross">Высокая — частый ремонт</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section class="faq-section sec-pad" id="faq">
+  <div class="wrap">
+    <div class="eyebrow" style="justify-content:center;">Вопросы</div>
+    <h2 style="text-align:center; font-size:clamp(28px,4vw,44px); margin-bottom:50px;">Частые вопросы</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q"><span>Сколько стоит дрон-диагностика?</span><span class="plus">+</span></div>
+        <div class="faq-a">Диагностика бесплатна при заказе проекта кровли. Отдельная диагностика без обязательств — от 3 000 ₽.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Сколько занимает монтаж?</span><span class="plus">+</span></div>
+        <div class="faq-a">В среднем 5–12 рабочих дней в зависимости от площади и сложности кровли. Точные сроки фиксируются в 3D-проекте.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Работаете ли вы зимой?</span><span class="plus">+</span></div>
+        <div class="faq-a">Да, монтаж металлических и фальцевых систем возможен при температуре до −15°C с соблюдением технологии.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Что входит в гарантию?</span><span class="plus">+</span></div>
+        <div class="faq-a">Гарантия покрывает материал, монтаж и работу вентиляционной системы. Все условия фиксируются в цифровом паспорте кровли в приложении.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Можно ли собрать индивидуальный пакет?</span><span class="plus">+</span></div>
+        <div class="faq-a">Да, после дрон-диагностики мы предлагаем 2–3 варианта решений под бюджет и архитектуру дома.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ФИНАЛЬНЫЙ CTA + ФОРМА ==================== -->
+<section style="padding:40px 0 120px;">
+  <div class="cta-section" data-aos="zoom-in">
+    <div class="cta-inner">
+      <div>
+        <h2>Собери свою<br>идеальную кровлю</h2>
+        <p>Оставь заявку — пришлём дрон на диагностику и 3D-проект в течение 48 часов. Бесплатно и без обязательств.</p>
+      </div>
+      <form class="rc-form" onsubmit="return false;">
+        <input type="text" placeholder="Имя">
+        <input type="tel" placeholder="Телефон">
+        <select><option>Тип кровли</option><option>Металлическая Premium</option><option>Гибкая черепица Smart</option><option>Фальцевая</option><option>Зелёная плоская</option><option>Под ключ</option></select>
+        <button type="submit" class="btn-rc" style="background:var(--graphite);">Собрать свой пакет</button>
+        <small>Нажимая кнопку, вы соглашаетесь с политикой обработки данных.</small>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="rc-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="rc-logo" style="margin-bottom:14px;">ROOF<span>COLLIDER</span></div>
+        <p style="color:var(--muted); font-size:14px; max-width:280px; line-height:1.6;">Технологичная кровельная компания нового поколения. Кровля, которая работает на тебя.</p>
+      </div>
+      <div>
+        <h5>Решения</h5>
+        <ul><li><a href="#">Металлическая Premium</a></li><li><a href="#">Гибкая черепица Smart</a></li><li><a href="#">Фальцевая кровля</a></li><li><a href="#">Зелёная кровля</a></li></ul>
+      </div>
+      <div>
+        <h5>Компания</h5>
+        <ul><li><a href="#">О технологии</a></li><li><a href="#">Отзывы</a></li><li><a href="#">Гарантия</a></li><li><a href="#">Контакты</a></li></ul>
+      </div>
+      <div>
+        <h5>Контакты</h5>
+        <ul><li><a href="tel:+70000000000">+7 (000) 000-00-00</a></li><li><a href="mailto:hello@roofcollider.ru">hello@roofcollider.ru</a></li><li><a href="#">Москва, ул. Инженерная, 12</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ROOFCOLLIDER. Все права защищены.</span>
+      <span>Дизайн вдохновлён drinkcollider.com</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== СКРИПТЫ ==================== -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+<script>
+/* =========================================================================
+   ИНИЦИАЛИЗАЦИЯ БИБЛИОТЕК
+   ========================================================================= */
+gsap.registerPlugin(ScrollTrigger);
+AOS.init({ duration: 800, once: true, offset: 60 });
+const glbox = GLightbox({ selector: '.glightbox' });
+
+/* Хедер: смена фона при скролле */
+const header = document.getElementById('rcHeader');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* Бургер-меню (мобильная версия) */
+document.querySelector('.burger').addEventListener('click', () => {
+  document.querySelector('.rc-menu').classList.toggle('mobile-open');
+});
+
+/* =========================================================================
+   SPLITTING.JS — анимация заголовка Hero по словам/буквам
+   ========================================================================= */
+const results = Splitting({ target: '#heroTitle', by: 'chars' });
+gsap.from(results[0].chars, {
+  opacity: 0,
+  y: 60,
+  rotateX: -40,
+  duration: 0.9,
+  stagger: 0.02,
+  ease: 'power3.out',
+  delay: 0.2
+});
+
+/* =========================================================================
+   GSAP SCROLLTRIGGER — плавное появление hero-визуала и бейджа
+   ========================================================================= */
+gsap.from('.hero-visual', { opacity: 0, x: 60, duration: 1, delay: 0.4, ease: 'power2.out' });
+gsap.from('.drone-badge', { opacity: 0, scale: 0.6, duration: 0.6, delay: 1.1, ease: 'back.out(1.7)' });
+
+/* =========================================================================
+   ПИН-СЕКЦИЯ: РАЗРЕЗ КРОВЛИ — слои и подписи проявляются по мере скролла
+   (scrub привязывает анимацию напрямую к прогрессу скролла)
+   ========================================================================= */
+const roofTl = gsap.timeline({
+  scrollTrigger: {
+    trigger: '#roofPin',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 1,
+  }
+});
+roofTl
+  .to('#layer1', { opacity: 1, y: 0, duration: 1 })
+  .to('#lbl1',   { opacity: 1, duration: .4 }, '<')
+  .to('#layer2', { opacity: 1, y: 0, duration: 1 })
+  .to('#lbl2',   { opacity: 1, duration: .4 }, '<')
+  .to('#layer3', { opacity: 1, y: 0, duration: 1 })
+  .to('#lbl3',   { opacity: 1, duration: .4 }, '<')
+  .to('#layer4', { opacity: 1, y: 0, duration: 1 })
+  .to('#lbl4',   { opacity: 1, duration: .4 }, '<')
+  .to('#layer5', { opacity: 1, y: 0, duration: 1 })
+  .to('#lbl5',   { opacity: 1, duration: .4 }, '<');
+
+/* =========================================================================
+   ПАРАЛЛАКС ДЛЯ ВИЗУАЛЬНЫХ БЛОКОВ (лёгкое смещение фото при скролле)
+   ========================================================================= */
+gsap.utils.toArray('.sol-card .ph img, .blend-visual .ph img').forEach(img => {
+  gsap.to(img, {
+    yPercent: 8,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: img,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true
+    }
+  });
+});
+
+/* =========================================================================
+   SLICK CAROUSEL — слайдер отзывов
+   ========================================================================= */
+$('.reviews-slider').slick({
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  dots: true,
+  arrows: false,
+  autoplay: true,
+  autoplaySpeed: 4500,
+  responsive: [
+    { breakpoint: 980, settings: { slidesToShow: 2 } },
+    { breakpoint: 640, settings: { slidesToShow: 1 } }
+  ]
+});
+
+/* =========================================================================
+   FAQ — аккордеон
+   ========================================================================= */
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
